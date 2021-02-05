@@ -1,3 +1,3 @@
-# Adambots2020
-Adambots 2020 FRC robot code
-Command Based Programming for the 2020 FRC INFINITE RECHARGE competition
+# Adambots2021
+Adambots 2021 FRC robot code
+Command-Based Programming for the 2021 FRC DEEP SPACE (Infinite Recharge v2) competition and challenges.
