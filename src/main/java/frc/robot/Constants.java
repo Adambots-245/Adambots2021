@@ -71,7 +71,11 @@ public final class Constants {
     public static final int TURRET_RIGHT_DIO = 3;
     
 	public static final int ELEVATOR_LIMIT_SWITCH_1_PORT = 0;
-	public static final int ELEVATOR_LIMIT_SWITCH_2_PORT = 1;
+    public static final int ELEVATOR_LIMIT_SWITCH_2_PORT = 1;
+    
+    public static final int INTAKE_SENSOR_1_PORT = 0; // intake photo eye channel values
+    public static final int INTAKE_SENSOR_2_PORT = 0; // need to get values from electrical
+    public static final int INTAKE_SENSOR_3_PORT = 0;
 
 
     // speed values
@@ -89,7 +93,7 @@ public final class Constants {
     // control panel constants - count 2 times for each rotation
     public final static int MIN_ROTATIONS = 7-1; // = 4 rotations //7-1 means compensating for overshooting
     public final static int MAX_ROTATIONS = 10;
-    // TODO: Add accurate panel motor speeds (motors that spin control panel)
+    //TODO: Add accurate panel motor speeds (motors that spin control panel)
     public static final double PANEL_MOTOR_SPEED_ROTATION = 0.65;
     public static final double PANEL_MOTOR_SPEED_ALIGNMENT = 0.175;
 

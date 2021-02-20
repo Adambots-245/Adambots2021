@@ -25,6 +25,9 @@ public class IntakeSubsystem extends SubsystemBase {
   private WPI_VictorSPX ConveyorMotor;
   private WPI_VictorSPX ConveyorIndexerMotor;
   private WPI_VictorSPX FeedToBlasterMotor;
+  private DigitalInput FirstPhotoEye;
+  private DigitalInput SecondPhotoEye;
+  private DigitalInput ThirdPhotoEye;
 
   public IntakeSubsystem() {
     super();
@@ -33,6 +36,9 @@ public class IntakeSubsystem extends SubsystemBase {
     FeedToBlasterMotor = new WPI_VictorSPX(Constants.FEED_TO_BLASTER_MOTOR_PORT);
     FeedToBlasterMotor.setInverted(true);
     IntakeMotor.setInverted(true);
+    FirstPhotoEye = new DigitalInput(Constants.INTAKE_SENSOR_1_PORT);
+    SecondPhotoEye = new DigitalInput(Constants.INTAKE_SENSOR_2_PORT);
+    ThirdPhotoEye = new DigitalInput(Constants.INTAKE_SENSOR_3_PORT);
   }
 
   public void intake(double speed) {
