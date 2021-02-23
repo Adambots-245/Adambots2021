@@ -8,6 +8,7 @@
 package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.DigitalInput;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
@@ -25,9 +26,9 @@ public class IntakeSubsystem extends SubsystemBase {
   private WPI_VictorSPX ConveyorMotor;
   private WPI_VictorSPX ConveyorIndexerMotor;
   private WPI_VictorSPX FeedToBlasterMotor;
-  private DigitalInput FirstPhotoEye;
-  private DigitalInput SecondPhotoEye;
-  private DigitalInput ThirdPhotoEye;
+  private DigitalInput IntakePhotoEye = new DigitalInput(Constants.INTAKE_PHOTO_EYE_PORT);
+  private DigitalInput ConveyorPhotoEye = new DigitalInput(Constants.CONVEYOR_PHOTO_EYE_PORT);
+  private DigitalInput BlasterPhotoEye = new DigitalInput(Constants.BLASTER_PHOTO_EYE_PORT);
 
   public IntakeSubsystem() {
     super();
@@ -36,9 +37,6 @@ public class IntakeSubsystem extends SubsystemBase {
     FeedToBlasterMotor = new WPI_VictorSPX(Constants.FEED_TO_BLASTER_MOTOR_PORT);
     FeedToBlasterMotor.setInverted(true);
     IntakeMotor.setInverted(true);
-    FirstPhotoEye = new DigitalInput(Constants.INTAKE_SENSOR_1_PORT);
-    SecondPhotoEye = new DigitalInput(Constants.INTAKE_SENSOR_2_PORT);
-    ThirdPhotoEye = new DigitalInput(Constants.INTAKE_SENSOR_3_PORT);
   }
 
   public void intake(double speed) {

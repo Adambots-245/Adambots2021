@@ -73,9 +73,9 @@ public final class Constants {
 	public static final int ELEVATOR_LIMIT_SWITCH_1_PORT = 0;
     public static final int ELEVATOR_LIMIT_SWITCH_2_PORT = 1;
     
-    public static final int INTAKE_SENSOR_1_PORT = 0; // intake photo eye channel values
-    public static final int INTAKE_SENSOR_2_PORT = 0; // need to get values from electrical
-    public static final int INTAKE_SENSOR_3_PORT = 0;
+    public static final int INTAKE_PHOTO_EYE_PORT = 7;
+    public static final int CONVEYOR_PHOTO_EYE_PORT = 8;
+    public static final int BLASTER_PHOTO_EYE_PORT = 9;
 
 
     // speed values
