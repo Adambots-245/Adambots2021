@@ -41,14 +41,12 @@ public final class Constants {
 
     public static final int INTAKE_MOTOR_PORT = 18;
     public static final int INFEED_CONVEYOR_MOTOR_PORT = 19;
-    public static final int INFEED_CONVEYOR_INDEXER_MOTOR_PORT = 20;
-    public static final int FEED_TO_BLASTER_MOTOR_PORT = 21;
+    public static final int INFEED_CONVEYOR_INDEXER_MOTOR_PORT = 20; //removed in 2021?
+    public static final int FEED_TO_BLASTER_MOTOR_PORT = 21; //removed in 2021?
 
     public static final int TURRET_MOTOR_PORT = 22;
 
-    // TODO: Add accurate PANEL_MOTOR_PORTs (ports of motors that spin control
-    // panel)
-    public static final int PANEL_MOTOR_PORT = 1;
+    public static final int PANEL_MOTOR_PORT = 25; //updated for 2021
 
     // solenoid IDs
     public static final int HIGH_GEAR_SOL_PORT = 7;
@@ -73,9 +71,9 @@ public final class Constants {
 	public static final int ELEVATOR_LIMIT_SWITCH_1_PORT = 0;
     public static final int ELEVATOR_LIMIT_SWITCH_2_PORT = 1;
     
-    public static final int INTAKE_PHOTO_EYE_PORT = 7;
-    public static final int CONVEYOR_PHOTO_EYE_PORT = 8;
-    public static final int BLASTER_PHOTO_EYE_PORT = 9;
+    public static final int INTAKE_PHOTO_EYE_DIO = 7;
+    public static final int CONVEYOR_PHOTO_EYE_DIO = 8;
+    public static final int BLASTER_PHOTO_EYE_DIO = 9;
 
 
     // speed values
@@ -93,6 +91,7 @@ public final class Constants {
     // control panel constants - count 2 times for each rotation
     public final static int MIN_ROTATIONS = 7-1; // = 4 rotations //7-1 means compensating for overshooting
     public final static int MAX_ROTATIONS = 10;
+    
     //TODO: Add accurate panel motor speeds (motors that spin control panel)
     public static final double PANEL_MOTOR_SPEED_ROTATION = 0.65;
     public static final double PANEL_MOTOR_SPEED_ALIGNMENT = 0.175;
