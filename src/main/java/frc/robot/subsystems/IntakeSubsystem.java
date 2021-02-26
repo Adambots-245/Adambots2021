@@ -26,9 +26,6 @@ public class IntakeSubsystem extends SubsystemBase {
   private WPI_VictorSPX ConveyorMotor;
   private WPI_VictorSPX ConveyorIndexerMotor;
   private WPI_VictorSPX FeedToBlasterMotor;
-  private DigitalInput IntakePhotoEye = new DigitalInput(Constants.INTAKE_PHOTO_EYE_DIO);
-  private DigitalInput ConveyorPhotoEye = new DigitalInput(Constants.CONVEYOR_PHOTO_EYE_DIO);
-  private DigitalInput BlasterPhotoEye = new DigitalInput(Constants.BLASTER_PHOTO_EYE_DIO);
 
   public IntakeSubsystem() {
     super();
