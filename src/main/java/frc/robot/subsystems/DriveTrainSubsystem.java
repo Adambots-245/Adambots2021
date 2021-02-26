@@ -19,6 +19,10 @@ import frc.robot.Constants;
 import frc.robot.sensors.Gyro;
 import frc.robot.utils.Log;
 
+import org.hammerhead226.sharkmacro.*;
+import org.hammerhead226.sharkmacro.motionprofiles.ProfileRecorder;
+import org.hammerhead226.sharkmacro.motionprofiles.ProfileRecorder.RecordingType;
+
 public class DriveTrainSubsystem extends SubsystemBase {
   /**
    * Creates a new DriveTrainNew.
@@ -37,6 +41,9 @@ public class DriveTrainSubsystem extends SubsystemBase {
   private Gyro gyro;
 
   private boolean hasGyroBeenReset = false;
+
+  
+  private ProfileRecorder recorder;
 
   public DriveTrainSubsystem(Gyro gyro, Solenoid gearShifter, WPI_TalonFX frontRightMotor, WPI_TalonFX frontLeftMotor, WPI_TalonFX backLeftMotor, WPI_TalonFX backRightMotor) {
     super();
