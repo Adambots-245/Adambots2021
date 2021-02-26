@@ -11,7 +11,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.utils.Log;
 
 public class ConveyorSubsystem extends SubsystemBase {
   /**
@@ -19,15 +19,25 @@ public class ConveyorSubsystem extends SubsystemBase {
    */
   private WPI_VictorSPX conveyorMotor;
   private WPI_VictorSPX alignmentBeltMotor;
-  public ConveyorSubsystem() {
+
+  public ConveyorSubsystem(WPI_VictorSPX conveyorMotor, WPI_VictorSPX alignmentBeltMotor) {
     super();
-    conveyorMotor = new WPI_VictorSPX(Constants.INFEED_CONVEYOR_MOTOR_PORT);
-    alignmentBeltMotor = new WPI_VictorSPX(Constants.INFEED_CONVEYOR_INDEXER_MOTOR_PORT);
+    
+    this.conveyorMotor = conveyorMotor; //new WPI_VictorSPX(Constants.INFEED_CONVEYOR_MOTOR_PORT);
+    this.alignmentBeltMotor = alignmentBeltMotor; //new WPI_VictorSPX(Constants.INFEED_CONVEYOR_INDEXER_MOTOR_PORT);
+
+    Log.info("Initializing Conveyor");
   }
+
   public void runConveyor(double speed){
+
+    //Log.infoF("Running coveyor. %% Output: %f", speed);
     conveyorMotor.set(ControlMode.PercentOutput, speed);
   }
+
   public void runAlignmentBelt(double speed){
+
+    //Log.infoF("Running Alignment Belt. %% Output: %f", speed);
     alignmentBeltMotor.set(ControlMode.PercentOutput, speed);
   }
 

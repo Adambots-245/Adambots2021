@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotMap;
 import frc.robot.vision.GripPipeline;
 import edu.wpi.cscore.*;
 import edu.wpi.cscore.VideoMode.PixelFormat;
@@ -29,14 +30,17 @@ public class VisionProcessorSubsystem extends SubsystemBase {
     private NetworkTableEntry angleEntry;
     private Solenoid ringLight;
 
-    public VisionProcessorSubsystem() {
+    public VisionProcessorSubsystem(Solenoid ringLight, GripPipeline grip) {
+        this.ringLight = ringLight;
+
         init();
+        this.grip = grip;
     }
 
     public void init() {
-        ringLight = new Solenoid(Constants.RING_LIGHT_PORT);
         // ringLight.clearAllPCMStickyFaults();
         // if pcm status is flashing orange (sticky fault), run once
+        // ringLight = new Solenoid(Constants.RING_LIGHT_PORT);
         ringLight.set(true);
         camera = CameraServer.getInstance().startAutomaticCapture(Constants.CAM_NUMBER);
         camera.setExposureManual(Constants.CAM_EXPOSURE);
@@ -46,7 +50,7 @@ public class VisionProcessorSubsystem extends SubsystemBase {
         processedOutputStream.setPixelFormat(PixelFormat.kGray);
 
         cvSink = CameraServer.getInstance().getVideo();
-        grip = new GripPipeline();
+        // grip = new GripPipeline();
         mat = new Mat();
 
         camera.setVideoMode(VideoMode.PixelFormat.kMJPEG, Constants.IMG_WIDTH, Constants.IMG_HEIGHT, Constants.PROCESSING_FPS);
@@ -97,8 +101,6 @@ public class VisionProcessorSubsystem extends SubsystemBase {
             }
 
             frameCount++;
-            
-
         }
 
     }

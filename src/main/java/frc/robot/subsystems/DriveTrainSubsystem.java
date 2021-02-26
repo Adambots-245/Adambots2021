@@ -7,93 +7,96 @@
 
 package frc.robot.subsystems;
 
-import java.util.function.DoubleSupplier;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.MotorSafety;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.sensors.Gyro;
+import frc.robot.utils.Log;
 
 public class DriveTrainSubsystem extends SubsystemBase {
   /**
    * Creates a new DriveTrainNew.
    */
-  private Solenoid GearShifter;
+  private Solenoid gearShifter;
 
-  private WPI_TalonFX FrontRightMotor;
-  private WPI_TalonFX FrontLeftMotor;
-  private WPI_TalonFX BackLeftMotor;
-  private WPI_TalonFX BackRightMotor;
+  private WPI_TalonFX frontRightMotor;
+  private WPI_TalonFX frontLeftMotor;
+  private WPI_TalonFX backLeftMotor;
+  private WPI_TalonFX backRightMotor;
 
   DifferentialDrive drive;
 
   private double speedModifier;
 
-  private GyroSubsystem gyroSubsystem;
+  private Gyro gyro;
 
   private boolean hasGyroBeenReset = false;
 
-  public DriveTrainSubsystem(GyroSubsystem gyroSubsystem) {
+  public DriveTrainSubsystem(Gyro gyro, Solenoid gearShifter, WPI_TalonFX frontRightMotor, WPI_TalonFX frontLeftMotor, WPI_TalonFX backLeftMotor, WPI_TalonFX backRightMotor) {
     super();
 
-    this.gyroSubsystem = gyroSubsystem;
+    this.gyro = gyro;
 
     speedModifier = Constants.NORMAL_SPEED_MODIFIER;
 
-    GearShifter = new Solenoid(Constants.HIGH_GEAR_SOL_PORT);
+    this.gearShifter = gearShifter;
 
-    FrontRightMotor = new WPI_TalonFX(Constants.FR_TALON);
-    FrontLeftMotor = new WPI_TalonFX(Constants.FL_TALON);
+    this.frontRightMotor = frontRightMotor; 
+    this.frontLeftMotor = frontLeftMotor; 
 
-    BackLeftMotor = new WPI_TalonFX(Constants.BL_TALON);
-    BackRightMotor = new WPI_TalonFX(Constants.BR_TALON);
+    this.backLeftMotor = backLeftMotor; 
+    this.backRightMotor = backRightMotor; 
 
-    BackLeftMotor.follow(FrontLeftMotor);
-    BackRightMotor.follow(FrontRightMotor);
+    this.backLeftMotor.follow(frontLeftMotor);
+    this.backRightMotor.follow(frontRightMotor);
 
-    BackLeftMotor.setInverted(false);
-    FrontLeftMotor.setInverted(false);
-    BackRightMotor.setInverted(false);
-    FrontRightMotor.setInverted(false);
+    this.backLeftMotor.setInverted(false);
+    frontLeftMotor.setInverted(false);
+    backRightMotor.setInverted(false);
+    frontRightMotor.setInverted(false);
 
-    FrontLeftMotor.configOpenloopRamp(Constants.SEC_NEUTRAL_TO_FULL);
-    FrontRightMotor.configOpenloopRamp(Constants.SEC_NEUTRAL_TO_FULL);
+    frontLeftMotor.configOpenloopRamp(Constants.SEC_NEUTRAL_TO_FULL);
+    frontRightMotor.configOpenloopRamp(Constants.SEC_NEUTRAL_TO_FULL);
 
-    drive = new DifferentialDrive(FrontLeftMotor, FrontRightMotor);
+    frontLeftMotor.setNeutralMode(NeutralMode.Brake);
+    frontRightMotor.setNeutralMode(NeutralMode.Brake);
+    backLeftMotor.setNeutralMode(NeutralMode.Brake);
+    backRightMotor.setNeutralMode(NeutralMode.Brake);
+
+    drive = new DifferentialDrive(frontLeftMotor, frontRightMotor);
+
+    Log.info("Initializing Drive Subsystem");
   }
 
   public void resetEncoders() {
-    FrontLeftMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, Constants.DRIVE_PID_SLOT, 0);
-    FrontLeftMotor.getSensorCollection().setIntegratedSensorPosition(0, 0);
-    FrontRightMotor.getSensorCollection().setIntegratedSensorPosition(0, 0);
+
+    Log.info("Resetting encoders");
+
+    frontLeftMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, Constants.DRIVE_PID_SLOT, 0);
+    frontLeftMotor.getSensorCollection().setIntegratedSensorPosition(0, 0);
+    frontRightMotor.getSensorCollection().setIntegratedSensorPosition(0, 0);
     // BackLeftMotor.getSensorCollection().setQuadraturePosition(0, 0);
     // BackRightMotor.getSensorCollection().setQuadraturePosition(0, 0);
   }
 
-  // public double getRightDriveEncoderValue(){
-  //   FrontRightMotor.getSelectedSensorPosition()
-  // }
   public double getAverageDriveEncoderValue() {
     double averageEncoderPos = (Math
-        .abs(FrontLeftMotor.getSelectedSensorPosition()) + Math.abs(FrontRightMotor.getSelectedSensorPosition()) / 2);
-    // System.out.println(averageEncoderPos);
+        .abs(frontLeftMotor.getSelectedSensorPosition()) + Math.abs(frontRightMotor.getSelectedSensorPosition()) / 2);
     return averageEncoderPos;
   }
 
   public double getLeftDriveEncoderVelocity() {
-    return FrontLeftMotor.getSelectedSensorVelocity();
+    return frontLeftMotor.getSelectedSensorVelocity();
   }
 
   public double getRightDriveEncoderVelocity() {
-    return FrontRightMotor.getSelectedSensorVelocity();
+    return frontRightMotor.getSelectedSensorVelocity();
   }
 
   public void setLowSpeed() {
@@ -107,54 +110,44 @@ public class DriveTrainSubsystem extends SubsystemBase {
   public void arcadeDrive(double speed, double turnSpeed) {
     int frontRobotDirection = -1;
     double straightSpeed = frontRobotDirection * speed * speedModifier;
-    // System.out.println("straightSpeed = " + straightSpeed);
-    // System.out.println("turnSpeed = " + turnSpeed * speedModifier);
+    SmartDashboard.putNumber("Yaw", gyro.getAngle());
 
-    // double leftSpeed = Math.min(straightSpeed + turnSpeed* speedModifier,
-    // Constants.MAX_MOTOR_SPEED);
-    // double rightSpeed = Math.min(straightSpeed - turnSpeed* speedModifier,
-    // Constants.MAX_MOTOR_SPEED);
-
-    // FrontRightMotor.set(ControlMode.PercentOutput, rightSpeed);
-    // FrontLeftMotor.set(ControlMode.PercentOutput, leftSpeed);
-    // FrontLeftMotor.setExpiration(.5);
-    // FrontRightMotor.setExpiration(.5);
-    // System.out.println(FrontLeftMotor.getExpiration());
-    SmartDashboard.putNumber("Yaw", gyroSubsystem.getYaw());
-
+    //Log.infoF("Arcade Drive - Straight Speed = %f - Turn Speed = %f - Gyro Angle = %f", straightSpeed, turnSpeed * speedModifier, gyro.getAngle());
     drive.arcadeDrive(straightSpeed, turnSpeed * speedModifier);
   }
 
   public void shiftHighGear() {
-    GearShifter.set(true);
+
+    Log.info("Shifting to high gear");
+    gearShifter.set(true);
   }
 
   public void shiftLowGear() {
-    GearShifter.set(false);
+
+    Log.info("Shifting to low gear");
+    gearShifter.set(false);
   }
-  /*
-   * public void driveDistance(double distance){
-   * FrontLeftMotor.set(ControlMode.Position, distance);
-   * FrontRightMotor.set(ControlMode.Position, distance); }
-   */
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
   }
 
-  public Double getAngle() {
-    return (double) gyroSubsystem.getYaw();
+  public double getAngle() {
+    return gyro.getAngle();
   }
 
   public void resetGyro(boolean force) {
     if (!hasGyroBeenReset || force) {
-      gyroSubsystem.reset();
+      gyro.reset();
+      Log.info("Gyro has been reset");
       hasGyroBeenReset = true;
     }
   }
 
   public void resetGyro(){
+    Log.info("Gyro has been reset");
+
     resetGyro(false);
   }
 }

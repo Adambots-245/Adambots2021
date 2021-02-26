@@ -25,13 +25,13 @@ public class RaiseElevatorCommand extends CommandBase {
    * @param subsystem The subsystem used by this command.
    */
   private DoubleSupplier elevateSpeed;
-  private JoystickButton overrideButton;
+  private boolean overrideFlag;
   private final HangSubsystem hangSubsystem;
   
-  public RaiseElevatorCommand(HangSubsystem subsystem, DoubleSupplier elevateSpeed, JoystickButton secondaryStartButton) {
+  public RaiseElevatorCommand(HangSubsystem subsystem, DoubleSupplier elevateSpeed, boolean overrideFlag) {
     this.hangSubsystem = subsystem;
     this.elevateSpeed = elevateSpeed;
-    this.overrideButton = secondaryStartButton;
+    this.overrideFlag = overrideFlag;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(hangSubsystem);
   }
@@ -44,7 +44,7 @@ public class RaiseElevatorCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {  
-    hangSubsystem.climb(elevateSpeed.getAsDouble(), overrideButton);
+    hangSubsystem.climb(elevateSpeed.getAsDouble(), overrideFlag);
   }
 
   // Called once the command ends or is interrupted.

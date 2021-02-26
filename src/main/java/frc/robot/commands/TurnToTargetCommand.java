@@ -9,19 +9,20 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.LidarSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
+import frc.robot.utils.Log;
 import frc.robot.Constants;
+import frc.robot.sensors.Lidar;
 
 public class TurnToTargetCommand extends CommandBase {
   private TurretSubsystem turretSubsystem;
-  private LidarSubsystem lidarSubsystem;
+  private Lidar lidar;
   /**
    * Creates a new TurnToTargetCommand.
    */
-  public TurnToTargetCommand(TurretSubsystem turretSubsystem, LidarSubsystem lidarSubsystem) {
+  public TurnToTargetCommand(TurretSubsystem turretSubsystem, Lidar lidar) {
     this.turretSubsystem = turretSubsystem;
-    this.lidarSubsystem = lidarSubsystem;
+    this.lidar = lidar;
     addRequirements(turretSubsystem);
 
   }
@@ -31,35 +32,44 @@ public class TurnToTargetCommand extends CommandBase {
   public void initialize() {
     turretSubsystem.enable();
 
-    System.out.println("Turret Initialized");
+    var calculatedOffset = Math.toDegrees(Math.atan(Constants.SHOOTER_OFFSET_DISTANCE/lidar.getInches()));
+    turretSubsystem.setSetpoint(calculatedOffset);
+
+    //Log.infoF("Turret Initialized: %f", calculatedOffset);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     double calculatedOffset;
-    calculatedOffset = Math.toDegrees(Math.atan(Constants.SHOOTER_OFFSET_DISTANCE/lidarSubsystem.getInches()));
+
+    calculatedOffset = Math.toDegrees(Math.atan(Constants.SHOOTER_OFFSET_DISTANCE/lidar.getInches()));
+
     // turretSubsystem.setAngleOffset(calculatedOffset);
     turretSubsystem.setSetpoint(calculatedOffset);
     SmartDashboard.putNumber("angleOffset", calculatedOffset);
+
+    //Log.infoF("Execute - AngleOffset: %f", calculatedOffset);
     //turretSystem PID loop should deal with movement
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("Auto Turret System Ended");
+    //Log.info("Auto Turret System Ended");
 
-    if (interrupted) 
-      System.out.println("Turret System Interrupted");
-      
-    turretSubsystem.stopTurret();
+    if (interrupted) {
+      //Log.info("Turret System Interrupted");
+    }
+
     turretSubsystem.disable();
+    turretSubsystem.stopTurret();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    //Log.infoF("At setpoint? %b", turretSubsystem.atSetpoint());
     return turretSubsystem.atSetpoint();
   }
 }

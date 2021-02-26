@@ -9,21 +9,21 @@ package frc.robot.commands.autonCommands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.sensors.Lidar;
 import frc.robot.subsystems.BlasterSubsystem;
-import frc.robot.subsystems.LidarSubsystem;
 
 public class TimedBlasterDistanceBasedCommand extends CommandBase {
   /**
    * Creates a new BlasterDistanceBasedCommand.
    */
   BlasterSubsystem blasterSubsystem;
-  private LidarSubsystem lidarSubsystem;
+  private Lidar lidar;
   private double initialDistance = 0;
   private long startTime;
   private long timeInMilliseconds;
-  public TimedBlasterDistanceBasedCommand(BlasterSubsystem blasterSubsystem, LidarSubsystem lidarSubsystem, long timeInMilliseconds) {
+  public TimedBlasterDistanceBasedCommand(BlasterSubsystem blasterSubsystem, Lidar lidar, long timeInMilliseconds) {
     this.blasterSubsystem = blasterSubsystem;
-    this.lidarSubsystem = lidarSubsystem;
+    this.lidar = lidar;
     this.timeInMilliseconds = timeInMilliseconds;
     SmartDashboard.putNumber("Blaster Velocity", blasterSubsystem.getVelocity());
     // SmartDashboard.putNumber("Distance To Target", lidarSubsystem.getInches());
@@ -47,7 +47,7 @@ public class TimedBlasterDistanceBasedCommand extends CommandBase {
   public void execute() {
     initialDistance = 120 + 12;
     try {
-      initialDistance = lidarSubsystem.getInches();
+      initialDistance = lidar.getInches();
     } catch (Exception e) {
       initialDistance = 120 + 8.5;
 

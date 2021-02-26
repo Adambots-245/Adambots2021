@@ -19,6 +19,7 @@ import frc.robot.commands.autonCommands.DriveForwardGyroDistanceCommand;
 import frc.robot.commands.autonCommands.TimedBlasterDistanceBasedCommand;
 import frc.robot.commands.autonCommands.TimedConveyorCommand;
 import frc.robot.commands.autonCommands.TimedStartIntakeCommand;
+import frc.robot.sensors.Lidar;
 import frc.robot.subsystems.*;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -29,7 +30,7 @@ public class NerdsAuton extends SequentialCommandGroup {
    * Creates a new NoTurnAuton.
    */
   
-  public NerdsAuton(TurretSubsystem turretSubsystem, DriveTrainSubsystem driveTrainSubsystem, ConveyorSubsystem conveyorSubsystem, IntakeSubsystem intakeSubsystem, LidarSubsystem lidarSubsystem, BlasterSubsystem blasterSubsystem) {
+  public NerdsAuton(TurretSubsystem turretSubsystem, DriveTrainSubsystem driveTrainSubsystem, ConveyorSubsystem conveyorSubsystem, IntakeSubsystem intakeSubsystem, Lidar lidar, BlasterSubsystem blasterSubsystem) {
     // Add your commands in the super() call, e.g.
     // super(new FooCommand(), new BarCommand());
     super(

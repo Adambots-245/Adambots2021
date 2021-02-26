@@ -7,23 +7,23 @@
 
 package frc.robot.commands.autonCommands.autonCommandGroups;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
+import frc.robot.commands.BlasterConstantOutputCommand;
 import frc.robot.commands.BlasterDistanceBasedCommand;
 import frc.robot.commands.ConveyorCommand;
 import frc.robot.commands.IndexToBlasterCommand;
-import frc.robot.commands.LowerIntakeArmCommand;
 import frc.robot.commands.ManualTurretCommand;
-import frc.robot.commands.StartIntakeCommand;
 import frc.robot.commands.TurnToTargetCommand;
+import frc.robot.commands.autonCommands.DriveForwardDistanceCommand;
 import frc.robot.commands.autonCommands.DriveForwardGyroDistanceCommand;
-import frc.robot.commands.autonCommands.TimedBlasterDistanceBasedCommand;
 import frc.robot.commands.autonCommands.TimedCommand;
-import frc.robot.commands.autonCommands.TimedManualTurretCommand;
 import frc.robot.sensors.Lidar;
 import frc.robot.subsystems.BlasterSubsystem;
 import frc.robot.subsystems.ConveyorSubsystem;
@@ -34,35 +34,43 @@ import frc.robot.subsystems.TurretSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
-public class Yeet3FinalsAuton extends SequentialCommandGroup {
+public class Yeet3New extends SequentialCommandGroup {
   /**
    * Creates a new Yeet3.
    */
-  public Yeet3FinalsAuton(TurretSubsystem turretSubsystem, DriveTrainSubsystem driveTrainSubsystem, ConveyorSubsystem conveyorSubsystem, IntakeSubsystem intakeSubsystem, Lidar lidarSubsystem, BlasterSubsystem blasterSubsystem, XboxController joystick) {
+  public Yeet3New(TurretSubsystem turretSubsystem, DriveTrainSubsystem driveTrainSubsystem, ConveyorSubsystem conveyorSubsystem, IntakeSubsystem intakeSubsystem, Lidar lidar, BlasterSubsystem blasterSubsystem, XboxController joystick) {
     // Add your commands in the super() call, e.g.
     // super(new FooCommand(), new BarCommand());
     super(
-      // new ParallelCommandGroup(
-        // new DriveForwardGyroDistanceCommand(driveTrainSubsystem, Constants.AUTON_DRIVE_OFF_LINE_DISTANCE,-Constants.AUTON_DRIVE_OFF_LINE_SPEED, 0, true),//true
-        new LowerIntakeArmCommand(intakeSubsystem),
+      new ParallelDeadlineGroup(
+        // new DriveForwardGyroDistanceCommand(driveTrainSubsystem, Constants.AUTON_DRIVE_OFF_LINE_DISTANCE, Constants.AUTON_DRIVE_OFF_LINE_SPEED, 0, true),
+        new DriveForwardDistanceCommand(driveTrainSubsystem, Constants.AUTON_DRIVE_OFF_LINE_DISTANCE, -Constants.AUTON_DRIVE_OFF_LINE_SPEED),
+        new ManualTurretCommand(turretSubsystem, () -> 0, () -> 1),         
+        new BlasterDistanceBasedCommand(blasterSubsystem, lidar, joystick)
+      ),
 
-        new TimedManualTurretCommand(turretSubsystem, () -> 0, () -> 1, 1100),
-        new TimedManualTurretCommand(turretSubsystem, () -> 0, () -> 0, 300),
-      // ),
+      new ParallelDeadlineGroup(
+        new WaitCommand(2),
+        new ManualTurretCommand(turretSubsystem, () -> 0, () -> 1),
+        new BlasterDistanceBasedCommand(blasterSubsystem, lidar, joystick)
+      ),
 
-    //  new TimedCommand(new TurnToTargetCommand(turretSubsystem, lidarSubsystem), 3000),
-    // new TurnToTargetCommand(turretSubsystem, lidarSubsystem),
-    new TimedManualTurretCommand(turretSubsystem, () -> 0, () -> 0, 100),
-    // new TimedBlasterDistanceBasedCommand(blasterSubsystem, lidarSubsystem, 20),
-    new TimedBlasterDistanceBasedCommand(blasterSubsystem, lidarSubsystem, 2000), //UNCOMMENT THIS
-    new ParallelDeadlineGroup(
-      new WaitCommand(10),
-      new BlasterDistanceBasedCommand(blasterSubsystem, lidarSubsystem, joystick), //UNCOMMENT THIS
-      new IndexToBlasterCommand(intakeSubsystem),
-      new ConveyorCommand(conveyorSubsystem, ()->-.75),
-      new StartIntakeCommand(intakeSubsystem, ()-> -.5)
-    )
-    // new DriveForwardGyroDistanceCommand(driveTrainSubsystem, 28*3500, -Constants.AUTON_DRIVE_OFF_LINE_SPEED, 45, true)
+     //new TimedCommand(TurnToTargetCommand(turretSubsystem, lidarSubsystem), 3000),
+     new ParallelRaceGroup(
+      new WaitCommand(2),
+      new TurnToTargetCommand(turretSubsystem, lidar)
+     ),
+     
+    //  new WaitCommand(5),
+
+      new ParallelDeadlineGroup(
+        new WaitCommand(5),
+        // new BlasterConstantOutputCommand(blasterSubsystem, lidarSubsystem, velocityInEncoderTicks),
+        new BlasterDistanceBasedCommand(blasterSubsystem, lidar, joystick),
+        new IndexToBlasterCommand(intakeSubsystem),
+        new ConveyorCommand(conveyorSubsystem, ()->-1)
+      )
+      
     );
   }
 }

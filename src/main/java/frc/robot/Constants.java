@@ -12,7 +12,6 @@ import org.opencv.core.*;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 
-import com.revrobotics.ColorSensorV3;
 import com.revrobotics.ColorMatch;
 
 /**
@@ -95,10 +94,7 @@ public final class Constants {
 
     public final static I2C.Port I2C_PORT = I2C.Port.kOnboard;
 
-    public final static ColorSensorV3 M_COLOR_SENSOR = new ColorSensorV3(I2C_PORT);
-
-    public final static ColorMatch M_COLOR_MATCHER = new ColorMatch();
-
+    public final static Color UNKNOWN_TARGET = ColorMatch.makeColor(0, 0, 0);
     public final static Color BLUE_TARGET = ColorMatch.makeColor(0.125, 0.424, 0.450);
     public final static Color GREEN_TARGET = ColorMatch.makeColor(0.167, 0.580, 0.252);
     public final static Color RED_TARGET = ColorMatch.makeColor(0.518, 0.347, 0.134);
@@ -108,11 +104,17 @@ public final class Constants {
     // direction
     // If the control panel itself turns clockwise, the sensor will move in a
     // counterclockwise direction
-    public final static String[] COLOR_ORDER = { "Blue", "Green", "Red", "Yellow" };
+    public final static Color[] COLOR_ORDER = { BLUE_TARGET, GREEN_TARGET, RED_TARGET, YELLOW_TARGET };
 
     // Note: The direction that the color wheel itself turns will be the opposite of
     // the below direction
-    public final static String DIRECTION = "Counterclockwise";
+
+    public enum DIRECTIONS {
+        CLOCKWISE,
+        COUNTERCLOCKWISE
+    }
+
+    public final static DIRECTIONS SPIN_DIRECTION = DIRECTIONS.COUNTERCLOCKWISE;
 
     // The distance between our color sensor and the game's color sensor in number
     // of color slices away
@@ -160,7 +162,7 @@ public final class Constants {
     public static final double BLASTER_KD = 45.4667;
 
     private static final double KNOWN_LIDAR_DISTANCE_TO_TARGET = 120;
-    private static final double KNOWN_OFFSET_ANGLE = Math.toRadians(4.25);
+    private static final double KNOWN_OFFSET_ANGLE = Math.toRadians(4.45);
     public static final double SHOOTER_OFFSET_DISTANCE = Constants.KNOWN_LIDAR_DISTANCE_TO_TARGET*Math.tan(Constants.KNOWN_OFFSET_ANGLE);
 	
     //gyro PID constants
@@ -185,10 +187,14 @@ public final class Constants {
     
 	public static final double YEET3PUSHNOM3_DIAG_DISTANCE_TO_TRENCH = 60*ENCODER_TICKS_PER_INCH;
 	public static final double YEET3PUSHNOM3_3_BALL_STRAIGHT_DISTANCE = 60*ENCODER_TICKS_PER_INCH;
-	public static final double AUTON_2_BALL_STRAIGHT_DISTANCE = 156*ENCODER_TICKS_PER_INCH;
-	public static final double AUTON_1_BALL_STRAIGHT_DISTANCE = 36*ENCODER_TICKS_PER_INCH;
+	public static final double AUTON_2_BALL_STRAIGHT_DISTANCE = 124*ENCODER_TICKS_PER_INCH;
+    public static final double AUTON_1_BALL_STRAIGHT_DISTANCE = 36*ENCODER_TICKS_PER_INCH;
+    
+    public static final double AUTON_45_TURN_CENTER_DISTANCE = 96*ENCODER_TICKS_PER_INCH;
+    
     public static final double AUTON_2_BALL_RP_STRAIGHT_DISTANCE = 0;
     
+    public static final double AUTON_DRIVE_TO_1ST_BALL = 32*ENCODER_TICKS_PER_INCH;
 	public static final double AUTON_DRIVE_OFF_LINE_SPEED = .5;
     public static final double AUTON_DRIVE_OFF_LINE_DISTANCE = 12*ENCODER_TICKS_PER_INCH;
     

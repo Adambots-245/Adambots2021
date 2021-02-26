@@ -9,19 +9,17 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.LidarSubsystem;
+import frc.robot.sensors.Lidar;
 
 public class MeasureDistanceCommand extends CommandBase {
   /**
    * Creates a new MeasureDistanceCommand.
    */
-  private final LidarSubsystem lidarSubsystem;
+  private final Lidar lidar;
 
-  public MeasureDistanceCommand(LidarSubsystem lidarSubsystem) {
-    this.lidarSubsystem = lidarSubsystem;
+  public MeasureDistanceCommand(Lidar lidar) {
+    this.lidar = lidar;
     // Use addRequirements() here to declare subsystem dependencies.
-
-    addRequirements(this.lidarSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -32,9 +30,9 @@ public class MeasureDistanceCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("Distance: " + lidarSubsystem.getDistance());
-    SmartDashboard.putNumber("Distance (cm)", lidarSubsystem.getDistance());
-    SmartDashboard.putNumber("Distance (in)", lidarSubsystem.getInches());
+    System.out.println("Distance: " + lidar.getDistance());
+    SmartDashboard.putNumber("Distance (cm)", lidar.getDistance());
+    SmartDashboard.putNumber("Distance (in)", lidar.getInches());
   }
 
   // Called once the command ends or is interrupted.

@@ -8,23 +8,30 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import frc.robot.Constants;
+import frc.robot.sensors.Gyro;
+import frc.robot.utils.Log;
 
 public class GyroPIDSubsystem extends PIDSubsystem {
   /**
    * Creates a new GyroPIDSubsystem.
    */
-  static double kP = SmartDashboard.getNumber("kP", Constants.GYRO_kP);
-  static double kI = SmartDashboard.getNumber("kI", Constants.GYRO_kI);
-  static double kD = SmartDashboard.getNumber("kD", Constants.GYRO_kD);
-  GyroSubsystem gyroSubsystem;
+  static double kP = Constants.GYRO_kP;
+  static double kI = Constants.GYRO_kI;
+  static double kD = Constants.GYRO_kD;
+  
+  Gyro gyro;
+
   public GyroPIDSubsystem() {
     super(new PIDController(kP, kI, kD));
+  
     getController().setTolerance(Constants.GYRO_TOLERANCE);
     setSetpoint(0);
-    gyroSubsystem = GyroSubsystem.getInstance();
+  
+    gyro = Gyro.getInstance();
+
+    //Log.infoF("Initializing GyroPIDSubsystem - kP=%f, kI=%f, kD=%f", kP, kI, kD);
   }
 
   @Override
@@ -34,18 +41,15 @@ public class GyroPIDSubsystem extends PIDSubsystem {
     // Use the output here
   }
 
-  public GyroSubsystem getGyroSubsystem(){
-    return gyroSubsystem;
+  public Gyro getGyro(){
+    return gyro;
   }
 
   @Override
   public double getMeasurement() {
-    kP = SmartDashboard.getNumber("kP", Constants.GYRO_kP);
-    kI = SmartDashboard.getNumber("kI", Constants.GYRO_kI);
-    kD = SmartDashboard.getNumber("kD", Constants.GYRO_kD);
    
     // Return the process variable measurement here
-    return gyroSubsystem.getYaw();
+    return gyro.getYaw();
   }
 
   public boolean atSetpoint() {

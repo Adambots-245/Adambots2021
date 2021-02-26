@@ -17,6 +17,7 @@ import frc.robot.commands.IndexToBlasterCommand;
 import frc.robot.commands.LowerIntakeArmCommand;
 import frc.robot.commands.autonCommands.DriveForwardGyroDistanceCommand;
 import frc.robot.commands.autonCommands.TimedBlasterDistanceBasedCommand;
+import frc.robot.sensors.Lidar;
 import frc.robot.subsystems.*;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -27,17 +28,17 @@ public class NoTurnAuton extends SequentialCommandGroup {
    * Creates a new NoTurnAuton.
    */
   
-  public NoTurnAuton(TurretSubsystem turretSubsystem, DriveTrainSubsystem driveTrainSubsystem, ConveyorSubsystem conveyorSubsystem, IntakeSubsystem intakeSubsystem, LidarSubsystem lidarSubsystem, BlasterSubsystem blasterSubsystem, XboxController joystick) {
+  public NoTurnAuton(TurretSubsystem turretSubsystem, DriveTrainSubsystem driveTrainSubsystem, ConveyorSubsystem conveyorSubsystem, IntakeSubsystem intakeSubsystem, Lidar lidar, BlasterSubsystem blasterSubsystem, XboxController joystick) {
     // Add your commands in the super() call, e.g.
     // super(new FooCommand(), new BarCommand());
     super(
       new LowerIntakeArmCommand(intakeSubsystem),
       new DriveForwardGyroDistanceCommand(driveTrainSubsystem, Constants.AUTON_DRIVE_OFF_LINE_DISTANCE, Constants.AUTON_DRIVE_OFF_LINE_SPEED, 0, true),
       
-      new TimedBlasterDistanceBasedCommand(blasterSubsystem, lidarSubsystem, 2000),
+      new TimedBlasterDistanceBasedCommand(blasterSubsystem, lidar, 2000),
       
       new ParallelCommandGroup(
-        new BlasterDistanceBasedCommand(blasterSubsystem, lidarSubsystem, joystick),
+        new BlasterDistanceBasedCommand(blasterSubsystem, lidar, joystick),
         new IndexToBlasterCommand(intakeSubsystem),
         new ConveyorCommand(conveyorSubsystem, ()->-0.7)
       )

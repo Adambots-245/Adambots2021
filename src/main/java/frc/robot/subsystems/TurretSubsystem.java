@@ -13,23 +13,22 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.PWMVictorSPX;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.Constants;
+import frc.robot.utils.Log;
 
 public class TurretSubsystem extends PIDSubsystem {
 
-  private final VictorSPX turretMotor = new VictorSPX(Constants.TURRET_MOTOR_PORT); 
-  private DigitalInput leftLimitSwitch = new DigitalInput(Constants.TURRET_LEFT_DIO);
-  private DigitalInput rightLimitSwitch = new DigitalInput(Constants.TURRET_RIGHT_DIO);
+  private VictorSPX turretMotor; //= new VictorSPX(Constants.TURRET_MOTOR_PORT); 
+  private DigitalInput leftLimitSwitch; // = new DigitalInput(Constants.TURRET_LEFT_DIO);
+  private DigitalInput rightLimitSwitch; // = new DigitalInput(Constants.TURRET_RIGHT_DIO);
   
   
   private NetworkTable table;
   private double angleOffset = 5;
-  private StringBuilder results = new StringBuilder();
   //private final SimpleMotorFeedforward m_shooterFeedforward =
   //    new SimpleMotorFeedforward(ShooterConstants.kSVolts,
   //                               ShooterConstants.kVVoltSecondsPerRotation);
@@ -37,26 +36,34 @@ public class TurretSubsystem extends PIDSubsystem {
   /**
    * The shooter subsystem for the robot.
    */
-  public TurretSubsystem() {
+  public TurretSubsystem(VictorSPX turretMotor, DigitalInput leftLimitSwitch, DigitalInput rightLimitSwitch) {
     super(new PIDController(Constants.TURRET_kP, Constants.TURRET_kI, Constants.TURRET_kD));
     getController().setTolerance(Constants.TURRET_TOLERANCE);
     setSetpoint(Constants.TURRET_TARGET_ANGLE + angleOffset);
     // getController().setIntegratorRange(-0.05, 0.05);
     
+    this.turretMotor = turretMotor;
+    this.leftLimitSwitch = leftLimitSwitch;
+    this.rightLimitSwitch = rightLimitSwitch;
 
     NetworkTableInstance instance = NetworkTableInstance.getDefault();
     table = instance.getTable("Vision");
+
+    //Log.infoF("Initializing TurretSubsystem - kP=%f, kI=%f, kD=%f", Constants.TURRET_kP, Constants.TURRET_kI, Constants.TURRET_kD);
   }
 
   public void setAngleOffset(double calculatedOffset) {
     angleOffset = calculatedOffset;
     SmartDashboard.putNumber("angleOffset", angleOffset);
+
+    //Log.infoF("Setting Angle Offset to %f", angleOffset);
   }
 
   @Override
   public void useOutput(double output, double setpoint) {
     System.out.println("Output: " + output);
     System.out.println("Current Angle in Output: " + table.getEntry("Angle").getDouble(0));
+    //Log.info("Setpoint in useOutput: ", setpoint);
 
     Double measurement = getMeasurement();
     double calculatedOutput = getController().calculate(measurement, setpoint);
@@ -69,6 +76,8 @@ public class TurretSubsystem extends PIDSubsystem {
     SmartDashboard.putNumber("Turret Output", clampAbs);
     // SmartDashboard.putNumber("Turret Output", calculatedOutput);
     setSpeed(-calculatedOutput);  
+
+    //Log.infoF("Use Output - PIDOutput=%f, Setpoint=%f, Measurement=%f, PIDCalculatedOutput=%f, Speed=%f", output, setpoint, measurement, calculatedOutput, -calculatedOutput);
     // setSpeed(-clampAbs);  
   }
 
@@ -79,15 +88,18 @@ public class TurretSubsystem extends PIDSubsystem {
   }
 
   public boolean atSetpoint() {
-    System.out.println("At Set Point: " + m_controller.atSetpoint());
+    //Log.infoF("At Set Point: %b", m_controller.atSetpoint());
     return m_controller.atSetpoint();
   }
 
   public void runTurret(double speed) {
+
+    //Log.infoF("Running turret at Speed=%f", speed);
     setSpeed(speed);
   }
 
   public void stopTurret() {
+    //Log.info("Stopping Turret");
     setSpeed(Constants.STOP_MOTOR_SPEED);
   }
 
@@ -97,25 +109,44 @@ public class TurretSubsystem extends PIDSubsystem {
 
   public void changeOffset(double value) {
     angleOffset += value;
+
+    //Log.infoF("Changing angle offset = %f", angleOffset);
+    //Log.infoF("Changing setpoint = %f", Constants.TURRET_TARGET_ANGLE + angleOffset);
     setSetpoint(Constants.TURRET_TARGET_ANGLE + angleOffset);
   }
 
   public void setSpeed(double speed){
     if (!leftLimitSwitch.get()) {
-      if (speed < 0)
+      if (speed < 0){
+        //Log.infoF("Stopping motor - speed = %f", speed);
+
         turretMotor.set(ControlMode.PercentOutput, Constants.STOP_MOTOR_SPEED);
-      else
+      }
+      else{
+       
+        //Log.infoF("Setting speed = %f", speed);
+
         turretMotor.set(ControlMode.PercentOutput, speed);
+      }
       
     } else if (!rightLimitSwitch.get()) {
-      if (speed > 0)
-        turretMotor.set(ControlMode.PercentOutput, Constants.STOP_MOTOR_SPEED);
-      else
-        turretMotor.set(ControlMode.PercentOutput, speed);
+      if (speed > 0){
+        //Log.infoF("Stopping motor - speed = %f", speed);
 
+        turretMotor.set(ControlMode.PercentOutput, Constants.STOP_MOTOR_SPEED);
+      }
+      else {
+        //Log.infoF("Setting speed = %f", speed);
+        
+        turretMotor.set(ControlMode.PercentOutput, speed);
+      }
     } else {
-      turretMotor.set(ControlMode.PercentOutput, speed);
+        //Log.infoF("Setting speed = %f", speed);
+        
+        turretMotor.set(ControlMode.PercentOutput, speed);
     }
+
+    //Log.infoF("Set Speed: %f - %f", speed, turretMotor.getMotorOutputVoltage());
   }
 
 

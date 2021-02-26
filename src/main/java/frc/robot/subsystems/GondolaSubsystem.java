@@ -11,22 +11,24 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.utils.Log;
 
 public class GondolaSubsystem extends SubsystemBase {
   /**
    * Creates a new GondolaSubsystem.
    */
-  public static WPI_VictorSPX gondola;
+  public WPI_VictorSPX gondolaMotor;
 
-  public GondolaSubsystem() {
+  public GondolaSubsystem(WPI_VictorSPX gondolaMotor) {
     super();
 
-    gondola = new WPI_VictorSPX(Constants.CLIMBING_GONDOLA_ADJUSTMENT_MOTOR_PORT);
-
+    this.gondolaMotor = gondolaMotor; //new WPI_VictorSPX(Constants.CLIMBING_GONDOLA_ADJUSTMENT_MOTOR_PORT);
+    Log.info("Initializing Gondola");
   }
+
   public void gondola(double speed) {
-    gondola.set(ControlMode.PercentOutput, speed);
+    //Log.infoF("Operating gondola - Speed: %f", speed);
+    gondolaMotor.set(ControlMode.PercentOutput, speed);
 }
 
   @Override

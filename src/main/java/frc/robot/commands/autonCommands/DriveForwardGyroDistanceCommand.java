@@ -10,9 +10,9 @@ package frc.robot.commands.autonCommands;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.sensors.Gyro;
 import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.subsystems.GyroPIDSubsystem;
-import frc.robot.subsystems.GyroSubsystem;
 
 public class DriveForwardGyroDistanceCommand extends CommandBase {
   /**
@@ -22,7 +22,7 @@ public class DriveForwardGyroDistanceCommand extends CommandBase {
   double distance;
   double speed;
   private GyroPIDSubsystem gyroPIDSubsystem;
-  private GyroSubsystem gyroSubsystem;
+  private Gyro gyro;
   private double targetAngle;
   private boolean resetGyro = true;
 
@@ -36,7 +36,7 @@ public class DriveForwardGyroDistanceCommand extends CommandBase {
     this.targetAngle = targetAngle;
 
     gyroPIDSubsystem = new GyroPIDSubsystem();
-    gyroSubsystem = GyroSubsystem.getInstance();
+    gyro = Gyro.getInstance();
     addRequirements(driveTrain);
 
   }
@@ -50,7 +50,7 @@ public class DriveForwardGyroDistanceCommand extends CommandBase {
   @Override
   public void initialize() {
     if (resetGyro) {
-      gyroSubsystem.reset();
+      gyro.reset();
     }
     driveTrain.resetEncoders();
   }
@@ -59,8 +59,8 @@ public class DriveForwardGyroDistanceCommand extends CommandBase {
   @Override
   public void execute() {
     double turnSpeed = gyroPIDSubsystem.getController().calculate(gyroPIDSubsystem.getMeasurement(), targetAngle);
-    // System.out.println("executing DFGDC");
-    SmartDashboard.putNumber("yaw", gyroSubsystem.getYaw());
+    System.out.println("executing DFGDC");
+    SmartDashboard.putNumber("yaw", gyro.getYaw());
     // SmartDashboard.putNumber("yaw",gyroPIDSubsystem.getGyroSubsystem().getYaw());
     SmartDashboard.putNumber("gyroPIDSubsystem.getMeasurement()", gyroPIDSubsystem.getMeasurement());
 

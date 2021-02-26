@@ -9,10 +9,9 @@ package frc.robot.commands.autonCommands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
+import frc.robot.sensors.Gyro;
 import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.subsystems.GyroPIDSubsystem;
-import frc.robot.subsystems.GyroSubsystem;
 
 public class TurnToAngleCommand extends CommandBase {
   /**
@@ -21,7 +20,7 @@ public class TurnToAngleCommand extends CommandBase {
   DriveTrainSubsystem driveTrain;
   double speed;
   private GyroPIDSubsystem gyroPIDSubsystem;
-  private GyroSubsystem gyroSubsystem;
+  private Gyro gyro;
   private double targetAngle;
   private boolean resetGyro = true;
 
@@ -35,7 +34,7 @@ public class TurnToAngleCommand extends CommandBase {
     this.targetAngle = targetAngle;
 
     gyroPIDSubsystem = new GyroPIDSubsystem();
-    gyroSubsystem = GyroSubsystem.getInstance();
+    gyro = Gyro.getInstance();
     addRequirements(driveTrain);
 
   }
@@ -49,7 +48,7 @@ public class TurnToAngleCommand extends CommandBase {
   @Override
   public void initialize() {
     if (resetGyro) {
-      gyroSubsystem.reset();
+      gyro.reset();
     }
     driveTrain.resetEncoders();
   }
@@ -59,7 +58,7 @@ public class TurnToAngleCommand extends CommandBase {
   public void execute() {
     double turnSpeed = gyroPIDSubsystem.getController().calculate(gyroPIDSubsystem.getMeasurement(), targetAngle);
     System.out.println("executing turn to angle");
-    SmartDashboard.putNumber("yaw", gyroSubsystem.getYaw());
+    SmartDashboard.putNumber("yaw", gyro.getYaw());
     // SmartDashboard.putNumber("yaw",gyroPIDSubsystem.getGyroSubsystem().getYaw());
     SmartDashboard.putNumber("gyroPIDSubsystem.getMeasurement()", gyroPIDSubsystem.getMeasurement());
 
