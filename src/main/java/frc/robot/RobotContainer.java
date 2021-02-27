@@ -160,8 +160,9 @@ public class RobotContainer {
     // SharkMacro controls
     // * * * * * * * * * * * * * * * 
 
-    Buttons.primaryStartButton.whenPressed((Command) new ToggleRecordingCommand(driveTrainSubsystem));
+    Buttons.primaryStartButton.whenReleased(new ToggleRecordingCommand(driveTrainSubsystem));
 
+    Buttons.primaryBackButton.whenReleased(new ToggleActionRecordingCommand(driveTrainSubsystem));
 
 
 

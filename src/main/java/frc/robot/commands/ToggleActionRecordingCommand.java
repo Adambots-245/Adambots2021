@@ -5,15 +5,12 @@ import frc.robot.Constants;
 import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.utils.Log;
 
-public class ToggleRecordingCommand extends CommandBase {
+public class ToggleActionRecordingCommand extends CommandBase {
     
     private DriveTrainSubsystem driveTrainSubsystem;
 
-    public ToggleRecordingCommand(DriveTrainSubsystem driveTrainSubsystem) {
-
+    public ToggleActionRecordingCommand(DriveTrainSubsystem driveTrainSubsystem) {
         super();
-		// Use requires() here to declare subsystem dependencies
-        // eg. requires(chassis);
         this.driveTrainSubsystem = driveTrainSubsystem;
     }
 
@@ -33,8 +30,7 @@ public class ToggleRecordingCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        Log.info("ToggleRecordingCommand.isFinished()!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        Log.info("ToggleActionRecordingCommand.isFinished()!!!!!!!!!!!!!!!!!!!!!!");
         return true;
     }
-
 }

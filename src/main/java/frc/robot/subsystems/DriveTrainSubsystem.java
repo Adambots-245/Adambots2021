@@ -14,6 +14,7 @@ import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -23,6 +24,8 @@ import frc.robot.utils.Log;
 
 import frc.robot.sharkmacro.motionprofiles.*;
 import frc.robot.sharkmacro.motionprofiles.ProfileRecorder.RecordingType;
+import frc.robot.sharkmacro.actions.ActionListParser;
+import frc.robot.sharkmacro.actions.ActionRecorder;
 
 public class DriveTrainSubsystem extends SubsystemBase {
   /**
@@ -187,4 +190,22 @@ public class DriveTrainSubsystem extends SubsystemBase {
   }
 
   }
+
+  // Start SharkMacro ActionList recording
+  public void toggleActionListRecording() {
+		if (ActionRecorder.isRecording()) {
+			ActionListParser al = new ActionListParser(ActionListParser.getNewFilename());
+			al.writeToFile(ActionRecorder.stop());
+			System.out.println("ActionList saved.");
+		} else {
+			Timer.delay(0.2);
+			ActionRecorder.start();
+			System.out.println("ActionList recording started.");
+		}
+	}
+
+  // Needed for SharkMacro playback
+  public WPI_TalonFX[] getMotionProfileTalons() {
+		return new WPI_TalonFX[] { frontLeftMotor, frontRightMotor };
+	}
 }
