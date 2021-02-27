@@ -156,6 +156,15 @@ public class RobotContainer {
       SmartDashboard.putData("trench 35 foot blaster velocity", new BlasterConstantOutputCommand(blasterSubsystem, RobotMap.LidarSensor, Constants.TRENCH_SHOOTER_VELOCITY));
       SmartDashboard.putData(new IndexToBlasterCommand(intakeSubsystem));
 
+    // * * * * * * * * * * * * * * *
+    // SharkMacro controls
+    // * * * * * * * * * * * * * * * 
+
+    Buttons.primaryStartButton.whenPressed((Command) new ToggleRecordingCommand(driveTrainSubsystem));
+
+
+
+
     // mode switching 
       // startIntakeCommand.addRequirements(elevatorSubsystem, conveyorSubsystem, alignmentBeltSubsystem);
       //secondaryBackButton.whenPressed(startIntakeCommand);

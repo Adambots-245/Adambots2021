@@ -43,6 +43,8 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
   private boolean hasGyroBeenReset = false;
 
+  ProfileRecorder recorder;
+
   public DriveTrainSubsystem(Gyro gyro, Solenoid gearShifter, WPI_TalonFX frontRightMotor, WPI_TalonFX frontLeftMotor, WPI_TalonFX backLeftMotor, WPI_TalonFX backRightMotor) {
     super();
 
@@ -83,6 +85,8 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
     frontLeftMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 5, 0);
     frontRightMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 5, 0);
+    
+    recorder = new ProfileRecorder(frontLeftMotor, frontRightMotor, RecordingType.VOLTAGE);
     // End of SharkMacro things
 
     drive = new DifferentialDrive(frontLeftMotor, frontRightMotor);
@@ -168,10 +172,19 @@ public class DriveTrainSubsystem extends SubsystemBase {
   }
 
   // Start SharkMacro recording
-  public void toggleRecording() {
+  public void toggleProfileRecording() {
 
-    ProfileRecorder recorder = new ProfileRecorder(frontLeftMotor, frontRightMotor, RecordingType.VOLTAGE);
-    recorder.start();
+    if (recorder.isRecording()) {
+      ProfileParser p = new ProfileParser(ProfileParser.getNewFilename());
+      p.writeToFile(recorder.stop().toProfile());
+      Log.info("Recording saved.");
+  } else {
+      // Zero both encoders before recording
+      frontLeftMotor.setSelectedSensorPosition(0, 0, 0);
+      frontRightMotor.setSelectedSensorPosition(0, 0, 0);
+      recorder.start();
+      Log.info("Recording started...");
+  }
 
   }
 }
