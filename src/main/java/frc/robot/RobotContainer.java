@@ -21,6 +21,7 @@ import frc.robot.Gamepad.GamepadConstants;
 
 import frc.robot.commands.*;
 import frc.robot.commands.autonCommands.*;
+import frc.robot.commands.autonCommands.autonCommandGroups.BarrelPathAuton;
 import frc.robot.commands.autonCommands.autonCommandGroups.CrossBaseline;
 import frc.robot.commands.autonCommands.autonCommandGroups.NerdsAuton;
 import frc.robot.commands.autonCommands.autonCommandGroups.NoTurnAuton;
@@ -249,7 +250,9 @@ public class RobotContainer {
     // return autonDriveForwardGyroDistanceCommand;
     // return new  DriveForwardGyroDistanceCommand(driveTrainSubsystem, 0, 0, 0, true).andThen(new DriveForwardGyroDistanceCommand(driveTrainSubsystem, 3500*48, -.75, 0, true)).andThen(new DriveForwardGyroDistanceCommand(driveTrainSubsystem, 3500*84, -.5, 90, false));
     // return autonTurn90DegreeCommand.andThen(new WaitCommand(3)).andThen(new TurnToAngleCommand(driveTrainSubsystem, 0.5, -45, false));
-    System.out.println(autoChooser.getSelected());
-    return autoChooser.getSelected();
+    // System.out.println(autoChooser.getSelected());
+    // return autoChooser.getSelected();
+
+    return new BarrelPathAuton(driveTrainSubsystem);
   }
 }
