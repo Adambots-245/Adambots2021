@@ -6,7 +6,7 @@ import com.ctre.phoenix.motion.MotionProfileStatus;
 import com.ctre.phoenix.motion.SetValueMotionProfile;
 import com.ctre.phoenix.motion.TrajectoryPoint;
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
@@ -41,7 +41,7 @@ public class ProfileHandler {
 	/**
 	 * Talons to be used for motion profile execution.
 	 */
-	private TalonSRX[] talons;
+	private WPI_TalonFX[] talons;
 
 	/**
 	 * Object that takes a runnable class and starts a new thread to call its
@@ -96,7 +96,7 @@ public class ProfileHandler {
 	 * @param pidSlotIdxs
 	 *            the pid profile slots to execute the motion profiles with
 	 */
-	public ProfileHandler(final double[][][] profiles, TalonSRX[] talons, int[] pidSlotIdxs) {
+	public ProfileHandler(final double[][][] profiles, WPI_TalonFX[] talons, int[] pidSlotIdxs) {
 		this.profiles = profiles;
 		this.talons = talons;
 		this.pidSlotIdxs = pidSlotIdxs;

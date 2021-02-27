@@ -14,6 +14,7 @@ import java.util.List;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
+import com.opencsv.exceptions.CsvException;
 
 import edu.wpi.first.wpilibj.DriverStation;
 
@@ -190,10 +191,10 @@ public abstract class Parser {
 			reader = new CSVReader(new FileReader(filename));
 			rawFile = reader.readAll();
 			reader.close();
-		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
-		} catch (IOException e) {
+		} catch (CsvException e) {
 			e.printStackTrace();
 			return null;
 		}

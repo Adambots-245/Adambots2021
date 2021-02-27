@@ -2,7 +2,7 @@ package frc.robot.sharkmacro.motionprofiles;
 
 import java.util.Arrays;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.DriverStation;
 
@@ -34,12 +34,12 @@ public class Profile {
 	/**
 	 * the Talon to execute the left profile with
 	 */
-	private TalonSRX leftTalon;
+	private WPI_TalonFX leftTalon;
 
 	/**
 	 * the Talon to execute the right profile with
 	 */
-	private TalonSRX rightTalon;
+	private WPI_TalonFX rightTalon;
 
 	/**
 	 * The left motion profile.
@@ -63,7 +63,7 @@ public class Profile {
 	 * @param rightTalon
 	 *            the Talon to execute the right profile with
 	 */
-	public Profile(double[][] leftProfile, double[][] rightProfile, TalonSRX leftTalon, TalonSRX rightTalon,
+	public Profile(double[][] leftProfile, double[][] rightProfile, WPI_TalonFX leftTalon, WPI_TalonFX rightTalon,
 			int leftPidSlotIdx, int rightPidSlotIdx) {
 		this.leftProfile = leftProfile;
 		this.rightProfile = rightProfile;
@@ -73,7 +73,7 @@ public class Profile {
 		this.dt = (int) this.leftProfile[0][2];
 
 		handler = new ProfileHandler(new double[][][] { leftProfile, rightProfile },
-				new TalonSRX[] { leftTalon, rightTalon }, new int[] { leftPidSlotIdx, rightPidSlotIdx });
+				new WPI_TalonFX[] { leftTalon, rightTalon }, new int[] { leftPidSlotIdx, rightPidSlotIdx });
 	}
 
 	/**
@@ -90,7 +90,7 @@ public class Profile {
 	 * @param rightTalon
 	 *            the Talon to execute the right profile with
 	 */
-	public Profile(String[][] leftProfile, String[][] rightProfile, TalonSRX leftTalon, TalonSRX rightTalon,
+	public Profile(String[][] leftProfile, String[][] rightProfile, WPI_TalonFX leftTalon, WPI_TalonFX rightTalon,
 			int leftPidSlotIdx, int rightPidSlotIdx) {
 		this.leftProfile = toDoubleArray(leftProfile);
 		this.rightProfile = toDoubleArray(rightProfile);
@@ -100,7 +100,7 @@ public class Profile {
 		this.dt = (int) this.leftProfile[0][2];
 
 		handler = new ProfileHandler(new double[][][] { this.leftProfile, this.rightProfile },
-				new TalonSRX[] { leftTalon, rightTalon }, new int[] { leftPidSlotIdx, rightPidSlotIdx });
+				new WPI_TalonFX[] { leftTalon, rightTalon }, new int[] { leftPidSlotIdx, rightPidSlotIdx });
 
 	}
 

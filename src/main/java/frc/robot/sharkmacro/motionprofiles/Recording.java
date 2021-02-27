@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import frc.robot.sharkmacro.Constants;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 /**
  * Intermediary class that represents a raw recording of a motion profile.
@@ -22,12 +22,12 @@ public class Recording {
 	/**
 	 * Left Talon to pass to the {@link Profile} generated in {@link #toProfile()}.
 	 */
-	private TalonSRX leftTalon;
+	private WPI_TalonFX leftTalon;
 
 	/**
 	 * Right Talon to pass to the {@link Profile} generated in {@link #toProfile()}.
 	 */
-	private TalonSRX rightTalon;
+	private WPI_TalonFX rightTalon;
 
 	/**
 	 * Constructs a new {@link Recording} object.
@@ -41,7 +41,7 @@ public class Recording {
 	 *            Talon used to record right position and velocity, passed from
 	 *            {@link ProfileRecorder#stop()}
 	 */
-	public Recording(ArrayList<ArrayList<Double>> recordings, TalonSRX leftTalon, TalonSRX rightTalon) {
+	public Recording(ArrayList<ArrayList<Double>> recordings, WPI_TalonFX leftTalon, WPI_TalonFX rightTalon) {
 		this.recordings = recordings;
 		this.leftTalon = leftTalon;
 		this.rightTalon = rightTalon;

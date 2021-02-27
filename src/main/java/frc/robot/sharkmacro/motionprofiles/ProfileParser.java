@@ -6,7 +6,7 @@ import java.util.List;
 import frc.robot.sharkmacro.Constants;
 import frc.robot.sharkmacro.Parser;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.DriverStation;
 
@@ -64,7 +64,7 @@ public final class ProfileParser extends Parser {
 	 * 
 	 * @return a new {@code Profile} instance
 	 */
-	public Profile toObject(TalonSRX leftTalon, TalonSRX rightTalon, int leftPidSlotIdx, int rightPidSlotIdx) {
+	public Profile toObject(WPI_TalonFX leftTalon, WPI_TalonFX rightTalon, int leftPidSlotIdx, int rightPidSlotIdx) {
 		List<String[]> profileRaw = readFromFile();
 
 		if (profileRaw == null) {

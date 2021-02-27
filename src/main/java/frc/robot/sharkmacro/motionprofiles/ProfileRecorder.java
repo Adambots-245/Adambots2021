@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import frc.robot.sharkmacro.Constants;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.Notifier;
 
@@ -29,7 +29,7 @@ public class ProfileRecorder {
 	/**
 	 * An array of the Talons being recorded.
 	 */
-	private final TalonSRX[] talons;
+	private final WPI_TalonFX[] talons;
 
 	/**
 	 * Holds the recorded positions of the left Talon.
@@ -76,8 +76,8 @@ public class ProfileRecorder {
 	 * @param recordingType
 	 *            the type of data that will be recorded, either voltage or velocity
 	 */
-	public ProfileRecorder(TalonSRX left, TalonSRX right, RecordingType recordingType) {
-		talons = new TalonSRX[] { left, right };
+	public ProfileRecorder(WPI_TalonFX left, WPI_TalonFX right, RecordingType recordingType) {
+		talons = new WPI_TalonFX[] { left, right };
 		thread = new Notifier(new PeriodicRunnable());
 		this.recordingType = recordingType;
 	}

@@ -21,8 +21,8 @@ import frc.robot.Constants;
 import frc.robot.sensors.Gyro;
 import frc.robot.utils.Log;
 
-import org.hammerhead226.sharkmacro.motionprofiles.*;
-import org.hammerhead226.sharkmacro.motionprofiles.ProfileRecorder.RecordingType;
+import frc.robot.sharkmacro.motionprofiles.*;
+import frc.robot.sharkmacro.motionprofiles.ProfileRecorder.RecordingType;
 
 public class DriveTrainSubsystem extends SubsystemBase {
   /**
