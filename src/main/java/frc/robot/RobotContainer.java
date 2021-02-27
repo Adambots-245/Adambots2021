@@ -164,6 +164,8 @@ public class RobotContainer {
 
     Buttons.primaryBackButton.whenReleased(new ToggleActionRecordingCommand(driveTrainSubsystem));
 
+    Buttons.primaryLeftStickButton.whenReleased(new ExecuteMacroCommand(driveTrainSubsystem, "profile0001.csv"));
+
 
 
     // mode switching 

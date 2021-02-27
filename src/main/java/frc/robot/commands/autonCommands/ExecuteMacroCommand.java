@@ -10,9 +10,9 @@ import frc.robot.RobotMap;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class ExecuteMacroCommand extends Command {
+public class ExecuteMacroCommand extends CommandBase {
     
     private Profile profileToExecute;
 	private ActionList actionListToExecute;
@@ -44,21 +44,21 @@ public class ExecuteMacroCommand extends Command {
 		ActionListParser alParser;
 		
 		name = (name == null) ? ProfileParser.getNewestFilename() : name;
-		alName = (alName == null) ? ActionListParser.getNewestFilename() : alName;
+		//alName = (alName == null) ? ActionListParser.getNewestFilename() : alName;
 
 		
     	pParser = new ProfileParser(name);
-		alParser = new ActionListParser(alName);
+		//alParser = new ActionListParser(alName);
 		System.out.println("Executing profile... " + name);
-		System.out.println("Executing ActionList... " + alName);
+		//System.out.println("Executing ActionList... " + alName);
 		
 		profileToExecute = pParser.toObject(talons[0], talons[1], Constants.DRIVE_PID_SLOT, Constants.DRIVE_PID_SLOT);
-		actionListToExecute = alParser.toObject();
+		//actionListToExecute = alParser.toObject();
 		profileToExecute.execute();
-		actionListToExecute.execute();
+		//actionListToExecute.execute();
 		
 		name = hasName ? name : null;
-		alName = hasName ? alName : null;
+		//alName = hasName ? alName : null;
     }
 
     public void execute() {
