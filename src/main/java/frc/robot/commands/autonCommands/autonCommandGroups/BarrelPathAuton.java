@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
+import frc.robot.commands.autonCommands.DriveForwardDistanceCommand;
 import frc.robot.commands.autonCommands.DriveForwardGyroDistanceCommand;
 import frc.robot.commands.autonCommands.TurnToAngleCommand;
 import frc.robot.subsystems.DriveTrainSubsystem;
@@ -21,18 +22,64 @@ public class BarrelPathAuton extends SequentialCommandGroup {
     super(
 
         // new ParallelCommandGroup( // deadline because it should move on after it has reached the position
-          new DriveForwardGyroDistanceCommand(driveTrainSubsystem, Constants.ENCODER_TICKS_PER_INCH * 125, -0.75, 0, true),
-            new TurnToAngleCommand(driveTrainSubsystem, 0.35, 90, false),
-              new DriveForwardGyroDistanceCommand(driveTrainSubsystem, Constants.ENCODER_TICKS_PER_INCH * 45, -0.75, 0, false),
-                 new TurnToAngleCommand(driveTrainSubsystem, 0.35, 90, false),
-                  new DriveForwardGyroDistanceCommand(driveTrainSubsystem, Constants.ENCODER_TICKS_PER_INCH * 45, -0.75, 0, false),
-                     new TurnToAngleCommand(driveTrainSubsystem, 0.35, 90, false),
-                     new DriveForwardGyroDistanceCommand(driveTrainSubsystem, Constants.ENCODER_TICKS_PER_INCH * 45, -0.75, 0, false),
-                     new TurnToAngleCommand(driveTrainSubsystem, 0.35, 90, false),
-                       new DriveForwardGyroDistanceCommand(driveTrainSubsystem, Constants.ENCODER_TICKS_PER_INCH * 145, -0.75, 0, false)
-                  
+          
+        // DRIVE TO D5
+        driveForward(driveTrainSubsystem, 125, true),
+            
+        // LOOP AROUND D5
+        loopRight(driveTrainSubsystem),
+        
+        // DRIVE TO B8
+        driveForward(driveTrainSubsystem, 140, false),
+        
+        // LOOP AROUND B8
+        loopLeft(driveTrainSubsystem),
+
+        // DRIVE to D10
+        turn(driveTrainSubsystem, -45),
+        driveForward(driveTrainSubsystem, 40, false)
+
+        // LOOP AROUND D10
+
               //  )
 
     );
   }
+
+  public static DriveForwardGyroDistanceCommand driveForward(DriveTrainSubsystem driveTrainSubsystem, double distance, boolean initial) {
+    return new DriveForwardGyroDistanceCommand(driveTrainSubsystem, Constants.ENCODER_TICKS_PER_INCH * distance, -0.75, 0, initial);
+  }
+
+  public static DriveForwardGyroDistanceCommand driveBackward(DriveTrainSubsystem driveTrainSubsystem, double distance) {
+    return new DriveForwardGyroDistanceCommand(driveTrainSubsystem, Constants.ENCODER_TICKS_PER_INCH * distance, 0.75, 0, false);
+  }
+
+  public static TurnToAngleCommand turn(DriveTrainSubsystem driveTrainSubsystem, double angle) {
+    return new TurnToAngleCommand(driveTrainSubsystem, 0.35, angle, false);
+  }
+
+  public static SequentialCommandGroup loopRight(DriveTrainSubsystem driveTrainSubsystem) {
+    return new SequentialCommandGroup(
+        turn(driveTrainSubsystem, 90),
+        driveForward(driveTrainSubsystem, 45, false),
+        turn(driveTrainSubsystem, 90),
+        driveForward(driveTrainSubsystem, 45, false),
+        turn(driveTrainSubsystem, 90),
+        driveForward(driveTrainSubsystem, 45, false),
+        turn(driveTrainSubsystem, 90)
+    );
+  }
+
+  public static SequentialCommandGroup loopLeft(DriveTrainSubsystem driveTrainSubsystem) {
+    return new SequentialCommandGroup(
+        turn(driveTrainSubsystem, -90),
+        driveForward(driveTrainSubsystem, 45, false),
+        turn(driveTrainSubsystem, -90),
+        driveForward(driveTrainSubsystem, 45, false),
+        turn(driveTrainSubsystem, -90),
+        driveForward(driveTrainSubsystem, 45, false),
+        turn(driveTrainSubsystem, -90)
+    );
+  }
+
 }
