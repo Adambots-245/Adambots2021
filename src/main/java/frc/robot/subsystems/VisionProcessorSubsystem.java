@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
-
+/*
 public class VisionProcessorSubsystem extends SubsystemBase {
 
     private static UsbCamera camera;
@@ -182,4 +182,4 @@ public class VisionProcessorSubsystem extends SubsystemBase {
         return visionThread;
     }
 
-}
+}*/

@@ -29,7 +29,7 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  private VisionProcessorSubsystem vision;
+  //private VisionProcessorSubsystem vision;
   private Thread visionThread;
 
   /**
@@ -41,11 +41,11 @@ public class Robot extends TimedRobot {
     
     if (Robot.isReal()) {
       // Starts vision thread only if not running in simulation mode
-      // Vision System calculates the angle to the target and posts it to the NetworkTable
+      /*// Vision System calculates the angle to the target and posts it to the NetworkTable
       vision = new VisionProcessorSubsystem(RobotMap.RingLight, new GripPipeline());
       visionThread = vision.getVisionThread();
       visionThread.setDaemon(true);
-      visionThread.start();
+      visionThread.start();*/
     }
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
@@ -68,7 +68,7 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     
     if (Robot.isReal()) {
-      SmartDashboard.putNumber("ANGLE", vision.getAngle());
+      //SmartDashboard.putNumber("ANGLE", vision.getAngle());
     }
     // newly-scheduled
     // commands, running already-scheduled commands, removing finished or
