@@ -30,6 +30,7 @@ public class BarrelPathAuton extends SequentialCommandGroup {
         loopRight(driveTrainSubsystem),
         
         // DRIVE TO B8
+        turn(driveTrainSubsystem, 90),
         driveForward(driveTrainSubsystem, 140, false),
         
         // LOOP AROUND B8
@@ -37,9 +38,19 @@ public class BarrelPathAuton extends SequentialCommandGroup {
 
         // DRIVE to D10
         turn(driveTrainSubsystem, -45),
-        driveForward(driveTrainSubsystem, 40, false)
+        driveForward(driveTrainSubsystem, 40, false),
+        turn(driveTrainSubsystem, -45),
+        driveForward(driveTrainSubsystem, 40, false),
 
-        // LOOP AROUND D10
+        // HALF-LOOP AROUND D10
+        turn(driveTrainSubsystem, -90),
+        driveForward(driveTrainSubsystem, 45, false),
+        turn(driveTrainSubsystem, -90),
+
+        // RETURN TO START/FINISH ZONE
+        driveForward(driveTrainSubsystem, 180, false)
+
+        //
 
               //  )
 
@@ -65,8 +76,7 @@ public class BarrelPathAuton extends SequentialCommandGroup {
         turn(driveTrainSubsystem, 90),
         driveForward(driveTrainSubsystem, 45, false),
         turn(driveTrainSubsystem, 90),
-        driveForward(driveTrainSubsystem, 45, false),
-        turn(driveTrainSubsystem, 90)
+        driveForward(driveTrainSubsystem, 45, false)
     );
   }
 
@@ -77,8 +87,7 @@ public class BarrelPathAuton extends SequentialCommandGroup {
         turn(driveTrainSubsystem, -90),
         driveForward(driveTrainSubsystem, 45, false),
         turn(driveTrainSubsystem, -90),
-        driveForward(driveTrainSubsystem, 45, false),
-        turn(driveTrainSubsystem, -90)
+        driveForward(driveTrainSubsystem, 45, false)
     );
   }
 
