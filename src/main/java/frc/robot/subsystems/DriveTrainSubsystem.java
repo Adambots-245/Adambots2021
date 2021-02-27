@@ -10,7 +10,9 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,6 +20,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.sensors.Gyro;
 import frc.robot.utils.Log;
+
+import org.hammerhead226.sharkmacro.motionprofiles.*;
+import org.hammerhead226.sharkmacro.motionprofiles.ProfileRecorder.RecordingType;
 
 public class DriveTrainSubsystem extends SubsystemBase {
   /**
@@ -68,6 +73,17 @@ public class DriveTrainSubsystem extends SubsystemBase {
     frontRightMotor.setNeutralMode(NeutralMode.Brake);
     backLeftMotor.setNeutralMode(NeutralMode.Brake);
     backRightMotor.setNeutralMode(NeutralMode.Brake);
+
+    // SharkMacro setup
+    frontLeftMotor.configMotionProfileTrajectoryPeriod(0, 0);
+    frontRightMotor.configMotionProfileTrajectoryPeriod(0, 0);
+
+    frontLeftMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, Constants.DRIVE_PID_SLOT, 0);
+    frontRightMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, Constants.DRIVE_PID_SLOT, 0);
+
+    frontLeftMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 5, 0);
+    frontRightMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 5, 0);
+    // End of SharkMacro things
 
     drive = new DifferentialDrive(frontLeftMotor, frontRightMotor);
 
@@ -149,5 +165,13 @@ public class DriveTrainSubsystem extends SubsystemBase {
     Log.info("Gyro has been reset");
 
     resetGyro(false);
+  }
+
+  // Start SharkMacro recording
+  public void toggleRecording() {
+
+    ProfileRecorder recorder = new ProfileRecorder(frontLeftMotor, frontRightMotor, RecordingType.VOLTAGE);
+    recorder.start();
+
   }
 }
