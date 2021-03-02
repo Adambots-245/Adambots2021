@@ -7,6 +7,7 @@ import frc.robot.sharkmacro.motionprofiles.ProfileParser;
 import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
+import frc.robot.utils.Log;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
@@ -46,7 +47,7 @@ public class ExecuteMacroCommand extends CommandBase {
 		name = (name == null) ? ProfileParser.getNewestFilename() : name;
 		//alName = (alName == null) ? ActionListParser.getNewestFilename() : alName;
 
-		
+		Log.info("Creating ProfileParser object inside ExecuteMacroCommand using name: " + name); // d E b u G g i N G
     	pParser = new ProfileParser(name);
 		//alParser = new ActionListParser(alName);
 		System.out.println("Executing profile... " + name);
