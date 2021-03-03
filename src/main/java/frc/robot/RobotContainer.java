@@ -29,6 +29,7 @@ import frc.robot.commands.autonCommands.autonCommandGroups.Nom2Turn45Yeet5;
 import frc.robot.commands.autonCommands.autonCommandGroups.Nom2Yeet5;
 import frc.robot.commands.autonCommands.autonCommandGroups.PushNom2Yeet5;
 import frc.robot.commands.autonCommands.autonCommandGroups.PushNom2Yeet5Nom1;
+import frc.robot.commands.autonCommands.autonCommandGroups.SlalomPathAuton;
 import frc.robot.commands.autonCommands.autonCommandGroups.SnagNYeetCommandGroup;
 import frc.robot.commands.autonCommands.autonCommandGroups.Yeet3;
 import frc.robot.commands.autonCommands.autonCommandGroups.Yeet3FinalsAuton;
@@ -254,5 +255,6 @@ public class RobotContainer {
     // return autoChooser.getSelected();
 
     return new BarrelPathAuton(driveTrainSubsystem);
+    // return new SlalomPathAuton(driveTrainSubsystem);
   }
 }

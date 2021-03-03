@@ -11,6 +11,7 @@ import frc.robot.Constants;
 import frc.robot.commands.autonCommands.DriveForwardDistanceCommand;
 import frc.robot.commands.autonCommands.DriveForwardGyroDistanceCommand;
 import frc.robot.commands.autonCommands.TurnToAngleCommand;
+import frc.robot.sensors.Gyro;
 import frc.robot.subsystems.DriveTrainSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -19,6 +20,7 @@ import frc.robot.subsystems.DriveTrainSubsystem;
 public class BarrelPathAuton extends SequentialCommandGroup {
   /** Creates a new BarrelPathAuton. */
   public BarrelPathAuton(DriveTrainSubsystem driveTrainSubsystem) {
+    
     super(
 
         // new ParallelCommandGroup( // deadline because it should move on after it has reached the position
@@ -31,24 +33,24 @@ public class BarrelPathAuton extends SequentialCommandGroup {
         
         // DRIVE TO B8
         turn(driveTrainSubsystem, 90),
-        driveForward(driveTrainSubsystem, 145, false),
+        driveForward(driveTrainSubsystem, 135, true),
         
         // LOOP AROUND B8
         loopLeft(driveTrainSubsystem),
 
         // DRIVE to D10
         turn(driveTrainSubsystem, -45),
-        driveForward(driveTrainSubsystem, 40, false),
+        driveForward(driveTrainSubsystem, 40, true),
         turn(driveTrainSubsystem, -45),
-        driveForward(driveTrainSubsystem, 40, false),
+        driveForward(driveTrainSubsystem, 40, true),
 
         // HALF-LOOP AROUND D10
         turn(driveTrainSubsystem, -90),
-        driveForward(driveTrainSubsystem, 45, false),
+        driveForward(driveTrainSubsystem, 45, true),
         turn(driveTrainSubsystem, -90),
 
         // RETURN TO START/FINISH ZONE
-        driveForward(driveTrainSubsystem, 180, false)
+        driveForward(driveTrainSubsystem, 180, true)
 
         //
 
@@ -57,37 +59,46 @@ public class BarrelPathAuton extends SequentialCommandGroup {
     );
   }
 
-  public static DriveForwardGyroDistanceCommand driveForward(DriveTrainSubsystem driveTrainSubsystem, double distance, boolean initial) {
-    return new DriveForwardGyroDistanceCommand(driveTrainSubsystem, Constants.ENCODER_TICKS_PER_INCH * distance, -0.75, 0, initial);
+
+  /**
+   * Drive forward command with Gyro.
+   * @param driveTrainSubsystem - The DriveTrain Subsystem instance.
+   * @param distance - The distance (in inches) to drive forward.
+   * @param resetGyro - Whether or not to reset the Gyro.
+   * @return DriveForwardGyroDistanceCommand
+   */
+  public static DriveForwardDistanceCommand driveForward(DriveTrainSubsystem driveTrainSubsystem, double distance, boolean resetGyro) {
+    // return new DriveForwardGyroDistanceCommand(driveTrainSubsystem, Constants.ENCODER_TICKS_PER_INCH * distance, -0.75, 0, resetGyro);
+    return new DriveForwardDistanceCommand(driveTrainSubsystem, Constants.ENCODER_TICKS_PER_INCH * distance, -0.75);
   }
 
-  public static DriveForwardGyroDistanceCommand driveBackward(DriveTrainSubsystem driveTrainSubsystem, double distance) {
-    return new DriveForwardGyroDistanceCommand(driveTrainSubsystem, Constants.ENCODER_TICKS_PER_INCH * distance, 0.75, 0, false);
-  }
+  // public static DriveForwardGyroDistanceCommand driveBackward(DriveTrainSubsystem driveTrainSubsystem, double distance) {
+  //   return new DriveForwardGyroDistanceCommand(driveTrainSubsystem, Constants.ENCODER_TICKS_PER_INCH * distance, 0.75, 0, false);
+  // }
 
   public static TurnToAngleCommand turn(DriveTrainSubsystem driveTrainSubsystem, double angle) {
-    return new TurnToAngleCommand(driveTrainSubsystem, 0.35, angle, false);
+    return new TurnToAngleCommand(driveTrainSubsystem, 0.35, angle, true);
   }
 
   public static SequentialCommandGroup loopRight(DriveTrainSubsystem driveTrainSubsystem) {
     return new SequentialCommandGroup(
         turn(driveTrainSubsystem, 90),
-        driveForward(driveTrainSubsystem, 45, false),
+        driveForward(driveTrainSubsystem, 50, true),
         turn(driveTrainSubsystem, 90),
-        driveForward(driveTrainSubsystem, 45, false),
+        driveForward(driveTrainSubsystem, 50, true),
         turn(driveTrainSubsystem, 90),
-        driveForward(driveTrainSubsystem, 40, false)
+        driveForward(driveTrainSubsystem, 45, true)
     );
   }
 
   public static SequentialCommandGroup loopLeft(DriveTrainSubsystem driveTrainSubsystem) {
     return new SequentialCommandGroup(
         turn(driveTrainSubsystem, -90),
-        driveForward(driveTrainSubsystem, 45, false),
+        driveForward(driveTrainSubsystem, 45, true),
         turn(driveTrainSubsystem, -90),
-        driveForward(driveTrainSubsystem, 45, false),
+        driveForward(driveTrainSubsystem, 45, true),
         turn(driveTrainSubsystem, -90),
-        driveForward(driveTrainSubsystem, 45, false)
+        driveForward(driveTrainSubsystem, 45, true)
     );
   }
 

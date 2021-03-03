@@ -19,6 +19,10 @@ public class Gyro extends BaseSensor implements edu.wpi.first.wpilibj.interfaces
     private static Gyro _instance = null;
     private static AHRS _navx = null;
 
+    private static class InstanceHolder {
+        public static final Gyro instance = new Gyro();
+    }
+
     private Gyro(){
         try {
             if (_navx == null){
@@ -39,9 +43,10 @@ public class Gyro extends BaseSensor implements edu.wpi.first.wpilibj.interfaces
     }
 
     public static Gyro getInstance(){
-        if (_instance == null){
-            _instance = new Gyro();
-        }
+        // if (_instance == null){
+        //     _instance = new Gyro();
+        // }
+        _instance = InstanceHolder.instance;
         return _instance;
     }
 

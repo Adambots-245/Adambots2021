@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import frc.robot.sensors.Gyro;
 import frc.robot.subsystems.*;
 import frc.robot.vision.GripPipeline;
 
@@ -103,6 +104,10 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     SmartDashboard.putString("auton selected", m_autonomousCommand.toString());
+
+    System.out.println("Init Auton.........");
+    Gyro.getInstance().reset();
+
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();

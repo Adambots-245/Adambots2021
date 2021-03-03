@@ -166,9 +166,9 @@ public final class Constants {
     public static final double SHOOTER_OFFSET_DISTANCE = Constants.KNOWN_LIDAR_DISTANCE_TO_TARGET*Math.tan(Constants.KNOWN_OFFSET_ANGLE);
 	
     //gyro PID constants
-	public static final double GYRO_kP = 0.1323; //0.1240
+	public static final double GYRO_kP = 0.1323; //0.1323; //0.1240
 	public static final double GYRO_kI = 0;
-	public static final double GYRO_kD = 0.0479; //0.0572
+	public static final double GYRO_kD = 0.0579; // 0.0479; //0.0572
 	public static final double GYRO_TOLERANCE = 0.5;
     public static final float GYRO_TARGET_ANGLE = 0;
     
