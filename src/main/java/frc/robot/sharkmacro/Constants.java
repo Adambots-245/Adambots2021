@@ -17,7 +17,7 @@ public final class Constants {
 	public static final String PROFILE_STORAGE_DIRECTORY = "/home/lvuser/profiles";
 
 	public static final int MINIMUM_POINTS_IN_TALON = 5;
-	public static final int TALON_TOP_BUFFER_MAX_COUNT = 512;
+	public static final int TALON_TOP_BUFFER_MAX_COUNT = 1024;
 	public static final int TALON_BTM_BUFFER_MAX_COUNT = 128;
 	public static final double ENCODER_COUNTS_PER_REV = 4096.0;
 	public static final int MOTIONCONTROL_FRAME_PERIOD = (int) Math.round((Constants.DT_MS / 2.0));

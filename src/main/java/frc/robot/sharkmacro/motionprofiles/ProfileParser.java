@@ -5,6 +5,7 @@ import java.util.List;
 
 import frc.robot.sharkmacro.Constants;
 import frc.robot.sharkmacro.Parser;
+import frc.robot.utils.Log;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
@@ -82,6 +83,8 @@ public final class ProfileParser extends Parser {
 			left[i][0] = profileRaw.get(i)[0];
 			left[i][1] = profileRaw.get(i)[1];
 			left[i][2] = profileRaw.get(i)[4];
+
+			System.out.print("toObject() left values:\tpos? " + left[i][0] + "\tvel? " + left[i][1] + "\theading? " + left[i][2] + "\n");
 
 			right[i][0] = profileRaw.get(i)[2];
 			right[i][1] = profileRaw.get(i)[3];

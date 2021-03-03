@@ -128,7 +128,7 @@ public class ProfileHandler {
 	 * Called to start the execution of the motion profile.
 	 */
 	public void execute() {
-		executorThread.startPeriodic(0.025);
+		executorThread.startPeriodic(0.005);
 		started = true;
 	}
 

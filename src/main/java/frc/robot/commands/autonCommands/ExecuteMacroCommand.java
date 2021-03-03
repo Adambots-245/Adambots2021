@@ -27,17 +27,19 @@ public class ExecuteMacroCommand extends CommandBase {
     public ExecuteMacroCommand(DriveTrainSubsystem driveTrainSubsystem) {
 
         this.driveTrainSubsystem = driveTrainSubsystem;
-
+        this.talons = this.driveTrainSubsystem.getMotionProfileTalons();
+        addRequirements(driveTrainSubsystem);
     }
 
     public ExecuteMacroCommand(DriveTrainSubsystem driveTrainSubsystem, String name) {
 
         this.driveTrainSubsystem = driveTrainSubsystem;
+        this.talons = this.driveTrainSubsystem.getMotionProfileTalons();
 
         this.name = name;
     	this.alName = name;
     	this.hasName = true;
-
+        addRequirements(driveTrainSubsystem);
     }
 
     public void initialize() {
@@ -47,12 +49,13 @@ public class ExecuteMacroCommand extends CommandBase {
 		name = (name == null) ? ProfileParser.getNewestFilename() : name;
 		//alName = (alName == null) ? ActionListParser.getNewestFilename() : alName;
 
-		Log.info("Creating ProfileParser object inside ExecuteMacroCommand using name: " + name); // d E b u G g i N G
+		System.out.println("Creating ProfileParser object inside ExecuteMacroCommand using name: " + name); // d E b u G g i N G
     	pParser = new ProfileParser(name);
 		//alParser = new ActionListParser(alName);
 		System.out.println("Executing profile... " + name);
 		//System.out.println("Executing ActionList... " + alName);
-		
+        
+        System.out.println("talons array received in ExecuteMacroCommand.java:  " + talons[0]);
 		profileToExecute = pParser.toObject(talons[0], talons[1], Constants.DRIVE_PID_SLOT, Constants.DRIVE_PID_SLOT);
 		//actionListToExecute = alParser.toObject();
 		profileToExecute.execute();

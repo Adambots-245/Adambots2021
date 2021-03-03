@@ -48,7 +48,8 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
   ProfileRecorder recorder;
 
-  public DriveTrainSubsystem(Gyro gyro, Solenoid gearShifter, WPI_TalonFX frontRightMotor, WPI_TalonFX frontLeftMotor, WPI_TalonFX backLeftMotor, WPI_TalonFX backRightMotor) {
+  public DriveTrainSubsystem(Gyro gyro, Solenoid gearShifter, WPI_TalonFX frontRightMotor, WPI_TalonFX frontLeftMotor,
+      WPI_TalonFX backLeftMotor, WPI_TalonFX backRightMotor) {
     super();
 
     this.gyro = gyro;
@@ -57,11 +58,11 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
     this.gearShifter = gearShifter;
 
-    this.frontRightMotor = frontRightMotor; 
-    this.frontLeftMotor = frontLeftMotor; 
+    this.frontRightMotor = frontRightMotor;
+    this.frontLeftMotor = frontLeftMotor;
 
-    this.backLeftMotor = backLeftMotor; 
-    this.backRightMotor = backRightMotor; 
+    this.backLeftMotor = backLeftMotor;
+    this.backRightMotor = backRightMotor;
 
     this.backLeftMotor.follow(frontLeftMotor);
     this.backRightMotor.follow(frontRightMotor);
@@ -88,7 +89,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
     frontLeftMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 5, 0);
     frontRightMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 5, 0);
-    
+
     recorder = new ProfileRecorder(frontLeftMotor, frontRightMotor, RecordingType.VOLTAGE);
     // End of SharkMacro things
 
@@ -109,8 +110,8 @@ public class DriveTrainSubsystem extends SubsystemBase {
   }
 
   public double getAverageDriveEncoderValue() {
-    double averageEncoderPos = (Math
-        .abs(frontLeftMotor.getSelectedSensorPosition()) + Math.abs(frontRightMotor.getSelectedSensorPosition()) / 2);
+    double averageEncoderPos = (Math.abs(frontLeftMotor.getSelectedSensorPosition())
+        + Math.abs(frontRightMotor.getSelectedSensorPosition()) / 2);
     return averageEncoderPos;
   }
 
@@ -135,7 +136,8 @@ public class DriveTrainSubsystem extends SubsystemBase {
     double straightSpeed = frontRobotDirection * speed * speedModifier;
     SmartDashboard.putNumber("Yaw", gyro.getAngle());
 
-    //Log.infoF("Arcade Drive - Straight Speed = %f - Turn Speed = %f - Gyro Angle = %f", straightSpeed, turnSpeed * speedModifier, gyro.getAngle());
+    // Log.infoF("Arcade Drive - Straight Speed = %f - Turn Speed = %f - Gyro Angle
+    // = %f", straightSpeed, turnSpeed * speedModifier, gyro.getAngle());
     drive.arcadeDrive(straightSpeed, turnSpeed * speedModifier);
   }
 
@@ -168,7 +170,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
     }
   }
 
-  public void resetGyro(){
+  public void resetGyro() {
     Log.info("Gyro has been reset");
 
     resetGyro(false);
@@ -181,31 +183,33 @@ public class DriveTrainSubsystem extends SubsystemBase {
       ProfileParser p = new ProfileParser(ProfileParser.getNewFilename());
       p.writeToFile(recorder.stop().toProfile());
       Log.info("Recording saved.");
-  } else {
+    } else {
       // Zero both encoders before recording
       frontLeftMotor.setSelectedSensorPosition(0, 0, 0);
       frontRightMotor.setSelectedSensorPosition(0, 0, 0);
       recorder.start();
       Log.info("Recording started...");
-  }
+    }
 
   }
 
   // Start SharkMacro ActionList recording
   public void toggleActionListRecording() {
-		if (ActionRecorder.isRecording()) {
-			ActionListParser al = new ActionListParser(ActionListParser.getNewFilename());
-			al.writeToFile(ActionRecorder.stop());
-			System.out.println("ActionList saved.");
-		} else {
-			Timer.delay(0.2);
-			ActionRecorder.start();
-			System.out.println("ActionList recording started.");
-		}
-	}
+    if (ActionRecorder.isRecording()) {
+      ActionListParser al = new ActionListParser(ActionListParser.getNewFilename());
+      al.writeToFile(ActionRecorder.stop());
+      System.out.println("ActionList saved.");
+    } else {
+      Timer.delay(0.2);
+      ActionRecorder.start();
+      System.out.println("ActionList recording started.");
+    }
+  }
 
   // Needed for SharkMacro playback
   public WPI_TalonFX[] getMotionProfileTalons() {
-		return new WPI_TalonFX[] { frontLeftMotor, frontRightMotor };
-	}
+    WPI_TalonFX[] talons = new WPI_TalonFX[] { frontLeftMotor, frontRightMotor };
+    System.out.println("talons array created in getMotionProfileTalons():  " + talons[0]);
+    return talons;
+  }
 }
