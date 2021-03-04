@@ -80,15 +80,15 @@ public final class ProfileParser extends Parser {
 		String[][] right = new String[profileRaw.size()][3];
 
 		for (int i = 0; i < profileRaw.size(); i++) {
-			left[i][0] = profileRaw.get(i)[0];
-			left[i][1] = profileRaw.get(i)[1];
-			left[i][2] = profileRaw.get(i)[4];
+			left[i][0] = profileRaw.get(i)[0]; // left profile position
+			left[i][1] = profileRaw.get(i)[1]; // left profile velocity
+			left[i][2] = profileRaw.get(i)[4]; // heading
 
-			System.out.print("toObject() left values:\tpos? " + left[i][0] + "\tvel? " + left[i][1] + "\theading? " + left[i][2] + "\n");
+			System.out.print("toObject() left values:\tpos? " + left[i][0] + "\tvel? " + left[i][1] + "\thead? " + left[i][2] + "\n");
 
-			right[i][0] = profileRaw.get(i)[2];
-			right[i][1] = profileRaw.get(i)[3];
-			right[i][2] = profileRaw.get(i)[4];
+			right[i][0] = profileRaw.get(i)[2]; // right profile position
+			right[i][1] = profileRaw.get(i)[3]; // right profile velocity
+			right[i][2] = profileRaw.get(i)[4]; // heading
 		}
 
 		Profile p = new Profile(left, right, leftTalon, rightTalon, leftPidSlotIdx, rightPidSlotIdx);

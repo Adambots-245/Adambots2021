@@ -14,7 +14,7 @@ import frc.robot.subsystems.ControlPanelSubsystem;
 public class RotatePanelCommand extends CommandBase {
   public final ControlPanelSubsystem controlPanel;
   /**
-   * Creates a new DriveCommand.
+   * Creates a new RotatePanelCommand.
    */
   public RotatePanelCommand(ControlPanelSubsystem panelSubsystem) {
     controlPanel = panelSubsystem;

@@ -145,13 +145,18 @@ public class ProfileHandler {
 	 * Called after motion profile execution has finished.
 	 */
 	private void onFinish() {
+		System.out.println("onFinish() executing...................................");
 		finished = true;
 		bufferThread.stop();
+		System.out.println("BufferThread.stop()");
 		executorThread.stop();
+		System.out.println("executorThread.stop()");
 		setMode(SetValueMotionProfile.Disable);
+		System.out.println("setMode(disable)");
 		for (int i = 0; i < talons.length; i++) {
 			talons[i].clearMotionProfileTrajectories();
 		}
+		System.out.println("clearMotionProfileTrajectories()");
 	}
 
 	/**
@@ -159,35 +164,45 @@ public class ProfileHandler {
 	 * state of the Talons executing the motion profiles.
 	 */
 	public void manage() {
+		System.out.println("Filling Talons with Motion Profile");
 		fillTalonsWithMotionProfile();
+		System.out.println("Updating motion profile statuses");
 		updateMotionProfilesStatuses();
 
 		boolean readyToProgress = true;
-
+		
+		System.out.println("Begin switch statement. readyToProgress: " + readyToProgress);
 		switch (executionState) {
 		case WAITING:
+			System.out.println("case WAITING");
 			if (started) {
 				started = false;
 				setMode(SetValueMotionProfile.Disable);
 				executionState = ExecutionState.STARTED;
+				System.out.println("setMode(disable). executionState = STARTED");
 			}
 			break;
 		case STARTED:
+			System.out.println("case STARTED");
 			for (int i = 0; i < statuses.length; i++) {
 				if (statuses[i].btmBufferCnt <= Constants.MINIMUM_POINTS_IN_TALON) {
 					readyToProgress = false;
+					System.out.println("READY TO PROGRESS: FALSE. " + i + ".btBufferCnt <= MIN_POINTS_IN_TALON");
 				}
 			}
 			if (readyToProgress) {
 				setMode(SetValueMotionProfile.Enable);
 				executionState = ExecutionState.EXECUTING;
+				System.out.println("setMode(ENABLE), state = EXECUTING");
 			}
 			break;
 		case EXECUTING:
+			System.out.println("case EXECUTING");
 			readyToProgress = true;
 			for (int i = 0; i < statuses.length; i++) {
 				if (!statuses[i].activePointValid || !statuses[i].isLast) {
 					readyToProgress = false;
+					System.out.println("READY TO PROGRESS: FALSE. because of EXECUTING's for loop");
 				}
 			}
 			if (readyToProgress) {
@@ -216,6 +231,7 @@ public class ProfileHandler {
 	 */
 	private void fillTalonsWithMotionProfile() {
 
+		System.out.println("fillTalonsWithMotionProfile() executing..................................");
 		if (profileIndex == 0) {
 			for (int i = 0; i < talons.length; i++) {
 				talons[i].clearMotionProfileTrajectories();
@@ -225,6 +241,7 @@ public class ProfileHandler {
 		}
 
 		updateMotionProfilesStatuses();
+		System.out.println("updateMotionProfilesStatuses() executing.......................................");
 
 		int maxFilled = statuses[0].topBufferCnt;
 		for (int i = 0; i < statuses.length; i++) {
@@ -234,6 +251,7 @@ public class ProfileHandler {
 		}
 
 		int numPointsToFill = Constants.TALON_TOP_BUFFER_MAX_COUNT - maxFilled;
+		System.out.println("numPointsToFill: " + numPointsToFill);
 
 		boolean finished = false;
 
@@ -241,6 +259,7 @@ public class ProfileHandler {
 			for (int i = 0; i < trajPoints.length; i++) {
 
 				if (profileIndex >= profiles[i].length) {
+					System.out.println("profileIndex >= profiles[" + i + "].length");
 					finished = true;
 					break;
 				}
@@ -265,6 +284,7 @@ public class ProfileHandler {
 
 			for (int i = 0; i < trajPoints.length; i++) {
 				talons[i].pushMotionProfileTrajectory(trajPoints[i]);
+				System.out.println("talons[" + i + "].pushMotionProfileTrajectory(trajPoints[i])");
 			}
 
 			profileIndex++;

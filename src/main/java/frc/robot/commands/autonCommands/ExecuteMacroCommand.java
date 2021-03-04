@@ -69,7 +69,7 @@ public class ExecuteMacroCommand extends CommandBase {
     }
 
     public boolean isFinished() {
-        return profileToExecute.isFinished() && actionListToExecute.isFinished();
+        return profileToExecute.isFinished() ;// && actionListToExecute.isFinished();
     }
 
     public void end() {
