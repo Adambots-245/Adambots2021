@@ -4,13 +4,16 @@
 
 package frc.robot.commands.autonCommands.autonCommandGroups;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.commands.autonCommands.DriveForwardDistanceCommand;
 import frc.robot.commands.autonCommands.DriveForwardGyroDistanceCommand;
 import frc.robot.commands.autonCommands.TurnToAngleCommand;
+import frc.robot.commands.autonCommands.TurnToAngleNoPIDCommand;
 import frc.robot.sensors.Gyro;
 import frc.robot.subsystems.DriveTrainSubsystem;
 
@@ -30,27 +33,28 @@ public class BarrelPathAuton extends SequentialCommandGroup {
             
         // LOOP AROUND D5
         loopRight(driveTrainSubsystem),
-        
+        // new WaitCommand(1),
         // DRIVE TO B8
         turn(driveTrainSubsystem, 90),
-        driveForward(driveTrainSubsystem, 135, true),
+        // new DriveForwardGyroDistanceCommand(driveTrainSubsystem, Constants.ENCODER_TICKS_PER_INCH * 160, -0.70, 0, true),
+        driveForward(driveTrainSubsystem, 165, true),
         
-        // LOOP AROUND B8
+        // // LOOP AROUND B8
         loopLeft(driveTrainSubsystem),
 
-        // DRIVE to D10
+        // // DRIVE to D10
         turn(driveTrainSubsystem, -45),
-        driveForward(driveTrainSubsystem, 40, true),
+        driveForward(driveTrainSubsystem, 65, true),
         turn(driveTrainSubsystem, -45),
-        driveForward(driveTrainSubsystem, 40, true),
+        driveForward(driveTrainSubsystem, 55, true),
 
-        // HALF-LOOP AROUND D10
+        // // HALF-LOOP AROUND D10
         turn(driveTrainSubsystem, -90),
         driveForward(driveTrainSubsystem, 45, true),
         turn(driveTrainSubsystem, -90),
 
-        // RETURN TO START/FINISH ZONE
-        driveForward(driveTrainSubsystem, 180, true)
+        // // RETURN TO START/FINISH ZONE
+        driveForward(driveTrainSubsystem, 255, true)
 
         //
 
@@ -67,39 +71,54 @@ public class BarrelPathAuton extends SequentialCommandGroup {
    * @param resetGyro - Whether or not to reset the Gyro.
    * @return DriveForwardGyroDistanceCommand
    */
-  public static DriveForwardDistanceCommand driveForward(DriveTrainSubsystem driveTrainSubsystem, double distance, boolean resetGyro) {
-    // return new DriveForwardGyroDistanceCommand(driveTrainSubsystem, Constants.ENCODER_TICKS_PER_INCH * distance, -0.75, 0, resetGyro);
-    return new DriveForwardDistanceCommand(driveTrainSubsystem, Constants.ENCODER_TICKS_PER_INCH * distance, -0.75);
+  public static Command driveForward(DriveTrainSubsystem driveTrainSubsystem, double distance, boolean resetGyro) {
+    // return new DriveForwardGyroDistanceCommand(driveTrainSubsystem, Constants.ENCODER_TICKS_PER_INCH * distance, -0.70, 0, resetGyro);
+    return new DriveForwardDistanceCommand(driveTrainSubsystem, Constants.ENCODER_TICKS_PER_INCH * distance, -0.70);
   }
 
   // public static DriveForwardGyroDistanceCommand driveBackward(DriveTrainSubsystem driveTrainSubsystem, double distance) {
   //   return new DriveForwardGyroDistanceCommand(driveTrainSubsystem, Constants.ENCODER_TICKS_PER_INCH * distance, 0.75, 0, false);
   // }
 
-  public static TurnToAngleCommand turn(DriveTrainSubsystem driveTrainSubsystem, double angle) {
-    return new TurnToAngleCommand(driveTrainSubsystem, 0.35, angle, true);
+  public static Command turn(DriveTrainSubsystem driveTrainSubsystem, double angle) {
+    // return new ParallelDeadlineGroup(new WaitCommand(3), new TurnToAngleCommand(driveTrainSubsystem, 0.30, angle, true));
+    return new TurnToAngleCommand(driveTrainSubsystem, 0.30, angle, true);
   }
 
   public static SequentialCommandGroup loopRight(DriveTrainSubsystem driveTrainSubsystem) {
     return new SequentialCommandGroup(
         turn(driveTrainSubsystem, 90),
-        driveForward(driveTrainSubsystem, 50, true),
+        // shortPause(),
+        driveForward(driveTrainSubsystem, 70, true),
+        // shortPause(),
         turn(driveTrainSubsystem, 90),
-        driveForward(driveTrainSubsystem, 50, true),
+        // shortPause(),
+        driveForward(driveTrainSubsystem, 75, true),
+        // shortPause(),
         turn(driveTrainSubsystem, 90),
-        driveForward(driveTrainSubsystem, 45, true)
+        // shortPause(),
+        driveForward(driveTrainSubsystem, 70, true)
     );
   }
 
   public static SequentialCommandGroup loopLeft(DriveTrainSubsystem driveTrainSubsystem) {
     return new SequentialCommandGroup(
         turn(driveTrainSubsystem, -90),
+        // shortPause(),
         driveForward(driveTrainSubsystem, 45, true),
+        // shortPause(),
         turn(driveTrainSubsystem, -90),
-        driveForward(driveTrainSubsystem, 45, true),
+        // shortPause(),
+        driveForward(driveTrainSubsystem, 70, true),
+        // shortPause(),
         turn(driveTrainSubsystem, -90),
-        driveForward(driveTrainSubsystem, 45, true)
+        // shortPause(),
+        driveForward(driveTrainSubsystem, 50, true)
     );
+  }
+
+  public static WaitCommand shortPause() {
+    return null; //new WaitCommand(0.25);
   }
 
 }

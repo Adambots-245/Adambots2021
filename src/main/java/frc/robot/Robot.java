@@ -105,7 +105,10 @@ public class Robot extends TimedRobot {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     SmartDashboard.putString("auton selected", m_autonomousCommand.toString());
 
+    
     System.out.println("Init Auton.........");
+    Gyro.getInstance().calibrate();
+    Gyro.getInstance().calibrationCheck();
     Gyro.getInstance().reset();
 
     // schedule the autonomous command (example)
