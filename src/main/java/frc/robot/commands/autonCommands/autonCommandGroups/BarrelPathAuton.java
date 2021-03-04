@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.commands.autonCommands.DriveForwardDistanceCommand;
 import frc.robot.commands.autonCommands.DriveForwardGyroDistanceCommand;
+import frc.robot.commands.autonCommands.DriveStraightCommand;
 import frc.robot.commands.autonCommands.TurnToAngleCommand;
 import frc.robot.commands.autonCommands.TurnToAngleNoPIDCommand;
 import frc.robot.sensors.Gyro;
@@ -27,7 +28,9 @@ public class BarrelPathAuton extends SequentialCommandGroup {
     super(
 
         // new ParallelCommandGroup( // deadline because it should move on after it has reached the position
-          
+        
+        new DriveStraightCommand(driveTrainSubsystem, 0.75, Constants.ENCODER_TICKS_PER_INCH * 20)
+        /**
         // DRIVE TO D5
         driveForward(driveTrainSubsystem, 125, true),
             
@@ -55,7 +58,7 @@ public class BarrelPathAuton extends SequentialCommandGroup {
 
         // // RETURN TO START/FINISH ZONE
         driveForward(driveTrainSubsystem, 255, true)
-
+        **/
         //
 
               //  )
