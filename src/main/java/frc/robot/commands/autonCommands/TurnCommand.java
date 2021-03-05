@@ -13,9 +13,9 @@ public class TurnCommand extends PIDCommand {
 
   private DriveTrainSubsystem driveTrain;
 
-  private static final double kP = Constants.GYRO_kP;
-  private static final double kI = Constants.GYRO_kI;
-  private static final double kD = Constants.GYRO_kD;
+  private static final double kP = 0.1333; //Constants.GYRO_kP;
+  private static final double kI = 0.001; //Constants.GYRO_kI;
+  private static final double kD = 0.09992; //0.0012;//Constants.GYRO_kD;
 
   /** Creates a new TurnCommand. */
   public TurnCommand(double targetAngleDegrees, DriveTrainSubsystem drive) {
@@ -28,6 +28,7 @@ public class TurnCommand extends PIDCommand {
         targetAngleDegrees,
         // This uses the output
         output -> {
+          System.out.println("Output: " + output);
           drive.arcadeDrive(0, output);
         },
         drive
@@ -37,6 +38,7 @@ public class TurnCommand extends PIDCommand {
 
     this.driveTrain = drive;
 
+    drive.resetGyro();
     // Set the controller to be continuous (because it is an angle controller)
     getController().enableContinuousInput(-180, 180);
     // Set the controller tolerance - the delta tolerance ensures the robot is stationary at the

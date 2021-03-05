@@ -12,8 +12,8 @@ import frc.robot.subsystems.DriveTrainSubsystem;
 public class DriveStraightCommand extends PIDCommand {
 
   private static final double kP = Constants.GYRO_kP;
-  private static final double kI = Constants.GYRO_kI;
-  private static final double kD = Constants.GYRO_kD;
+  private static final double kI = 0; //Constants.GYRO_kI;
+  private static final double kD = 0.0472;//Constants.GYRO_kD;
 
   private final DriveTrainSubsystem driveTrain;
   private final double distance;
@@ -35,6 +35,7 @@ public class DriveStraightCommand extends PIDCommand {
 
         this.driveTrain = drive;
         this.distance = distance;
+        drive.resetGyro();
     // Use addRequirements() here to declare subsystem dependencies.
     // Configure additional PID options by calling `getController` here.
   }
