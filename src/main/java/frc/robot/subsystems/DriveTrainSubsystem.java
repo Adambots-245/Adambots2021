@@ -84,6 +84,19 @@ public class DriveTrainSubsystem extends SubsystemBase {
     frontLeftMotor.configMotionProfileTrajectoryPeriod(0, 0);
     frontRightMotor.configMotionProfileTrajectoryPeriod(0, 0);
 
+    // See if setting PID values helps sharkmacro work
+    frontLeftMotor.config_kP(Constants.DRIVE_PID_SLOT, 0.7);
+    frontRightMotor.config_kP(Constants.DRIVE_PID_SLOT, 0.7);
+
+    frontLeftMotor.config_kI(Constants.DRIVE_PID_SLOT, 0.002);
+    frontRightMotor.config_kI(Constants.DRIVE_PID_SLOT, 0.002);
+
+    frontLeftMotor.config_kD(Constants.DRIVE_PID_SLOT, 7.0);
+    frontRightMotor.config_kD(Constants.DRIVE_PID_SLOT, 7.0);
+
+    frontLeftMotor.config_kF(Constants.DRIVE_PID_SLOT, 0.3);
+    frontRightMotor.config_kF(Constants.DRIVE_PID_SLOT, 0.3);
+
     frontLeftMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, Constants.DRIVE_PID_SLOT, 0);
     frontRightMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, Constants.DRIVE_PID_SLOT, 0);
 

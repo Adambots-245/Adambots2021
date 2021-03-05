@@ -283,7 +283,7 @@ public class ProfileHandler {
 			}
 
 			for (int i = 0; i < trajPoints.length; i++) {
-				talons[i].pushMotionProfileTrajectory(trajPoints[i]);
+				talons[i].pushMotionProfileTrajectory(trajPoints[i]); //push points into top buffer
 				System.out.println("talons[" + i + "].pushMotionProfileTrajectory(trajPoints[i])");
 			}
 
@@ -357,7 +357,8 @@ public class ProfileHandler {
 		public void run() {
 			for (int i = 0; i < talons.length; i++) {
 				if (statuses[i].btmBufferCnt < Constants.TALON_BTM_BUFFER_MAX_COUNT) {
-					talons[i].processMotionProfileBuffer();
+					talons[i].processMotionProfileBuffer(); //actually empty the points into the bottom buffer
+					System.out.println("-------------------------talons[i].processMotionProfileBuffer() JUST EXECUTED ----------------------");
 				}
 			}
 		}

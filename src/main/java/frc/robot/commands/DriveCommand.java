@@ -46,10 +46,6 @@ public class DriveCommand extends CommandBase {
     // rotationInput.getAsDouble());
     drivetrain.getAverageDriveEncoderValue();
     System.out.println("DriveCommand forwardBackwardInput.getAsDouble(): " + forwardBackwardInput.getAsDouble());
-    StackTraceElement[] ste = Thread.currentThread().getStackTrace();
-    for(int i = 0; i < ste.length; i++) {
-      System.out.println("Drive Command: " + i + "th method name:" + ste[i].getMethodName() + " Class Name: " + ste[i].getClassName());
-    }
     drivetrain.arcadeDrive(forwardBackwardInput.getAsDouble(), rotationInput.getAsDouble());
     SmartDashboard.putNumber("driveencoder", drivetrain.getAverageDriveEncoderValue());
   }
