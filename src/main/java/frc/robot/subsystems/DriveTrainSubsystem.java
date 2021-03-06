@@ -13,6 +13,8 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -35,6 +37,8 @@ public class DriveTrainSubsystem extends SubsystemBase {
   private double speedModifier;
 
   private Gyro gyro;
+  // Odometry class for tracking robot pose
+  private final DifferentialDriveOdometry odometry;
 
   private boolean hasGyroBeenReset = false;
 
@@ -70,8 +74,18 @@ public class DriveTrainSubsystem extends SubsystemBase {
     backRightMotor.setNeutralMode(NeutralMode.Brake);
 
     drive = new DifferentialDrive(frontLeftMotor, frontRightMotor);
+    odometry = new DifferentialDriveOdometry(gyro.getRotation2d());
 
     Log.info("Initializing Drive Subsystem");
+  }
+
+  /**
+   * Returns the currently-estimated pose of the robot.
+   *
+   * @return The pose.
+   */
+  public Pose2d getPose() {
+    return odometry.getPoseMeters();
   }
 
   public void resetEncoders() {
