@@ -63,9 +63,9 @@ public class RobotMap {
 
     public static final Solenoid RingLight = new Solenoid(Constants.RING_LIGHT_PORT);
 
-    public static final PhotoEye IntakePhotoEye = new PhotoEye(6);
-	public static final PhotoEye SpacingPhotoEye = new PhotoEye(7);
-    public static final PhotoEye ExitPhotoEye = new PhotoEye(8);
+    public static final PhotoEye IntakePhotoEye = new PhotoEye(7);
+	public static final PhotoEye SpacingPhotoEye = new PhotoEye(8);
+    public static final PhotoEye ExitPhotoEye = new PhotoEye(9);
 
     public static final Counter IntakeCounter = new Counter(IntakePhotoEye.getDigitalInput());
     public static final Counter ExitCounter = new Counter(ExitPhotoEye.getDigitalInput());

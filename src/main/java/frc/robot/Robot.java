@@ -70,6 +70,10 @@ public class Robot extends TimedRobot {
     
     if (Robot.isReal()) {
       SmartDashboard.putNumber("ANGLE", vision.getAngle());
+      // System.out.println("photoEyeIntake: " + RobotMap.IntakePhotoEye.isDetecting());
+      SmartDashboard.putBoolean("photoEyeIntake", RobotMap.IntakePhotoEye.isDetecting());
+      SmartDashboard.putBoolean("photoEyeSpacing", RobotMap.SpacingPhotoEye.isDetecting());
+      SmartDashboard.putBoolean("photoEyeExit", RobotMap.ExitPhotoEye.isDetecting());
     }
     // newly-scheduled
     // commands, running already-scheduled commands, removing finished or
