@@ -80,6 +80,7 @@ public class Gyro extends BaseSensor implements edu.wpi.first.wpilibj.interfaces
     }
 
     @Override
+    @SuppressWarnings("all")
     public void close() throws Exception {
         _navx.close();
     }
