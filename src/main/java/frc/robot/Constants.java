@@ -45,7 +45,7 @@ public final class Constants {
 
     public static final int TURRET_MOTOR_PORT = 22;
 
-    // TODO: Add accurate PANEL_MOTOR_PORTs (ports of motors that spin control
+    // DONETODO: Added accurate PANEL_MOTOR_PORTs (ports of motors that spin control
     // panel)
     public static final int PANEL_MOTOR_PORT = 1;
 
@@ -88,7 +88,7 @@ public final class Constants {
     // control panel constants - count 2 times for each rotation
     public final static int MIN_ROTATIONS = 7-1; // = 4 rotations //7-1 means compensating for overshooting
     public final static int MAX_ROTATIONS = 10;
-    // TODO: Add accurate panel motor speeds (motors that spin control panel)
+    // DONETODO: Accurate panel motor speeds (motors that spin control panel) were added
     public static final double PANEL_MOTOR_SPEED_ROTATION = 0.65;
     public static final double PANEL_MOTOR_SPEED_ALIGNMENT = 0.175;
 

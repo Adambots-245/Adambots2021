@@ -11,33 +11,47 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Gamepad.Buttons;
 import frc.robot.Gamepad.GamepadConstants;
-
-import frc.robot.commands.*;
-import frc.robot.commands.autonCommands.*;
+import frc.robot.commands.AlignColorCommand;
+import frc.robot.commands.BackboardToggleCommand;
+import frc.robot.commands.BlasterConstantOutputCommand;
+import frc.robot.commands.BlasterDistanceBasedCommand;
+import frc.robot.commands.ConveyorCommand;
+import frc.robot.commands.DriveCommand;
+import frc.robot.commands.GondolaCommand;
+import frc.robot.commands.IndexToBlasterCommand;
+import frc.robot.commands.LowerIntakeArmCommand;
+import frc.robot.commands.ManualTurretCommand;
+import frc.robot.commands.RaiseElevatorCommand;
+import frc.robot.commands.RaiseIntakeArmCommand;
+import frc.robot.commands.ReverseIndexToBlasterCommand;
+import frc.robot.commands.RotatePanelCommand;
+import frc.robot.commands.SetLowSpeedCommand;
+import frc.robot.commands.SetNormalSpeedCommand;
+import frc.robot.commands.ShiftHighGearCommand;
+import frc.robot.commands.ShiftLowGearCommand;
+import frc.robot.commands.StartIntakeCommand;
+import frc.robot.commands.TurnToTargetCommand;
+import frc.robot.commands.WinchCommand;
 import frc.robot.commands.autonCommands.autonCommandGroups.BarrelPathAuton;
 import frc.robot.commands.autonCommands.autonCommandGroups.CrossBaseline;
-import frc.robot.commands.autonCommands.autonCommandGroups.NerdsAuton;
-import frc.robot.commands.autonCommands.autonCommandGroups.NoTurnAuton;
-import frc.robot.commands.autonCommands.autonCommandGroups.Nom2Turn45Yeet5;
-import frc.robot.commands.autonCommands.autonCommandGroups.Nom2Yeet5;
-import frc.robot.commands.autonCommands.autonCommandGroups.PushNom2Yeet5;
-import frc.robot.commands.autonCommands.autonCommandGroups.PushNom2Yeet5Nom1;
-import frc.robot.commands.autonCommands.autonCommandGroups.SlalomPathAuton;
 import frc.robot.commands.autonCommands.autonCommandGroups.SnagNYeetCommandGroup;
 import frc.robot.commands.autonCommands.autonCommandGroups.Yeet3;
-import frc.robot.commands.autonCommands.autonCommandGroups.Yeet3FinalsAuton;
 import frc.robot.commands.autonCommands.autonCommandGroups.Yeet3New;
 import frc.robot.commands.autonCommands.autonCommandGroups.Yeet3Nom3Yeet3;
-import frc.robot.commands.autonCommands.autonCommandGroups.Yeet3PushNom3;
-import frc.robot.subsystems.*;
-import frc.robot.utils.Log;
+// import frc.robot.utils.Log;
+import frc.robot.subsystems.BlasterSubsystem;
+import frc.robot.subsystems.ControlPanelSubsystem;
+import frc.robot.subsystems.ConveyorSubsystem;
+import frc.robot.subsystems.DriveTrainSubsystem;
+import frc.robot.subsystems.GondolaSubsystem;
+import frc.robot.subsystems.HangSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
 
 
 /**
@@ -61,15 +75,15 @@ public class RobotContainer {
   private TurretSubsystem turretSubsystem = new TurretSubsystem(RobotMap.TurretMotor, RobotMap.LeftLimitSwitch, RobotMap.RightLimitSwitch);
   
   // commands
-  private BackboardToggleCommand backboardToggleCommand;
-  private ConveyorCommand conveyorCommand;
-  private DriveForwardDistanceCommand autonDriveForwardDistanceCommand;
-  private TurnToAngleCommand autonTurn90DegreeCommand;
-  private GondolaCommand gondolaCommand;
-  private GyroDriveForDistCommand autonGyroDriveForwardDistanceCommand;
-  private RaiseElevatorCommand raiseElevatorCommand;
-  private SequentialCommandGroup autonDriveForwardGyroDistanceCommand;
-  private WinchCommand winchCommand;
+  // private BackboardToggleCommand backboardToggleCommand;
+  // private ConveyorCommand conveyorCommand;
+  // private DriveForwardDistanceCommand autonDriveForwardDistanceCommand;
+  // private TurnToAngleCommand autonTurn90DegreeCommand;
+  // private GondolaCommand gondolaCommand;
+  // private GyroDriveForDistCommand autonGyroDriveForwardDistanceCommand;
+  // private RaiseElevatorCommand raiseElevatorCommand;
+  // private SequentialCommandGroup autonDriveForwardGyroDistanceCommand;
+  // private WinchCommand winchCommand;
   
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
@@ -90,15 +104,15 @@ public class RobotContainer {
     dash();
 
     //auton commands
-    autonDriveForwardDistanceCommand = new DriveForwardDistanceCommand(driveTrainSubsystem,
-        Constants.AUTON_DRIVE_FORWARD_DISTANCE, Constants.AUTON_DRIVE_FORWARD_SPEED);
+    // autonDriveForwardDistanceCommand = new DriveForwardDistanceCommand(driveTrainSubsystem,
+    //     Constants.AUTON_DRIVE_FORWARD_DISTANCE, Constants.AUTON_DRIVE_FORWARD_SPEED);
 
-    // autonGyroDriveForwardDistanceCommand = new GyroDriveForDistCommand(driveTrainSubsystem,
-        // Constants.AUTON_DRIVE_FORWARD_DISTANCE, Constants.AUTON_DRIVE_FORWARD_SPEED, gyroSubsystem.getYaw());
-        double autonSpeed = .75;
-    autonDriveForwardGyroDistanceCommand = new DriveForwardGyroDistanceCommand(driveTrainSubsystem, Constants.AUTON_PUSH_ROBOT_DISTANCE, autonSpeed*.5, 0, true).andThen(new WaitCommand(1)).andThen(new DriveForwardGyroDistanceCommand(driveTrainSubsystem, Constants.AUTON_FORWARD_BALL_PICKUP_DISTANCE, -autonSpeed, 0, false));
+    // // autonGyroDriveForwardDistanceCommand = new GyroDriveForDistCommand(driveTrainSubsystem,
+    //     // Constants.AUTON_DRIVE_FORWARD_DISTANCE, Constants.AUTON_DRIVE_FORWARD_SPEED, gyroSubsystem.getYaw());
+    //     double autonSpeed = .75;
+    // autonDriveForwardGyroDistanceCommand = new DriveForwardGyroDistanceCommand(driveTrainSubsystem, Constants.AUTON_PUSH_ROBOT_DISTANCE, autonSpeed*.5, 0, true).andThen(new WaitCommand(1)).andThen(new DriveForwardGyroDistanceCommand(driveTrainSubsystem, Constants.AUTON_FORWARD_BALL_PICKUP_DISTANCE, -autonSpeed, 0, false));
     
-    autonTurn90DegreeCommand = new TurnToAngleCommand(driveTrainSubsystem, autonSpeed*0.5, 45, true);
+    // autonTurn90DegreeCommand = new TurnToAngleCommand(driveTrainSubsystem, autonSpeed*0.5, 45, true);
   }
 
   /**

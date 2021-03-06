@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.sensors.Lidar;
 import frc.robot.subsystems.BlasterSubsystem;
-import frc.robot.utils.Log;
+// import frc.robot.utils.Log;
 
 public class BlasterDistanceBasedCommand extends CommandBase {
   /**

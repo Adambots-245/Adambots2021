@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.sensors.Gyro;
 import frc.robot.subsystems.DriveTrainSubsystem;
-import frc.robot.subsystems.GyroPIDSubsystem;
+// import frc.robot.subsystems.GyroPIDSubsystem;
 
 public class TurnToAngleNoPIDCommand extends CommandBase {
   /**
@@ -19,7 +19,7 @@ public class TurnToAngleNoPIDCommand extends CommandBase {
    */
   DriveTrainSubsystem driveTrain;
   double speed;
-  private GyroPIDSubsystem gyroPIDSubsystem;
+  // private GyroPIDSubsystem gyroPIDSubsystem;
   private Gyro gyro;
   private double targetAngle;
   private boolean resetGyro = true;

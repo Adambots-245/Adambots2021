@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.RobotMap;
+// import frc.robot.RobotMap;
 import frc.robot.vision.GripPipeline;
 import edu.wpi.cscore.*;
 import edu.wpi.cscore.VideoMode.PixelFormat;
@@ -34,7 +34,7 @@ public class VisionProcessorSubsystem extends SubsystemBase {
         this.ringLight = ringLight;
 
         init();
-        this.grip = grip;
+        VisionProcessorSubsystem.grip = grip;
     }
 
     public void init() {

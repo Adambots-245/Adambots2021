@@ -40,7 +40,7 @@ public class DriveStraight extends PIDCommand {
   }
   @Override
   public void initialize() {
-    // TODO Auto-generated method stub
+    // Auto-generated method stub
     super.initialize();
     driveTrainSubsystem.resetEncoders();
     driveTrainSubsystem.resetGyro();
