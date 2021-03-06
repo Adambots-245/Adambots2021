@@ -5,7 +5,9 @@
 package frc.robot.commands.autonCommands;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
+import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveTrainSubsystem;
 
@@ -13,9 +15,9 @@ public class TurnCommand extends PIDCommand {
 
   private DriveTrainSubsystem driveTrain;
 
-  private static final double kP = 0.1333; //Constants.GYRO_kP;
-  private static final double kI = 0.001; //Constants.GYRO_kI;
-  private static final double kD = 0.09992; //0.0012;//Constants.GYRO_kD;
+  private static final double kP = 0.0481; //Constants.GYRO_kP;
+  private static final double kI = 0; //Constants.GYRO_kI;
+  private static final double kD = 0; //0.01261; //0.0012;//Constants.GYRO_kD;
 
   /** Creates a new TurnCommand. */
   public TurnCommand(double targetAngleDegrees, DriveTrainSubsystem drive) {
@@ -28,8 +30,11 @@ public class TurnCommand extends PIDCommand {
         targetAngleDegrees,
         // This uses the output
         output -> {
-          System.out.println("Output: " + output);
-          drive.arcadeDrive(0, output);
+          // Set minimum output to turn the robot - anything lower than this and it may not move
+          double rotationSpeed = MathUtil.clamp(Math.abs(output), 0.325, 1.00);
+          rotationSpeed = rotationSpeed * Math.signum(output); // apply the sign (positive or negative)
+          System.out.println("Heading - Output: " + drive.getHeading() + " - " + rotationSpeed);
+          drive.arcadeDrive(0, rotationSpeed);
         },
         drive
         );
@@ -39,6 +44,8 @@ public class TurnCommand extends PIDCommand {
     this.driveTrain = drive;
 
     drive.resetGyro();
+
+    SmartDashboard.putData("Turn PID Controller", getController());
     // Set the controller to be continuous (because it is an angle controller)
     getController().enableContinuousInput(-180, 180);
     // Set the controller tolerance - the delta tolerance ensures the robot is stationary at the
@@ -50,6 +57,7 @@ public class TurnCommand extends PIDCommand {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    System.out.println("At Setpoint:" + getController().atSetpoint());
     return getController().atSetpoint();
   }
 

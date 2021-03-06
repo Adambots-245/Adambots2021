@@ -110,6 +110,7 @@ public class Robot extends TimedRobot {
     Gyro.getInstance().calibrate();
     Gyro.getInstance().calibrationCheck();
     Gyro.getInstance().reset();
+    CommandScheduler.getInstance().cancelAll(); // cancel all teleop commands
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -159,6 +160,16 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+
+    // schedule the autonomous command (example)
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.schedule();
+    }
+    
+    RobotMap.FrontLeftMotor.setNeutralMode(NeutralMode.Brake);
+    RobotMap.BackLeftMotor.setNeutralMode(NeutralMode.Brake);
+    RobotMap.FrontRightMotor.setNeutralMode(NeutralMode.Brake);
+    RobotMap.BackRightMotor.setNeutralMode(NeutralMode.Brake);
   }
 
   /**

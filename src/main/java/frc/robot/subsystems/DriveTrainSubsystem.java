@@ -151,7 +151,10 @@ public class DriveTrainSubsystem extends SubsystemBase {
    * @return the robot's heading in degrees, from 180 to 180
    */
   public double getHeading(){
-    return Math.IEEEremainder(gyro.getAngle(), 360) * (Constants.GYRO_REVERSED ? -1.0 : 1.0);
+    double heading = Math.IEEEremainder(gyro.getAngle(), 360) * (Constants.GYRO_REVERSED ? -1.0 : 1.0);
+  
+    System.out.println("Heading: " + heading);
+    return heading;
   }
 
   /**
