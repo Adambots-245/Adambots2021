@@ -30,26 +30,28 @@ public class TurnToBallCommand extends CommandBase {
             // if a ball is not detected, make a scan for one
         }
         
-        double distanceToCenter = table.getEntry("tx").getDouble(0);
-        if(distanceToCenter > -1 && distanceToCenter < 1) { // if aiming within acceptable window
+        double horizontalDegreesToCenter = table.getEntry("tx").getDouble(0);
+        if(horizontalDegreesToCenter > -1 && horizontalDegreesToCenter < 1) { // if aiming within acceptable window
             System.out.println("\n\nDRIVING FORWARD\n\n");
             aimedAtBall = true;
-        } else if (distanceToCenter < -1) {
+        } else if (horizontalDegreesToCenter < -1) {
             System.out.println("\n\nTURNING LEFT TOWARD BALL\n\n");
-        } else if (distanceToCenter > 1) {
+        } else if (horizontalDegreesToCenter > 1) {
             System.out.println("\n\nTURNING RIGHT TOWARD BALL\n\n");
         }
     }
 
     @Override
     public void execute() {
-        double distanceToCenter = table.getEntry("tx").getDouble(0);
-        if(distanceToCenter > -1 && distanceToCenter < 1) { // if aiming within acceptable window
+        
+        // Determine whether to aim left or right
+        double horizontalDegreesToCenter = table.getEntry("tx").getDouble(0);
+        if(horizontalDegreesToCenter > -1 && horizontalDegreesToCenter < 1) { // if aiming within acceptable window
             System.out.println("\n\nDRIVING FORWARD\n\n");
             aimedAtBall = true;
-        } else if (distanceToCenter < -1) { // if robot is aiming too far to the right
+        } else if (horizontalDegreesToCenter < -1) { // if robot is aiming too far to the right
             System.out.println("\n\nTURNING LEFT TOWARD BALL\n\n");
-        } else if (distanceToCenter > 1) { // if robot is aiming too far to the left
+        } else if (horizontalDegreesToCenter > 1) { // if robot is aiming too far to the left
             System.out.println("\n\nTURNING RIGHT TOWARD BALL\n\n");
         }
     }

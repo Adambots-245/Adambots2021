@@ -138,8 +138,9 @@ public final class Constants {
     public static final int PROCESSING_FPS = 30;
 
     // Limelight Constants
-    public static final double LIMELIGHT_ANGLE_TO_HORIZONTAL = 0.0;
+    public static final double LIMELIGHT_ANGLE_TO_HORIZONTAL = 31.0; //inches I guess?
     public static final double LIMELIGHT_HEIGHT_FROM_GROUND = 0.0;
+    public static final int ACCEPTABLE_FINAL_DISTANCE = 4;
 
     // Colors are (B, G, R) (Don't ask me)
     public static final Scalar RED = new Scalar(0, 0, 255);
