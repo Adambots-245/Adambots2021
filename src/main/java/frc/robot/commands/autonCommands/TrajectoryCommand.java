@@ -79,8 +79,15 @@ public class TrajectoryCommand extends RamseteCommand {
   }
 
 
-  public static void setConfig(TrajectoryConfig conf) {
+  public static RamseteTrajectoryBuilder setConfig(TrajectoryConfig conf) {
     config = conf;
+    return new RamseteTrajectoryBuilder();
+  }
+
+  public static class RamseteTrajectoryBuilder {
+    public TrajectoryCommand buildTrajectory(DriveTrainSubsystem driveTrain, Pose2d startPose, Pose2d endPose, Translation2d...translations) {
+      return new TrajectoryCommand(driveTrain, startPose, endPose, translations);
+    }
   }
 
   public static TrajectoryConfig getDefaultConfig() {
