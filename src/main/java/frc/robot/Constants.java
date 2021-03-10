@@ -10,6 +10,7 @@ package frc.robot;
 import org.opencv.core.*;
 
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.util.Color;
 
 import com.revrobotics.ColorMatch;
@@ -204,5 +205,29 @@ public final class Constants {
 	public static final double AUTON_TARGET_CENTER_LINE_CONSTANT_VELOCITY = 10343;
 	public static final double TRENCH_SHOOTER_VELOCITY = 10343;
     
+    // --------------------RAMSETE TRAJECTORY CONSTANTS---------------------- \\
+
+    // Feed forward/back gains
+    public static final double ksVolts = 0.22;
+    public static final double kvVoltSecondsPerMeter = 1.98;
+    public static final double kaVoltSecondsSquaredPerMeter = 0.2;
+    public static final double MAX_DRIVE_VOLTAGE = 9;
+
+    // Drive velocity
+    public static final double kPDriveVel = 8.5;
+
+    // Differential kinematics
+    public static final double kTrackwidthMeters = 0.69; // Distance between wheels
+    public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
+
+    // Max trajectory velocity/acceleration
+    public static final double kMaxSpeedMetersPerSecond = 3;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 3;
+
+    // Ramsete gamma parameters
+    // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
+    // Should work well in most robots without any tuning necessary
+    public static final double kRamseteB = 2;
+    public static final double kRamseteZeta = 0.7;
 
 }
