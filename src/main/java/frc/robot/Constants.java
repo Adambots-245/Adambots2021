@@ -137,6 +137,10 @@ public final class Constants {
     public static final int DRIVER_STATION_FPS = 6;
     public static final int PROCESSING_FPS = 30;
 
+    // Limelight Constants
+    public static final double LIMELIGHT_ANGLE_TO_HORIZONTAL = 0.0;
+    public static final double LIMELIGHT_HEIGHT_FROM_GROUND = 0.0;
+
     // Colors are (B, G, R) (Don't ask me)
     public static final Scalar RED = new Scalar(0, 0, 255);
     public static final Scalar GREEN = new Scalar(0, 255, 0);
