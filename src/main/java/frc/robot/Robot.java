@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.autonCommands.TurnToBallCommand;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -101,7 +102,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autonomousCommand = new TurnToBallCommand();
     SmartDashboard.putString("auton selected", m_autonomousCommand.toString());
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
