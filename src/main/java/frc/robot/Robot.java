@@ -70,6 +70,11 @@ public class Robot extends TimedRobot {
     
     if (Robot.isReal()) {
       SmartDashboard.putNumber("ANGLE", vision.getAngle());
+
+      DriveTrainSubsystem driver = DriveTrainSubsystem.getCurrentDriveTrain();
+
+      if (driver != null) SmartDashboard.putNumber("DRIVE_HEADING", driver.getHeading());
+
     }
     // newly-scheduled
     // commands, running already-scheduled commands, removing finished or

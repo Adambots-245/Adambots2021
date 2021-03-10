@@ -34,6 +34,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
   private WPI_TalonFX backRightMotor;
 
   DifferentialDrive drive;
+  static DriveTrainSubsystem driveSubsystem = null;
 
   private double speedModifier;
 
@@ -76,8 +77,13 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
     drive = new DifferentialDrive(frontLeftMotor, frontRightMotor);
     odometry = new DifferentialDriveOdometry(gyro.getRotation2d());
+    driveSubsystem = this;
 
     Log.info("Initializing Drive Subsystem");
+  }
+
+  public static DriveTrainSubsystem getCurrentDriveTrain() {
+    return driveSubsystem;
   }
 
   /**
@@ -192,7 +198,8 @@ public class DriveTrainSubsystem extends SubsystemBase {
    */
   public double getHeading(){
     // return Math.IEEEremainder(gyro.getAngle(), 360) * (Constants.GYRO_REVERSED ? -1.0 : 1.0);
-    return gyro.getRotation2d().getDegrees() * (Constants.GYRO_REVERSED ? -1.0 : 1.0);
+    // return gyro.getRotation2d().getDegrees() * (Constants.GYRO_REVERSED ? -1.0 : 1.0);
+    return Math.IEEEremainder(gyro.getRotation2d().getDegrees(), 360) * (Constants.GYRO_REVERSED ? -1.0 : 1.0);
   }
 
   /**

@@ -40,6 +40,7 @@ import frc.robot.commands.WinchCommand;
 import frc.robot.commands.autonCommands.autonCommandGroups.BarrelPathAuton;
 import frc.robot.commands.autonCommands.autonCommandGroups.CrossBaseline;
 import frc.robot.commands.autonCommands.autonCommandGroups.SnagNYeetCommandGroup;
+import frc.robot.commands.autonCommands.autonCommandGroups.TestTrajectory;
 import frc.robot.commands.autonCommands.autonCommandGroups.Yeet3;
 import frc.robot.commands.autonCommands.autonCommandGroups.Yeet3New;
 import frc.robot.commands.autonCommands.autonCommandGroups.Yeet3Nom3Yeet3;
@@ -268,7 +269,8 @@ public class RobotContainer {
     // System.out.println(autoChooser.getSelected());
     // return autoChooser.getSelected();
 
-    return new BarrelPathAuton(driveTrainSubsystem);
+    // return new BarrelPathAuton(driveTrainSubsystem);
     // return new SlalomPathAuton(driveTrainSubsystem);
+    return new TestTrajectory(driveTrainSubsystem);
   }
 }
