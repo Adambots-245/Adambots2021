@@ -15,9 +15,9 @@ public class TurnCommand extends PIDCommand {
 
   private DriveTrainSubsystem driveTrain;
 
-  private static final double kP = 0.0481; //Constants.GYRO_kP;
-  private static final double kI = 0; //Constants.GYRO_kI;
-  private static final double kD = 0; //0.01261; //0.0012;//Constants.GYRO_kD;
+  private static final double kP = 0.0352; //Constants.GYRO_kP;
+  private static final double kI = Constants.GYRO_kI;
+  private static final double kD = 0.01291; //0.01221; // Constants.GYRO_kD;
 
   /** Creates a new TurnCommand. */
   public TurnCommand(double targetAngleDegrees, DriveTrainSubsystem drive) {
@@ -31,9 +31,10 @@ public class TurnCommand extends PIDCommand {
         // This uses the output
         output -> {
           // Set minimum output to turn the robot - anything lower than this and it may not move
-          double rotationSpeed = MathUtil.clamp(Math.abs(output), 0.325, 1.00);
+          double rotationSpeed = MathUtil.clamp(Math.abs(output), 0.5, 3.5);
+          // double rotationSpeed = output;
           rotationSpeed = rotationSpeed * Math.signum(output); // apply the sign (positive or negative)
-          System.out.println("Heading - Output: " + drive.getHeading() + " - " + rotationSpeed);
+          System.out.println("O:H:S = " + output + " : " + drive.getHeading() + " : " + rotationSpeed);
           drive.arcadeDrive(0, rotationSpeed);
         },
         drive
@@ -43,7 +44,7 @@ public class TurnCommand extends PIDCommand {
 
     this.driveTrain = drive;
 
-    drive.resetGyro();
+    drive.resetGyro(true);
 
     SmartDashboard.putData("Turn PID Controller", getController());
     // Set the controller to be continuous (because it is an angle controller)
@@ -51,19 +52,22 @@ public class TurnCommand extends PIDCommand {
     // Set the controller tolerance - the delta tolerance ensures the robot is stationary at the
     // setpoint before it is considered as having reached the reference
     getController()
-        .setTolerance(Constants.GYRO_TOLERANCE, Constants.GYRO_RATE_TOLERANCE_DEG_PER_SEC);
+        .setTolerance(Constants.GYRO_TOLERANCE); //, Constants.GYRO_RATE_TOLERANCE_DEG_PER_SEC);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    System.out.println("At Setpoint:" + getController().atSetpoint());
+    System.out.println("At Setpoint:" + getController().atSetpoint() + " Heading: " + driveTrain.getHeading());
+
     return getController().atSetpoint();
   }
 
   @Override
   public void end(boolean interrupted){
     super.end(interrupted);
+
+    // driveTrain.arcadeDrive(0,0);
 
     driveTrain.zeroHeading();
   }

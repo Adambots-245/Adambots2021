@@ -34,8 +34,8 @@ public class BarrelPathAuton extends SequentialCommandGroup {
         // new TurnCommand(45, driveTrainSubsystem)
         
         // DRIVE TO D5
-        // driveForward(driveTrainSubsystem, 25, true)
-        new TurnCommand(90, driveTrainSubsystem)
+        // driveForward(driveTrainSubsystem, 120, true)
+        new TurnCommand(45, driveTrainSubsystem)
             
         // LOOP AROUND D5
         // ,loopRight(driveTrainSubsystem)

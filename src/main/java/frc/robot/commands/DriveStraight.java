@@ -26,7 +26,7 @@ public class DriveStraight extends PIDCommand {
         // The controller that the command will use
         new PIDController(Constants.GYRO_kP, Constants.GYRO_kI, Constants.GYRO_kD),
         // This should return the measurement
-        () -> driveTrainSubsystem.getAngle(),
+        () -> driveTrainSubsystem.getHeading(),
         // This should return the setpoint (can also be a constant)
         () -> targetAngle,
         // This uses the output
@@ -40,10 +40,9 @@ public class DriveStraight extends PIDCommand {
   }
   @Override
   public void initialize() {
-    // TODO Auto-generated method stub
     super.initialize();
     driveTrainSubsystem.resetEncoders();
-    driveTrainSubsystem.resetGyro();
+    driveTrainSubsystem.resetGyro(true);
   }
   // Returns true when the command should end.
   @Override

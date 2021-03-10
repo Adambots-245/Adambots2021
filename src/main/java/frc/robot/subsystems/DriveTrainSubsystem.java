@@ -153,7 +153,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
   public double getHeading(){
     double heading = Math.IEEEremainder(gyro.getAngle(), 360) * (Constants.GYRO_REVERSED ? -1.0 : 1.0);
   
-    System.out.println("Heading: " + heading);
+    // System.out.println("Heading: " + heading);
     return heading;
   }
 
