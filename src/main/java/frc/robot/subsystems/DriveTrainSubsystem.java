@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -101,7 +102,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
   public double getAverageDriveEncoderValue() {
     double averageEncoderPos = (Math
-        .abs(frontLeftMotor.getSelectedSensorPosition()) + Math.abs(frontRightMotor.getSelectedSensorPosition()) / 2);
+        .abs(frontLeftMotor.getSelectedSensorPosition()) + Math.abs(frontRightMotor.getSelectedSensorPosition())) / 2;
     return averageEncoderPos;
   }
 
@@ -111,6 +112,10 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
   public double getRightDriveEncoderVelocity() {
     return frontRightMotor.getSelectedSensorVelocity();
+  }
+
+  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+    return new DifferentialDriveWheelSpeeds(frontLeftMotor.getSensorCollection().getIntegratedSensorVelocity(), frontRightMotor.getSensorCollection().getIntegratedSensorVelocity());
   }
 
   public void setLowSpeed() {
@@ -130,6 +135,18 @@ public class DriveTrainSubsystem extends SubsystemBase {
     drive.arcadeDrive(straightSpeed, turnSpeed * speedModifier);
   }
 
+  /**
+   * Controls the left and right sides of the drive directly with voltages.
+   *
+   * @param leftVolts  the commanded left output
+   * @param rightVolts the commanded right output
+   */
+  public void setVoltage(double leftVolts, double rightVolts) {
+    frontLeftMotor.setVoltage(leftVolts);
+    frontRightMotor.setVoltage(-rightVolts);
+    drive.feed();
+  }
+
   public void shiftHighGear() {
 
     Log.info("Shifting to high gear");
@@ -140,6 +157,15 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
     Log.info("Shifting to low gear");
     gearShifter.set(false);
+  }
+
+  /**
+   * Sets the max output of the drive.  Useful for scaling the drive to drive more slowly.
+   *
+   * @param maxOutput the maximum output to which the drive will be constrained
+   */
+  public void setMaxOutput(double maxOutput) {
+    drive.setMaxOutput(maxOutput);
   }
 
   @Override
@@ -165,7 +191,8 @@ public class DriveTrainSubsystem extends SubsystemBase {
    * @return the robot's heading in degrees, from 180 to 180
    */
   public double getHeading(){
-    return Math.IEEEremainder(gyro.getAngle(), 360) * (Constants.GYRO_REVERSED ? -1.0 : 1.0);
+    // return Math.IEEEremainder(gyro.getAngle(), 360) * (Constants.GYRO_REVERSED ? -1.0 : 1.0);
+    return gyro.getRotation2d().getDegrees() * (Constants.GYRO_REVERSED ? -1.0 : 1.0);
   }
 
   /**
@@ -187,4 +214,10 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
     resetGyro(false);
   }
+
+  public void resetOdometry(Pose2d pose) {
+    resetEncoders();
+    odometry.resetPosition(pose, gyro.getRotation2d());
+  }
+
 }
