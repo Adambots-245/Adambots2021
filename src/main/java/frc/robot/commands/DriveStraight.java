@@ -30,18 +30,27 @@ public class DriveStraight extends PIDCommand {
         // This should return the setpoint (can also be a constant)
         () -> targetAngle,
         // This uses the output
-        output -> { driveTrainSubsystem.arcadeDrive(forwardSpeed, output);
+        output -> { 
           // Use the output here
-        });
+          driveTrainSubsystem.arcadeDrive(forwardSpeed, output);
+
+          System.out.println("Driving Straight: " + driveTrainSubsystem.getHeading());
+        },
+        driveTrainSubsystem);
+
         this.driveTrainSubsystem = driveTrainSubsystem;
         this.targetDistance = targetDistance;
+
+        // addRequirements(driveTrainSubsystem);
+        // driveTrainSubsystem.resetGyro(true);
+
     // Use addRequirements() here to declare subsystem dependencies.
     // Configure additional PID options by calling `getController` here.
   }
   @Override
   public void initialize() {
     super.initialize();
-    driveTrainSubsystem.resetEncoders();
+    // driveTrainSubsystem.resetEncoders();
     driveTrainSubsystem.resetGyro(true);
   }
   // Returns true when the command should end.

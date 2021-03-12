@@ -33,7 +33,7 @@ public class TurnToTargetCommand extends CommandBase {
     turretSubsystem.enable();
 
     var calculatedOffset = Math.toDegrees(Math.atan(Constants.SHOOTER_OFFSET_DISTANCE/lidar.getInches()));
-    turretSubsystem.setSetpoint(calculatedOffset);
+    turretSubsystem.setSetpoint(calculatedOffset + 4);
 
     //Log.infoF("Turret Initialized: %f", calculatedOffset);
   }
@@ -46,7 +46,7 @@ public class TurnToTargetCommand extends CommandBase {
     calculatedOffset = Math.toDegrees(Math.atan(Constants.SHOOTER_OFFSET_DISTANCE/lidar.getInches()));
 
     // turretSubsystem.setAngleOffset(calculatedOffset);
-    turretSubsystem.setSetpoint(calculatedOffset);
+    turretSubsystem.setSetpoint(calculatedOffset + 4);
     SmartDashboard.putNumber("angleOffset", calculatedOffset);
 
     //Log.infoF("Execute - AngleOffset: %f", calculatedOffset);

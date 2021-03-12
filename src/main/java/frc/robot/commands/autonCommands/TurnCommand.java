@@ -15,9 +15,9 @@ public class TurnCommand extends PIDCommand {
 
   private DriveTrainSubsystem driveTrain;
 
-  private static final double kP = 0.0352; //Constants.GYRO_kP;
+  private static final double kP = Constants.GYRO_kP;
   private static final double kI = Constants.GYRO_kI;
-  private static final double kD = 0.01291; //0.01221; // Constants.GYRO_kD;
+  private static final double kD = Constants.GYRO_kD;
 
   /** Creates a new TurnCommand. */
   public TurnCommand(double targetAngleDegrees, DriveTrainSubsystem drive) {
@@ -31,20 +31,27 @@ public class TurnCommand extends PIDCommand {
         // This uses the output
         output -> {
           // Set minimum output to turn the robot - anything lower than this and it may not move
-          double rotationSpeed = MathUtil.clamp(Math.abs(output), 0.5, 3.5);
+          double rotationSpeed = MathUtil.clamp(Math.abs(output), 0.9, 1.5);
+
+          // if (Math.abs(output) > 1.5) rotationSpeed = 1.5;
+
           // double rotationSpeed = output;
           rotationSpeed = rotationSpeed * Math.signum(output); // apply the sign (positive or negative)
-          System.out.println("O:H:S = " + output + " : " + drive.getHeading() + " : " + rotationSpeed);
+          System.out.println("O:H:S => " + output + " : " + drive.getHeading() + " : " + rotationSpeed);
           drive.arcadeDrive(0, rotationSpeed);
-        },
+        }
+        ,
         drive
         );
     // Use addRequirements() here to declare subsystem dependencies.
     // Configure additional PID options by calling `getController` here.
 
+    // addRequirements(driveTrain);
+
     this.driveTrain = drive;
 
     drive.resetGyro(true);
+    drive.resetEncoders();
 
     SmartDashboard.putData("Turn PID Controller", getController());
     // Set the controller to be continuous (because it is an angle controller)
@@ -67,6 +74,7 @@ public class TurnCommand extends PIDCommand {
   public void end(boolean interrupted){
     super.end(interrupted);
 
+    System.out.println("At End:" +  "Heading: " + driveTrain.getHeading());
     // driveTrain.arcadeDrive(0,0);
 
     driveTrain.zeroHeading();

@@ -107,8 +107,8 @@ public class Robot extends TimedRobot {
 
     
     System.out.println("Init Auton.........");
-    // Gyro.getInstance().calibrate();
-    // Gyro.getInstance().calibrationCheck();
+    Gyro.getInstance().calibrate();
+    Gyro.getInstance().calibrationCheck();
     // Gyro.getInstance().reset();
     CommandScheduler.getInstance().cancelAll(); // cancel all teleop commands
 

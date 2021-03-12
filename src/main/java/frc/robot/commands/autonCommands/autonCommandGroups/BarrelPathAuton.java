@@ -13,6 +13,7 @@ import frc.robot.Constants;
 import frc.robot.commands.autonCommands.DriveForwardDistanceCommand;
 import frc.robot.commands.autonCommands.DriveForwardGyroDistanceCommand;
 import frc.robot.commands.autonCommands.DriveStraightCommand;
+import frc.robot.commands.autonCommands.PIDTuner;
 import frc.robot.commands.autonCommands.TurnCommand;
 import frc.robot.commands.autonCommands.TurnToAngleCommand;
 import frc.robot.commands.autonCommands.TurnToAngleNoPIDCommand;
@@ -31,11 +32,12 @@ public class BarrelPathAuton extends SequentialCommandGroup {
         // new ParallelCommandGroup( // deadline because it should move on after it has reached the position
         
         //new DriveStraightCommand(driveTrainSubsystem, -0.75, Constants.ENCODER_TICKS_PER_INCH * 120),
-        // new TurnCommand(45, driveTrainSubsystem)
         
         // DRIVE TO D5
-        // driveForward(driveTrainSubsystem, 120, true)
-        new TurnCommand(45, driveTrainSubsystem)
+        driveForward(driveTrainSubsystem, 120, true),
+        new TurnCommand(90, driveTrainSubsystem),
+        new DriveStraightCommand(driveTrainSubsystem, -0.70, Constants.ENCODER_TICKS_PER_INCH * 90)
+
             
         // LOOP AROUND D5
         // ,loopRight(driveTrainSubsystem)
@@ -79,6 +81,7 @@ public class BarrelPathAuton extends SequentialCommandGroup {
   public static Command driveForward(DriveTrainSubsystem driveTrainSubsystem, double distance, boolean resetGyro) {
     // return new DriveForwardGyroDistanceCommand(driveTrainSubsystem, Constants.ENCODER_TICKS_PER_INCH * distance, -0.70, 0, resetGyro);
     // return new DriveForwardDistanceCommand(driveTrainSubsystem, Constants.ENCODER_TICKS_PER_INCH * distance, -0.70);
+    System.out.println("Drive Forward: " + distance);
     return new DriveStraightCommand(driveTrainSubsystem, -0.70, Constants.ENCODER_TICKS_PER_INCH * distance);
   }
 

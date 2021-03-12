@@ -20,6 +20,8 @@ public class PIDTuner extends PIDCommand {
   private static double startTime = 0;
   private static double endTime = 0;
 
+  private static double feed = 0;
+
   /** Creates a new TurnCommand. */
   public PIDTuner(double targetAngleDegrees, DriveTrainSubsystem drive) {
     super(
@@ -33,13 +35,14 @@ public class PIDTuner extends PIDCommand {
         output -> {
 
           // use pidtuner.com. The output of the controller is the input for Pidtuner.com
-          drive.arcadeDrive(0, output);
+          drive.arcadeDrive(0, feed);
 
           endTime = System.currentTimeMillis();
 
           double elapsed = (endTime - startTime) / 1000; // convert to seconds
-          System.out.printf("%f,%f,%f", elapsed, output, drive.getHeading());
+          System.out.printf(">>%f,%f,%f\n", elapsed, feed, drive.getHeading());
 
+          feed = feed + 0.2;
         }, drive);
 
     this.driveTrain = drive;
