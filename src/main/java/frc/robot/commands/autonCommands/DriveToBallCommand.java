@@ -5,6 +5,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.Constants;
 import frc.robot.subsystems.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveToBallCommand extends CommandBase {
     
@@ -17,16 +18,7 @@ public class DriveToBallCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        double verticalDegreesToCenter = table.getEntry("ty").getDouble(0);
         
-        // calculate distance and drive if too far
-        double distance = Constants.LIMELIGHT_HEIGHT_FROM_GROUND / Math.tan(verticalDegreesToCenter + Constants.LIMELIGHT_ANGLE_TO_HORIZONTAL);
-        if(distance > Constants.ACCEPTABLE_FINAL_DISTANCE) {
-            System.out.println("DRIVING TOWARD BALL. Distance: " + distance);
-        } else {
-            System.out.println("CLOSE ENOUGH TO BALL");
-            closeToBall = true;
-        }
     }
 
     @Override
@@ -34,7 +26,8 @@ public class DriveToBallCommand extends CommandBase {
         double verticalDegreesToCenter = table.getEntry("ty").getDouble(0);
 
         // calculate distance and drive if too far
-        double distance = Constants.LIMELIGHT_HEIGHT_FROM_GROUND / Math.tan(verticalDegreesToCenter + Constants.LIMELIGHT_ANGLE_TO_HORIZONTAL);
+        double distance = Constants.LIMELIGHT_HEIGHT_FROM_GROUND / Math.tan(Math.abs(verticalDegreesToCenter) * (Math.PI / 180.0) + Constants.LIMELIGHT_ANGLE_TO_HORIZONTAL * (Math.PI / 180.0));
+        SmartDashboard.putNumber("Calculated Distance to Ball", distance);
         if(distance > Constants.ACCEPTABLE_FINAL_DISTANCE) {
             System.out.println("DRIVING TOWARD BALL. Distance: " + distance);
         } else {

@@ -5,6 +5,7 @@ import frc.robot.subsystems.*;
 import frc.robot.Constants;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class TurnToBallCommand extends CommandBase {
     
@@ -29,21 +30,10 @@ public class TurnToBallCommand extends CommandBase {
         else {
             // if a ball is not detected, make a scan for one
         }
-        
-        double horizontalDegreesToCenter = table.getEntry("tx").getDouble(0);
-        if(horizontalDegreesToCenter > -1 && horizontalDegreesToCenter < 1) { // if aiming within acceptable window
-            System.out.println("\n\nDRIVING FORWARD\n\n");
-            aimedAtBall = true;
-        } else if (horizontalDegreesToCenter < -1) {
-            System.out.println("\n\nTURNING LEFT TOWARD BALL\n\n");
-        } else if (horizontalDegreesToCenter > 1) {
-            System.out.println("\n\nTURNING RIGHT TOWARD BALL\n\n");
-        }
     }
 
     @Override
     public void execute() {
-        
         // Determine whether to aim left or right
         double horizontalDegreesToCenter = table.getEntry("tx").getDouble(0);
         if(horizontalDegreesToCenter > -1 && horizontalDegreesToCenter < 1) { // if aiming within acceptable window
