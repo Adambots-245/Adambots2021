@@ -7,13 +7,14 @@ package frc.robot.commands.autonCommands;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Constants;
+import frc.robot.sensors.Gyro;
 import frc.robot.subsystems.DriveTrainSubsystem;
 
 public class DriveStraightCommand extends PIDCommand {
 
   private static final double kP = Constants.GYRO_kP;
-  private static final double kI = 0; //Constants.GYRO_kI;
-  private static final double kD = 0.0472;//Constants.GYRO_kD;
+  private static final double kI = Constants.GYRO_kI;
+  private static final double kD = Constants.GYRO_kD;
 
   private final DriveTrainSubsystem driveTrain;
   private final double distance;
@@ -39,6 +40,16 @@ public class DriveStraightCommand extends PIDCommand {
     // Use addRequirements() here to declare subsystem dependencies.
     // Configure additional PID options by calling `getController` here.
   }
+
+@Override
+public void initialize() {
+  super.initialize();
+
+  driveTrain.resetGyro(true);
+  System.out.println("Heading after reset: " + driveTrain.getHeading());
+  System.out.println("Yaw after reset: " + Gyro.getInstance().getYaw());
+  driveTrain.resetEncoders();
+}
 
   // Returns true when the command should end.
   @Override

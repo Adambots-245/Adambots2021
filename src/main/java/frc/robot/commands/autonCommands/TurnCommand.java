@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.Constants;
+import frc.robot.sensors.Gyro;
 import frc.robot.subsystems.DriveTrainSubsystem;
 
 public class TurnCommand extends PIDCommand {
@@ -30,7 +31,8 @@ public class TurnCommand extends PIDCommand {
         targetAngleDegrees,
         // This uses the output
         output -> {
-          // Set minimum output to turn the robot - anything lower than this and it may not move
+          // Set minimum output to turn the robot - anything lower than this and it may
+          // not move
           double rotationSpeed = MathUtil.clamp(Math.abs(output), 0.9, 1.5);
 
           // if (Math.abs(output) > 1.5) rotationSpeed = 1.5;
@@ -39,10 +41,7 @@ public class TurnCommand extends PIDCommand {
           rotationSpeed = rotationSpeed * Math.signum(output); // apply the sign (positive or negative)
           System.out.println("O:H:S => " + output + " : " + drive.getHeading() + " : " + rotationSpeed);
           drive.arcadeDrive(0, rotationSpeed);
-        }
-        ,
-        drive
-        );
+        }, drive);
     // Use addRequirements() here to declare subsystem dependencies.
     // Configure additional PID options by calling `getController` here.
 
@@ -50,16 +49,24 @@ public class TurnCommand extends PIDCommand {
 
     this.driveTrain = drive;
 
-    drive.resetGyro(true);
-    drive.resetEncoders();
-
     SmartDashboard.putData("Turn PID Controller", getController());
     // Set the controller to be continuous (because it is an angle controller)
     getController().enableContinuousInput(-180, 180);
-    // Set the controller tolerance - the delta tolerance ensures the robot is stationary at the
+    // Set the controller tolerance - the delta tolerance ensures the robot is
+    // stationary at the
     // setpoint before it is considered as having reached the reference
-    getController()
-        .setTolerance(Constants.GYRO_TOLERANCE); //, Constants.GYRO_RATE_TOLERANCE_DEG_PER_SEC);
+    getController().setTolerance(Constants.GYRO_TOLERANCE); // , Constants.GYRO_RATE_TOLERANCE_DEG_PER_SEC);
+  }
+
+  @Override
+  public void initialize() {
+    super.initialize();
+
+    driveTrain.resetGyro(true);
+    driveTrain.resetEncoders();
+
+    System.out.println("Heading after reset: " + driveTrain.getHeading());
+    System.out.println("Yaw after reset: " + Gyro.getInstance().getYaw());
   }
 
   // Returns true when the command should end.
@@ -71,10 +78,10 @@ public class TurnCommand extends PIDCommand {
   }
 
   @Override
-  public void end(boolean interrupted){
+  public void end(boolean interrupted) {
     super.end(interrupted);
 
-    System.out.println("At End:" +  "Heading: " + driveTrain.getHeading());
+    System.out.println("At End:" + "Heading: " + driveTrain.getHeading());
     // driveTrain.arcadeDrive(0,0);
 
     driveTrain.zeroHeading();

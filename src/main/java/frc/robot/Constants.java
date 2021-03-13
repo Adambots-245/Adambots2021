@@ -154,6 +154,7 @@ public final class Constants {
     public static double TURRET_TOLERANCE = 0.25; //0.25;
     public static final double TURRET_TARGET_ANGLE = 0;
     public static final double TURRET_SPEED = 0.5;
+	public static final double CAMERA_OFFSET = 4;
 
     // blaster PID constants
     public static final double BLASTER_KF = .054;

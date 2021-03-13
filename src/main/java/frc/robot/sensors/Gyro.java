@@ -55,6 +55,11 @@ public class Gyro extends BaseSensor implements edu.wpi.first.wpilibj.interfaces
         // _navx.enableBoardlevelYawReset(true);
     }
 
+    public void lowLevelReset(){
+        _navx.enableBoardlevelYawReset(true);
+        _navx.reset();
+    }
+
     public void calibrationCheck() {
 
         boolean isCalibrating = _navx.isCalibrating();

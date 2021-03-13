@@ -5,6 +5,7 @@
 package frc.robot.commands.autonCommands.autonCommandGroups;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -34,13 +35,10 @@ public class BarrelPathAuton extends SequentialCommandGroup {
         //new DriveStraightCommand(driveTrainSubsystem, -0.75, Constants.ENCODER_TICKS_PER_INCH * 120),
         
         // DRIVE TO D5
-        driveForward(driveTrainSubsystem, 120, true),
-        new TurnCommand(90, driveTrainSubsystem),
-        new DriveStraightCommand(driveTrainSubsystem, -0.70, Constants.ENCODER_TICKS_PER_INCH * 90)
-
+        driveForward(driveTrainSubsystem, 120, true)
             
         // LOOP AROUND D5
-        // ,loopRight(driveTrainSubsystem)
+        ,loopRight(driveTrainSubsystem)
         // new WaitCommand(1),
         // DRIVE TO B8
         // turn(driveTrainSubsystem, 90),
@@ -98,16 +96,16 @@ public class BarrelPathAuton extends SequentialCommandGroup {
   public static SequentialCommandGroup loopRight(DriveTrainSubsystem driveTrainSubsystem) {
     return new SequentialCommandGroup(
         turn(driveTrainSubsystem, 90),
-        // shortPause(),
-        driveForward(driveTrainSubsystem, 90, true),
-        // shortPause(),
+        shortPause(),
+        driveForward(driveTrainSubsystem, 70, true),
+        shortPause(),
         turn(driveTrainSubsystem, 90),
-        // shortPause(),
-        driveForward(driveTrainSubsystem, 90, true),
-        // shortPause(),
+        shortPause(),
+        driveForward(driveTrainSubsystem, 70, true),
+        shortPause(),
         turn(driveTrainSubsystem, 90),
-        // shortPause(),
-        driveForward(driveTrainSubsystem, 90, true)
+        shortPause(),
+        driveForward(driveTrainSubsystem, 70, true)
     );
   }
 
@@ -127,8 +125,9 @@ public class BarrelPathAuton extends SequentialCommandGroup {
     );
   }
 
-  public static WaitCommand shortPause() {
-    return null; //new WaitCommand(0.25);
+  public static Command shortPause() {
+    return new InstantCommand(); 
+    //new WaitCommand(0.25);
   }
 
 }

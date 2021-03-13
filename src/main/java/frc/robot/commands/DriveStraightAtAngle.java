@@ -15,13 +15,13 @@ import frc.robot.subsystems.DriveTrainSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
-public class DriveStraight extends PIDCommand {
+public class DriveStraightAtAngle extends PIDCommand {
   /**
    * Creates a new DriveStraight.
    */
   private DriveTrainSubsystem driveTrainSubsystem;
   private double targetDistance;
-  public DriveStraight(DriveTrainSubsystem driveTrainSubsystem, double targetAngle, double forwardSpeed, double targetDistance) {
+  public DriveStraightAtAngle(DriveTrainSubsystem driveTrainSubsystem, double targetAngle, double forwardSpeed, double targetDistance) {
     super(
         // The controller that the command will use
         new PIDController(Constants.GYRO_kP, Constants.GYRO_kI, Constants.GYRO_kD),

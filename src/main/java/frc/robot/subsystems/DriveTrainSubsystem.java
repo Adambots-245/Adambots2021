@@ -141,6 +141,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
     if (!hasGyroBeenReset || force) {
       gyro.reset();
       Log.info("Gyro has been reset");
+      System.out.println("Gyro has been reset");
       hasGyroBeenReset = true;
     }
   }
