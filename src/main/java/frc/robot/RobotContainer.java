@@ -40,7 +40,8 @@ import frc.robot.commands.ShiftLowGearCommand;
 import frc.robot.commands.StartIntakeCommand;
 import frc.robot.commands.TurnToTargetCommand;
 import frc.robot.commands.WinchCommand;
-import frc.robot.commands.autonCommands.PathweaverTestCommand;
+import frc.robot.commands.autonCommands.PathweaverBarrelPath;
+import frc.robot.commands.autonCommands.PathweaverSlalomPath;
 import frc.robot.commands.autonCommands.autonCommandGroups.BarrelPathAuton;
 import frc.robot.commands.autonCommands.autonCommandGroups.CrossBaseline;
 import frc.robot.commands.autonCommands.autonCommandGroups.SnagNYeetCommandGroup;
@@ -278,7 +279,8 @@ public class RobotContainer {
     // return new TestTrajectory(driveTrainSubsystem);
 
     try {
-      return new PathweaverTestCommand(driveTrainSubsystem);
+      //return new PathweaverTestCommand(driveTrainSubsystem);
+      return new PathweaverBarrelPath(driveTrainSubsystem);
     }
     catch(IOException e) {
       System.out.println("IOException: " + e.getMessage());
