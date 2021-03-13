@@ -4,6 +4,8 @@
 
 package frc.robot.commands.autonCommands;
 
+import java.util.concurrent.TimeUnit;
+
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
@@ -19,6 +21,8 @@ public class TurnCommand extends PIDCommand {
   private static final double kP = Constants.GYRO_kP;
   private static final double kI = Constants.GYRO_kI;
   private static final double kD = Constants.GYRO_kD;
+
+  private double targetAngle = 0;
 
   /** Creates a new TurnCommand. */
   public TurnCommand(double targetAngleDegrees, DriveTrainSubsystem drive) {
@@ -48,6 +52,7 @@ public class TurnCommand extends PIDCommand {
     // addRequirements(driveTrain);
 
     this.driveTrain = drive;
+    this.targetAngle = targetAngleDegrees;
 
     SmartDashboard.putData("Turn PID Controller", getController());
     // Set the controller to be continuous (because it is an angle controller)
@@ -62,11 +67,27 @@ public class TurnCommand extends PIDCommand {
   public void initialize() {
     super.initialize();
 
-    driveTrain.resetGyro(true);
     driveTrain.resetEncoders();
+    driveTrain.resetGyro(true);
 
-    System.out.println("Heading after reset: " + driveTrain.getHeading());
-    System.out.println("Yaw after reset: " + Gyro.getInstance().getYaw());
+    System.out.println("Initialize - Heading:"+ driveTrain.getHeading());
+    double relativeSetPoint = Math.IEEEremainder(driveTrain.getHeading() + this.targetAngle, 180);
+    relativeSetPoint = Math.signum(this.targetAngle) * relativeSetPoint;
+    getController().setSetpoint(relativeSetPoint);
+    System.out.println("Initialize - SetPoint:"+ relativeSetPoint);
+
+
+    // driveTrain.resetGyro(true);
+    // Gyro.getInstance().lowLevelReset();
+    // try {
+    //   Thread.sleep(600);
+    // } catch (InterruptedException e) {
+    //   e.printStackTrace();
+    // }
+
+    // System.out.println("Heading after reset: " + driveTrain.getHeading());
+    // System.out.println("Yaw after reset: " + Gyro.getInstance().getYaw());
+    // System.out.println("Angle after reset: " + Gyro.getInstance().getAngle());
   }
 
   // Returns true when the command should end.
@@ -84,6 +105,6 @@ public class TurnCommand extends PIDCommand {
     System.out.println("At End:" + "Heading: " + driveTrain.getHeading());
     // driveTrain.arcadeDrive(0,0);
 
-    driveTrain.zeroHeading();
+    // driveTrain.zeroHeading();
   }
 }

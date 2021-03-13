@@ -45,10 +45,20 @@ public class DriveStraightCommand extends PIDCommand {
 public void initialize() {
   super.initialize();
 
+  driveTrain.resetEncoders();
+
   driveTrain.resetGyro(true);
+  Gyro.getInstance().lowLevelReset();
+  try {
+    Thread.sleep(600);
+  } catch (InterruptedException e) {
+    e.printStackTrace();
+  }
+
   System.out.println("Heading after reset: " + driveTrain.getHeading());
   System.out.println("Yaw after reset: " + Gyro.getInstance().getYaw());
-  driveTrain.resetEncoders();
+  System.out.println("Angle after reset: " + Gyro.getInstance().getAngle());
+
 }
 
   // Returns true when the command should end.

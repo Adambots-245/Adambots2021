@@ -34,16 +34,17 @@ public class BarrelPathAuton extends SequentialCommandGroup {
         
         //new DriveStraightCommand(driveTrainSubsystem, -0.75, Constants.ENCODER_TICKS_PER_INCH * 120),
         
+        // new TurnCommand(-90, driveTrainSubsystem)
         // DRIVE TO D5
-        driveForward(driveTrainSubsystem, 120, true)
+        driveForward(driveTrainSubsystem, 130, true)
             
         // LOOP AROUND D5
-        ,loopRight(driveTrainSubsystem)
+        ,loopRight(driveTrainSubsystem),
         // new WaitCommand(1),
         // DRIVE TO B8
-        // turn(driveTrainSubsystem, 90),
+        turn(driveTrainSubsystem, 90)
         // new DriveForwardGyroDistanceCommand(driveTrainSubsystem, Constants.ENCODER_TICKS_PER_INCH * 160, -0.70, 0, true),
-        // driveForward(driveTrainSubsystem, 165, true),
+        // driveForward(driveTrainSubsystem, 165, true)
         
         // // // LOOP AROUND B8
         // loopLeft(driveTrainSubsystem),
@@ -97,15 +98,15 @@ public class BarrelPathAuton extends SequentialCommandGroup {
     return new SequentialCommandGroup(
         turn(driveTrainSubsystem, 90),
         shortPause(),
-        driveForward(driveTrainSubsystem, 70, true),
+        driveForward(driveTrainSubsystem, 50, true),
         shortPause(),
         turn(driveTrainSubsystem, 90),
         shortPause(),
-        driveForward(driveTrainSubsystem, 70, true),
+        driveForward(driveTrainSubsystem, 50, true),
         shortPause(),
         turn(driveTrainSubsystem, 90),
         shortPause(),
-        driveForward(driveTrainSubsystem, 70, true)
+        driveForward(driveTrainSubsystem, 50, true)
     );
   }
 
@@ -126,8 +127,8 @@ public class BarrelPathAuton extends SequentialCommandGroup {
   }
 
   public static Command shortPause() {
-    return new InstantCommand(); 
-    //new WaitCommand(0.25);
+    // return new InstantCommand(); 
+    return new WaitCommand(0.25);
   }
 
 }
