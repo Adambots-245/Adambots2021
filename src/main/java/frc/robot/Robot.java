@@ -11,6 +11,8 @@ import frc.robot.sensors.Gyro;
 import frc.robot.subsystems.*;
 import frc.robot.vision.GripPipeline;
 
+import java.io.IOException;
+
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj.TimedRobot;

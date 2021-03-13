@@ -74,7 +74,7 @@ public class TrajectoryCommand extends RamseteCommand {
     );
 
     driveTrain.resetOdometry(startPosition);
-    this.andThen(() -> driveTrain.setVoltage(0, 0));
+    // this.andThen(() -> driveTrain.setVoltage(0, 0));
 
   }
 
@@ -94,25 +94,25 @@ public class TrajectoryCommand extends RamseteCommand {
     return new TrajectoryConfig(Constants.kMaxSpeedMetersPerSecond, Constants.kMaxAccelerationMetersPerSecondSquared)
     
     // Add kinematics to ensure max speed is actually obeyed
-    .setKinematics(Constants.kDriveKinematics)
+    .setKinematics(Constants.kDriveKinematics);
 
     // Apply the voltage constraint
-    .addConstraint(
-      new DifferentialDriveVoltageConstraint(
+    // .addConstraint(
+    //   new DifferentialDriveVoltageConstraint(
 
-        // Forward motor feed
-        new SimpleMotorFeedforward(Constants.ksVolts,
-                                  Constants.kvVoltSecondsPerMeter,
-                                  Constants.kaVoltSecondsSquaredPerMeter),
+    //     // Forward motor feed
+    //     new SimpleMotorFeedforward(Constants.ksVolts,
+    //                               Constants.kvVoltSecondsPerMeter,
+    //                               Constants.kaVoltSecondsSquaredPerMeter),
 
-        // Drive kinematics
-        Constants.kDriveKinematics,
+    //     // Drive kinematics
+    //     Constants.kDriveKinematics,
 
-        // Maximum voltage (originally a constant 10)
-        Constants.MAX_DRIVE_VOLTAGE
+    //     // Maximum voltage (originally a constant 10)
+    //     Constants.MAX_DRIVE_VOLTAGE
       
-      )
-    );
+    //   )
+    // );
   }
 
 }

@@ -8,12 +8,15 @@
 
 package frc.robot;
 
+import java.io.IOException;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Gamepad.Buttons;
 import frc.robot.Gamepad.GamepadConstants;
 import frc.robot.commands.AlignColorCommand;
@@ -37,6 +40,7 @@ import frc.robot.commands.ShiftLowGearCommand;
 import frc.robot.commands.StartIntakeCommand;
 import frc.robot.commands.TurnToTargetCommand;
 import frc.robot.commands.WinchCommand;
+import frc.robot.commands.autonCommands.PathweaverTestCommand;
 import frc.robot.commands.autonCommands.autonCommandGroups.BarrelPathAuton;
 import frc.robot.commands.autonCommands.autonCommandGroups.CrossBaseline;
 import frc.robot.commands.autonCommands.autonCommandGroups.SnagNYeetCommandGroup;
@@ -271,6 +275,14 @@ public class RobotContainer {
 
     // return new BarrelPathAuton(driveTrainSubsystem);
     // return new SlalomPathAuton(driveTrainSubsystem);
-    return new TestTrajectory(driveTrainSubsystem);
+    // return new TestTrajectory(driveTrainSubsystem);
+
+    try {
+      return new PathweaverTestCommand(driveTrainSubsystem);
+    }
+    catch(IOException e) {
+      System.out.println("IOException: " + e.getMessage());
+      return new InstantCommand();
+    }
   }
 }
