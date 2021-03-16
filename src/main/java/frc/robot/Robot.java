@@ -103,7 +103,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = new DriveToBallCommand();
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////m_autonomousCommand = ;
     SmartDashboard.putString("auton selected", m_autonomousCommand.toString());
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {

@@ -5,6 +5,7 @@ import frc.robot.subsystems.*;
 import frc.robot.Constants;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.command.PIDCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class TurnToBallCommand extends CommandBase {
@@ -13,22 +14,25 @@ public class TurnToBallCommand extends CommandBase {
     private boolean ballDetected;
     private boolean aimedAtBall = false;
     private NetworkTable table;
+    private DriveTrainSubsystem driveTrainSubsystem;
 
-    public TurnToBallCommand() {
+    public TurnToBallCommand(DriveTrainSubsystem driveTrainSubsystem) {
         super();
         //this.driveTrainSubsystem = driveTrainSubsystem;
         //addRequirements(driveTrainSubsystem);
         table = NetworkTableInstance.getDefault().getTable("limelight");
         System.out.println("TurnToBallCommand Constructor, Table: " + table.toString());
+        this.driveTrainSubsystem = driveTrainSubsystem;
+        addRequirements(driveTrainSubsystem);
     }
 
     @Override
     public void initialize() {
         double objectDetectedValue = table.getEntry("tv").getDouble(0);
-        if((int) objectDetectedValue == 1)
+        if((int) objectDetectedValue == 1) {
             ballDetected = true;
-        else {
-            // if a ball is not detected, make a scan for one
+        } else {
+            //begin scan for ball. turn 90 degrees, turn back (relatively) slowly
         }
     }
 
@@ -39,10 +43,8 @@ public class TurnToBallCommand extends CommandBase {
         if(horizontalDegreesToCenter > -1 && horizontalDegreesToCenter < 1) { // if aiming within acceptable window
             System.out.println("\n\nDRIVING FORWARD\n\n");
             aimedAtBall = true;
-        } else if (horizontalDegreesToCenter < -1) { // if robot is aiming too far to the right
-            System.out.println("\n\nTURNING LEFT TOWARD BALL\n\n");
-        } else if (horizontalDegreesToCenter > 1) { // if robot is aiming too far to the left
-            System.out.println("\n\nTURNING RIGHT TOWARD BALL\n\n");
+        } else { // ONLY run this when the robot is NOT aimed at the ball
+
         }
     }
 
