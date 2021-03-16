@@ -7,7 +7,6 @@ package frc.robot.commands.autonCommands;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Constants;
-import frc.robot.sensors.Gyro;
 import frc.robot.subsystems.DriveTrainSubsystem;
 
 public class DriveStraightCommand extends PIDCommand {
@@ -36,7 +35,6 @@ public class DriveStraightCommand extends PIDCommand {
 
         this.driveTrain = drive;
         this.distance = distance;
-        drive.resetGyro();
     // Use addRequirements() here to declare subsystem dependencies.
     // Configure additional PID options by calling `getController` here.
   }
@@ -47,17 +45,18 @@ public void initialize() {
 
   driveTrain.resetEncoders();
 
-  driveTrain.resetGyro(true);
-  Gyro.getInstance().lowLevelReset();
-  try {
-    Thread.sleep(600);
-  } catch (InterruptedException e) {
-    e.printStackTrace();
-  }
+  System.out.println("Initialize - Heading:"+ driveTrain.getHeading());
+  double relativeSetPoint = driveTrain.getHeading(); // stay at whatever angle is current value
 
-  System.out.println("Heading after reset: " + driveTrain.getHeading());
-  System.out.println("Yaw after reset: " + Gyro.getInstance().getYaw());
-  System.out.println("Angle after reset: " + Gyro.getInstance().getAngle());
+  // relativeSetPoint = Math.signum(this.targetAngle) * relativeSetPoint;
+  getController().setSetpoint(relativeSetPoint);
+  System.out.println("Initialize - SetPoint:"+ relativeSetPoint);
+
+  // driveTrain.resetGyro(true);
+
+  // System.out.println("Heading after reset: " + driveTrain.getHeading());
+  // System.out.println("Yaw after reset: " + Gyro.getInstance().getYaw());
+  // System.out.println("Angle after reset: " + Gyro.getInstance().getAngle());
 
 }
 

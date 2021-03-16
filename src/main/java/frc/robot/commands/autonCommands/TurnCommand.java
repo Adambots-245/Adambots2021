@@ -24,39 +24,46 @@ public class TurnCommand extends PIDCommand {
 
   private double targetAngle = 0;
 
-  /** Creates a new TurnCommand. */
-  public TurnCommand(double targetAngleDegrees, DriveTrainSubsystem drive) {
+  /**
+   * Turn the robot by @targetAngleDegrees.
+   * 
+   * @param targetAngleDegrees - +ve values for clockwise rotation and -ve for counter-clockwise
+   * @param driveTrain
+   */
+  public TurnCommand(double targetAngleDegrees, DriveTrainSubsystem driveTrain) {
     super(
         // The controller that the command will use
         new PIDController(kP, kI, kD),
         // This should return the measurement
-        drive::getHeading,
+        driveTrain::getHeading,
         // This should return the setpoint (can also be a constant)
         targetAngleDegrees,
         // This uses the output
         output -> {
           // Set minimum output to turn the robot - anything lower than this and it may
           // not move
+          // Do not exceed a certain speed as it may overshoot too much
           double rotationSpeed = MathUtil.clamp(Math.abs(output), 0.9, 1.5);
 
           // if (Math.abs(output) > 1.5) rotationSpeed = 1.5;
 
           // double rotationSpeed = output;
           rotationSpeed = rotationSpeed * Math.signum(output); // apply the sign (positive or negative)
-          System.out.println("O:H:S => " + output + " : " + drive.getHeading() + " : " + rotationSpeed);
-          drive.arcadeDrive(0, rotationSpeed);
-        }, drive);
+          System.out.println("O:H:S => " + output + " : " + driveTrain.getHeading() + " : " + rotationSpeed);
+          driveTrain.arcadeDrive(0, rotationSpeed);
+        }, driveTrain);
     // Use addRequirements() here to declare subsystem dependencies.
     // Configure additional PID options by calling `getController` here.
 
     // addRequirements(driveTrain);
 
-    this.driveTrain = drive;
+    this.driveTrain = driveTrain;
     this.targetAngle = targetAngleDegrees;
 
     SmartDashboard.putData("Turn PID Controller", getController());
-    // Set the controller to be continuous (because it is an angle controller)
+    // Set the controller input to be continuous (because it is an angle controller and getYaw returns values from -180 to 180)
     getController().enableContinuousInput(-180, 180);
+
     // Set the controller tolerance - the delta tolerance ensures the robot is
     // stationary at the
     // setpoint before it is considered as having reached the reference
@@ -67,12 +74,15 @@ public class TurnCommand extends PIDCommand {
   public void initialize() {
     super.initialize();
 
-    driveTrain.resetEncoders();
-    driveTrain.resetGyro(true);
+    // driveTrain.resetEncoders();
+    // driveTrain.resetGyro(true);
 
-    System.out.println("Initialize - Heading:"+ driveTrain.getHeading());
-    double relativeSetPoint = Math.IEEEremainder(driveTrain.getHeading() + this.targetAngle, 180);
-    relativeSetPoint = Math.signum(this.targetAngle) * relativeSetPoint;
+    // Sometimes there is drift in the Gyro and sometimes resetting it doesn't do much.
+    // So, add the target angle to starting value
+    
+    System.out.println("Initialize - Current Heading:"+ driveTrain.getHeading());
+    double relativeSetPoint = driveTrain.getHeading() + this.targetAngle;
+    // relativeSetPoint = Math.signum(this.targetAngle) * relativeSetPoint;
     getController().setSetpoint(relativeSetPoint);
     System.out.println("Initialize - SetPoint:"+ relativeSetPoint);
 

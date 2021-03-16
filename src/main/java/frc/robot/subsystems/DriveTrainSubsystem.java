@@ -110,7 +110,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
   public void arcadeDrive(double speed, double turnSpeed) {
     int frontRobotDirection = -1;
     double straightSpeed = frontRobotDirection * speed * speedModifier;
-    SmartDashboard.putNumber("Yaw", gyro.getAngle());
+    SmartDashboard.putNumber("Yaw", gyro.getYaw());
 
     //Log.infoF("Arcade Drive - Straight Speed = %f - Turn Speed = %f - Gyro Angle = %f", straightSpeed, turnSpeed * speedModifier, gyro.getAngle());
     drive.arcadeDrive(straightSpeed, turnSpeed * speedModifier);
@@ -133,6 +133,20 @@ public class DriveTrainSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
+  /**
+   * Get yaw - -180 to 180 range
+   * 
+   * @return
+   */
+  public double getYaw() {
+    return gyro.getYaw();
+  }
+
+  /**
+   * Get cummulative yaw - can be greater than 360
+   * 
+   * @return
+   */
   public double getAngle() {
     return gyro.getAngle();
   }
@@ -152,7 +166,8 @@ public class DriveTrainSubsystem extends SubsystemBase {
    * @return the robot's heading in degrees, from 180 to 180
    */
   public double getHeading(){
-    double heading = gyro.getAngle() * (Constants.GYRO_REVERSED ? -1.0 : 1.0);
+    double heading = gyro.getYaw() * (Constants.GYRO_REVERSED ? -1.0 : 1.0);
+    // double heading = Math.IEEEremainder(gyro.getAngle(), 360) * (Constants.GYRO_REVERSED ? -1.0 : 1.0);
   
     // System.out.println("Heading: " + heading);
     return heading;

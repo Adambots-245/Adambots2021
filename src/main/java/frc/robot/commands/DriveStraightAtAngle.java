@@ -19,27 +19,29 @@ public class DriveStraightAtAngle extends PIDCommand {
   /**
    * Creates a new DriveStraight.
    */
-  private DriveTrainSubsystem driveTrainSubsystem;
+  private DriveTrainSubsystem driveTrain;
   private double targetDistance;
-  public DriveStraightAtAngle(DriveTrainSubsystem driveTrainSubsystem, double targetAngle, double forwardSpeed, double targetDistance) {
+  private double targetAngle;
+  public DriveStraightAtAngle(DriveTrainSubsystem driveTrain, double targetAngle, double forwardSpeed, double targetDistance) {
     super(
         // The controller that the command will use
         new PIDController(Constants.GYRO_kP, Constants.GYRO_kI, Constants.GYRO_kD),
         // This should return the measurement
-        () -> driveTrainSubsystem.getHeading(),
+        () -> driveTrain.getHeading(),
         // This should return the setpoint (can also be a constant)
         () -> targetAngle,
         // This uses the output
         output -> { 
           // Use the output here
-          driveTrainSubsystem.arcadeDrive(forwardSpeed, output);
+          driveTrain.arcadeDrive(forwardSpeed, output);
 
-          System.out.println("Driving Straight: " + driveTrainSubsystem.getHeading());
+          System.out.println("Driving Straight: " + driveTrain.getHeading());
         },
-        driveTrainSubsystem);
+        driveTrain);
 
-        this.driveTrainSubsystem = driveTrainSubsystem;
+        this.driveTrain = driveTrain;
         this.targetDistance = targetDistance;
+        this.targetAngle = targetAngle;
 
         // addRequirements(driveTrainSubsystem);
         // driveTrainSubsystem.resetGyro(true);
@@ -51,11 +53,20 @@ public class DriveStraightAtAngle extends PIDCommand {
   public void initialize() {
     super.initialize();
     // driveTrainSubsystem.resetEncoders();
-    driveTrainSubsystem.resetGyro(true);
+    // driveTrainSubsystem.resetGyro(true);
+
+    driveTrain.resetEncoders();
+
+    System.out.println("Initialize - Heading:"+ driveTrain.getHeading());
+    double relativeSetPoint = driveTrain.getHeading() + this.targetAngle; 
+    
+    // relativeSetPoint = Math.signum(this.targetAngle) * relativeSetPoint;
+    getController().setSetpoint(relativeSetPoint);
+    System.out.println("Initialize - SetPoint:"+ relativeSetPoint);
   }
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (driveTrainSubsystem.getAverageDriveEncoderValue() >= targetDistance);    
+    return (driveTrain.getAverageDriveEncoderValue() >= targetDistance);    
   }
 }
