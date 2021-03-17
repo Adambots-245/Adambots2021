@@ -68,6 +68,7 @@ public class Gyro extends BaseSensor implements edu.wpi.first.wpilibj.interfaces
         boolean isCalibrating = _navx.isCalibrating();
         
         if (isCalibrating) {
+            System.out.println("In Calibration Check - waiting 2 seconds to complete Gyro Calibration");
             Timer.delay(2); // wait 2 seconds to let it complete calibration
         }
     }

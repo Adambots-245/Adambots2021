@@ -109,6 +109,7 @@ public class Robot extends TimedRobot {
     System.out.println("Init Auton.........");
     Gyro.getInstance().reset();
     Gyro.getInstance().calibrationCheck(); // may take up to two seconds to complete
+    System.out.println("Gyro Yaw at Startup: " + Gyro.getInstance().getYaw());
     // CommandScheduler.getInstance().cancelAll(); // cancel all teleop commands
 
     // schedule the autonomous command (example)

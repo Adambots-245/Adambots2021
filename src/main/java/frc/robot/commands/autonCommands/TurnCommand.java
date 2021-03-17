@@ -75,12 +75,12 @@ public class TurnCommand extends PIDCommand {
     super.initialize();
 
     // driveTrain.resetEncoders();
-    // driveTrain.resetGyro(true);
+    driveTrain.resetGyro(true);
 
     // Sometimes there is drift in the Gyro and sometimes resetting it doesn't do much.
     // So, add the target angle to starting value
     
-    System.out.println("Initialize - Current Heading:"+ driveTrain.getHeading());
+    System.out.printf("Initialize - Current Heading= %f + Angle = %f\n", driveTrain.getHeading(), this.targetAngle);
     double relativeSetPoint = driveTrain.getHeading() + this.targetAngle;
     // relativeSetPoint = Math.signum(this.targetAngle) * relativeSetPoint;
     getController().setSetpoint(relativeSetPoint);
@@ -113,7 +113,7 @@ public class TurnCommand extends PIDCommand {
     super.end(interrupted);
 
     System.out.println("At End:" + "Heading: " + driveTrain.getHeading());
-    // driveTrain.arcadeDrive(0,0);
+    driveTrain.arcadeDrive(0,0);
 
     // driveTrain.zeroHeading();
   }

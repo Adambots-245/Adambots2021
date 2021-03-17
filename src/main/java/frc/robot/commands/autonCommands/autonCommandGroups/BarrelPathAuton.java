@@ -4,6 +4,7 @@
 
 package frc.robot.commands.autonCommands.autonCommandGroups;
 
+import edu.wpi.first.wpilibj.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -34,15 +35,17 @@ public class BarrelPathAuton extends SequentialCommandGroup {
         
         //new DriveStraightCommand(driveTrainSubsystem, -0.75, Constants.ENCODER_TICKS_PER_INCH * 120),
         
+        // new TurnCommand(90, driveTrainSubsystem)
+        // ,
         // new TurnCommand(-90, driveTrainSubsystem)
         // DRIVE TO D5
         driveForward(driveTrainSubsystem, 130, true)
             
         // LOOP AROUND D5
-        ,loopRight(driveTrainSubsystem),
+        ,loopRight(driveTrainSubsystem)
         // new WaitCommand(1),
         // DRIVE TO B8
-        turn(driveTrainSubsystem, 90)
+        // turn(driveTrainSubsystem, 90)
         // new DriveForwardGyroDistanceCommand(driveTrainSubsystem, Constants.ENCODER_TICKS_PER_INCH * 160, -0.70, 0, true),
         // driveForward(driveTrainSubsystem, 165, true)
         
@@ -96,17 +99,17 @@ public class BarrelPathAuton extends SequentialCommandGroup {
 
   public static SequentialCommandGroup loopRight(DriveTrainSubsystem driveTrainSubsystem) {
     return new SequentialCommandGroup(
-        turn(driveTrainSubsystem, 90),
-        shortPause(),
-        driveForward(driveTrainSubsystem, 50, true),
-        shortPause(),
-        turn(driveTrainSubsystem, 90),
-        shortPause(),
-        driveForward(driveTrainSubsystem, 50, true),
-        shortPause(),
-        turn(driveTrainSubsystem, 90),
-        shortPause(),
-        driveForward(driveTrainSubsystem, 50, true)
+        turn(driveTrainSubsystem, 90)
+        // shortPause(),
+        // driveForward(driveTrainSubsystem, 50, true),
+        // shortPause(),
+        // turn(driveTrainSubsystem, 90),
+        // shortPause(),
+        // driveForward(driveTrainSubsystem, 50, true),
+        // shortPause(),
+        // turn(driveTrainSubsystem, 90),
+        // shortPause(),
+        // driveForward(driveTrainSubsystem, 50, true)
     );
   }
 
@@ -128,7 +131,7 @@ public class BarrelPathAuton extends SequentialCommandGroup {
 
   public static Command shortPause() {
     // return new InstantCommand(); 
-    return new WaitCommand(0.25);
+    return new WaitCommand(0.5);
   }
 
 }

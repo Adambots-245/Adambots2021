@@ -44,6 +44,7 @@ public void initialize() {
   super.initialize();
 
   driveTrain.resetEncoders();
+  driveTrain.resetGyro(true);
 
   System.out.println("Initialize - Heading:"+ driveTrain.getHeading());
   double relativeSetPoint = driveTrain.getHeading(); // stay at whatever angle is current value
@@ -52,7 +53,6 @@ public void initialize() {
   getController().setSetpoint(relativeSetPoint);
   System.out.println("Initialize - SetPoint:"+ relativeSetPoint);
 
-  // driveTrain.resetGyro(true);
 
   // System.out.println("Heading after reset: " + driveTrain.getHeading());
   // System.out.println("Yaw after reset: " + Gyro.getInstance().getYaw());
