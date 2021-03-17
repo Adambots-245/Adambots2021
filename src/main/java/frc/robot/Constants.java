@@ -10,7 +10,10 @@ package frc.robot;
 import org.opencv.core.*;
 
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj.util.Color;
 
 import com.revrobotics.ColorMatch;
@@ -209,9 +212,9 @@ public final class Constants {
 
     // Feed forward/back gains
     public static final double ksVolts = 1.98;//0.22;
-    public static final double kvVoltSecondsPerMeter = 6.11;//1.98;
-    public static final double kaVoltSecondsSquaredPerMeter = -0.021;//0.2;
-    public static final double MAX_DRIVE_VOLTAGE = 9;
+    public static final double kvVoltSecondsPerMeter = 1.98;//6.11;//1.98;
+    public static final double kaVoltSecondsSquaredPerMeter = 0.2;//-0.021;//0.2;
+    public static final double MAX_DRIVE_VOLTAGE = 10;
 
     // Drive velocity
     public static final double kPDriveVel = 0.998;//8.5;
@@ -229,5 +232,26 @@ public final class Constants {
     // Should work well in most robots without any tuning necessary
     public static final double kRamseteB = 2;
     public static final double kRamseteZeta = 0.7;
+
+    public static final TrajectoryConfig TRAJECTORY_CONFIG = new TrajectoryConfig(Constants.kMaxSpeedMetersPerSecond, Constants.kMaxAccelerationMetersPerSecondSquared)
+    // Add kinematics to ensure max speed is actually obeyed
+    .setKinematics(Constants.kDriveKinematics);
+    // Apply the voltage constraint
+    // .addConstraint(
+    //   new DifferentialDriveVoltageConstraint(
+
+    //     // Forward motor feed
+    //     new SimpleMotorFeedforward(Constants.ksVolts,
+    //                               Constants.kvVoltSecondsPerMeter,
+    //                               Constants.kaVoltSecondsSquaredPerMeter),
+
+    //     // Drive kinematics
+    //     Constants.kDriveKinematics,
+
+    //     // Maximum voltage (originally a constant 10)
+    //     Constants.MAX_DRIVE_VOLTAGE
+      
+    //   )
+    // );
 
 }

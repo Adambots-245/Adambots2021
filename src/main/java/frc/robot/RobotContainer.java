@@ -276,15 +276,15 @@ public class RobotContainer {
 
     // return new BarrelPathAuton(driveTrainSubsystem);
     // return new SlalomPathAuton(driveTrainSubsystem);
-    // return new TestTrajectory(driveTrainSubsystem);
+    return new TestTrajectory(driveTrainSubsystem);
 
-    try {
-      //return new PathweaverTestCommand(driveTrainSubsystem);
-      return new PathweaverBarrelPath(driveTrainSubsystem);
-    }
-    catch(IOException e) {
-      System.out.println("IOException: " + e.getMessage());
-      return new InstantCommand();
-    }
+    // try {
+    //   //return new PathweaverTestCommand(driveTrainSubsystem);
+    //   return new PathweaverBarrelPath(driveTrainSubsystem);
+    // }
+    // catch(IOException e) {
+    //   System.out.println("IOException: " + e.getMessage());
+    //   return new InstantCommand();
+    // }
   }
 }
