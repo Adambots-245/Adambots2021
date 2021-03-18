@@ -5,6 +5,7 @@
 package frc.robot.commands.autonCommands;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveTrainSubsystem;
@@ -17,7 +18,7 @@ public class DriveStraightCommand extends PIDCommand {
 
   private final DriveTrainSubsystem driveTrain;
   private final double distance;
-  
+
   /** Creates a new DriveStraightCommand. */
   public DriveStraightCommand(DriveTrainSubsystem drive, double speed, double distance) {
     super(
@@ -30,35 +31,44 @@ public class DriveStraightCommand extends PIDCommand {
         // This uses the output
         output -> {
           drive.arcadeDrive(speed, output);
-        },
-        drive);
+        }, drive);
 
-        this.driveTrain = drive;
-        this.distance = distance;
+    this.driveTrain = drive;
+    this.distance = distance;
+
     // Use addRequirements() here to declare subsystem dependencies.
     // Configure additional PID options by calling `getController` here.
+    SmartDashboard.putData("Straight PID Controller", getController());
+    // Set the controller input to be continuous (because it is an angle controller
+    // and getYaw returns values from -180 to 180)
+    getController().enableContinuousInput(-180, 180);
+
+    // Set the controller tolerance - the delta tolerance ensures the robot is
+    // stationary at the
+    // setpoint before it is considered as having reached the reference
+    getController().setTolerance(Constants.GYRO_TOLERANCE); // , Constants.GYRO_RATE_TOLERANCE_DEG_PER_SEC);
+
   }
 
-@Override
-public void initialize() {
-  super.initialize();
+  @Override
+  public void initialize() {
+    super.initialize();
 
-  driveTrain.resetEncoders();
-  driveTrain.resetGyro(true);
+    driveTrain.resetEncoders();
+    driveTrain.resetGyro(true);
 
-  System.out.println("Initialize - Heading:"+ driveTrain.getHeading());
-  double relativeSetPoint = driveTrain.getHeading(); // stay at whatever angle is current value
+    System.out.println("Initialize - Heading:" + driveTrain.getHeading());
+    double relativeSetPoint = driveTrain.getHeading(); // stay at whatever angle is current value
 
-  // relativeSetPoint = Math.signum(this.targetAngle) * relativeSetPoint;
-  getController().setSetpoint(relativeSetPoint);
-  System.out.println("Initialize - SetPoint:"+ relativeSetPoint);
+    // relativeSetPoint = Math.signum(this.targetAngle) * relativeSetPoint;
+    getController().setSetpoint(relativeSetPoint);
+    System.out.println("Initialize - SetPoint:" + relativeSetPoint);
 
+    // System.out.println("Heading after reset: " + driveTrain.getHeading());
+    // System.out.println("Yaw after reset: " + Gyro.getInstance().getYaw());
+    // System.out.println("Angle after reset: " + Gyro.getInstance().getAngle());
 
-  // System.out.println("Heading after reset: " + driveTrain.getHeading());
-  // System.out.println("Yaw after reset: " + Gyro.getInstance().getYaw());
-  // System.out.println("Angle after reset: " + Gyro.getInstance().getAngle());
-
-}
+  }
 
   // Returns true when the command should end.
   @Override
