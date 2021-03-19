@@ -56,6 +56,10 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
 
+    SmartDashboard.putBoolean("ranPath", false);
+    SmartDashboard.putBoolean("reachedInnerRamsete", false);
+    SmartDashboard.putBoolean("voltageSet", false);
+
   }
 
   /**

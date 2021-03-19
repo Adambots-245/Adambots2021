@@ -10,10 +10,12 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.fasterxml.jackson.databind.deser.std.FromStringDeserializer;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -120,6 +122,14 @@ public class DriveTrainSubsystem extends SubsystemBase {
     return -frontRightMotor.getSelectedSensorVelocity();
   }
 
+  public double getLeftDriveEncoderPosition() {
+    return Math.abs(frontLeftMotor.getSelectedSensorPosition());
+  }
+
+  public double getRightDriveEncoderPosition() {
+    return Math.abs(frontRightMotor.getSelectedSensorPosition());
+  }
+
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
     return new DifferentialDriveWheelSpeeds(frontLeftMotor.getSensorCollection().getIntegratedSensorVelocity(), -frontRightMotor.getSensorCollection().getIntegratedSensorVelocity());
   }
@@ -148,8 +158,8 @@ public class DriveTrainSubsystem extends SubsystemBase {
    * @param rightVolts the commanded right output
    */
   public void setVoltage(double leftVolts, double rightVolts) {
-    frontLeftMotor.setVoltage(leftVolts);
-    frontRightMotor.setVoltage(-rightVolts);
+    frontLeftMotor.setVoltage(-leftVolts);
+    frontRightMotor.setVoltage(rightVolts);
 
     System.out.printf("Left Voltage: %f | Right Voltage: %f\n", leftVolts, rightVolts);
 
@@ -180,6 +190,16 @@ public class DriveTrainSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    updateOdometry();
+
+    //Debug odometry
+    var translation = odometry.getPoseMeters().getTranslation();
+    SmartDashboard.putNumber("odometryX", translation.getX());
+    SmartDashboard.putNumber("odometryY", translation.getY());
+  
+    //Debug voltage
+    SmartDashboard.putNumber("leftVoltage", frontLeftMotor.getMotorOutputVoltage());
+    SmartDashboard.putNumber("rightVoltage", frontRightMotor.getMotorOutputVoltage());
   }
 
   public double getAngle() {
@@ -225,9 +245,21 @@ public class DriveTrainSubsystem extends SubsystemBase {
     resetGyro(false);
   }
 
+  /**
+   * Resets the odometry with the robot's current heading and starting at a specific pose
+   * @param pose - The starting pose
+   */
   public void resetOdometry(Pose2d pose) {
     resetEncoders();
-    odometry.resetPosition(pose, gyro.getRotation2d());
+    odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
+  }
+
+  /**
+   * Updates the odometry with the robot's current heading and encoder positions.
+   */
+  public void updateOdometry() {
+    odometry.update(Rotation2d.fromDegrees(getHeading()), getLeftDriveEncoderPosition(),
+      getRightDriveEncoderPosition());
   }
 
 }

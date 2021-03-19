@@ -211,21 +211,21 @@ public final class Constants {
     // --------------------RAMSETE TRAJECTORY CONSTANTS---------------------- \\
 
     // Feed forward/back gains
-    public static final double ksVolts = 1.98;//0.22;
-    public static final double kvVoltSecondsPerMeter = 1.98;//6.11;//1.98;
-    public static final double kaVoltSecondsSquaredPerMeter = 0.2;//-0.021;//0.2;
+    public static final double ksVolts = 0.745;//1.98;//0.22;
+    public static final double kvVoltSecondsPerMeter = 0.0493;//1.98;//6.11;//1.98;
+    public static final double kaVoltSecondsSquaredPerMeter = 0.0006;//0.2;//-0.021;//0.2;
     public static final double MAX_DRIVE_VOLTAGE = 10;
 
     // Drive velocity
-    public static final double kPDriveVel = 0.998;//8.5;
+    public static final double kPDriveVel = 0.0118;//0.998;//8.5;
 
     // Differential kinematics
-    public static final double kTrackwidthMeters = 0.27;//0.69; // Distance between wheels
+    public static final double kTrackwidthMeters = 0.635;//0.27;//0.69; // Distance between wheels
     public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
 
     // Max trajectory velocity/acceleration
-    public static final double kMaxSpeedMetersPerSecond = 0.25;//3;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 1;//3;
+    public static final double kMaxSpeedMetersPerSecond = 0.125;//0.25;//3;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 0.25;//0.5;//1;//3;
 
     // Ramsete gamma parameters
     // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
@@ -235,23 +235,23 @@ public final class Constants {
 
     public static final TrajectoryConfig TRAJECTORY_CONFIG = new TrajectoryConfig(Constants.kMaxSpeedMetersPerSecond, Constants.kMaxAccelerationMetersPerSecondSquared)
     // Add kinematics to ensure max speed is actually obeyed
-    .setKinematics(Constants.kDriveKinematics);
+    .setKinematics(Constants.kDriveKinematics)
     // Apply the voltage constraint
-    // .addConstraint(
-    //   new DifferentialDriveVoltageConstraint(
+    .addConstraint(
+      new DifferentialDriveVoltageConstraint(
 
-    //     // Forward motor feed
-    //     new SimpleMotorFeedforward(Constants.ksVolts,
-    //                               Constants.kvVoltSecondsPerMeter,
-    //                               Constants.kaVoltSecondsSquaredPerMeter),
+        // Forward motor feed
+        new SimpleMotorFeedforward(Constants.ksVolts,
+                                  Constants.kvVoltSecondsPerMeter,
+                                  Constants.kaVoltSecondsSquaredPerMeter),
 
-    //     // Drive kinematics
-    //     Constants.kDriveKinematics,
+        // Drive kinematics
+        Constants.kDriveKinematics,
 
-    //     // Maximum voltage (originally a constant 10)
-    //     Constants.MAX_DRIVE_VOLTAGE
+        // Maximum voltage (originally a constant 10)
+        Constants.MAX_DRIVE_VOLTAGE
       
-    //   )
-    // );
+      )
+    );
 
 }
