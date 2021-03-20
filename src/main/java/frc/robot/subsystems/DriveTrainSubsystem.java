@@ -7,18 +7,23 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.fasterxml.jackson.databind.deser.std.FromStringDeserializer;
 
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.sensors.Gyro;
@@ -45,6 +50,13 @@ public class DriveTrainSubsystem extends SubsystemBase {
   private final DifferentialDriveOdometry odometry;
 
   private boolean hasGyroBeenReset = false;
+
+  private final DifferentialDriveKinematics kDriveKinematics = Constants.kDriveKinematics;
+  private final SimpleMotorFeedforward kFeedforward = new SimpleMotorFeedforward(Constants.ksVolts,
+  Constants.kvVoltSecondsPerMeter,
+  Constants.kaVoltSecondsSquaredPerMeter);
+  private final PIDController kLeftPidController = new PIDController(Constants.kPDriveVel, 0, 0);
+  private final PIDController kRightPidController = new PIDController(Constants.kPDriveVel, 0, 0);
 
   public DriveTrainSubsystem(Gyro gyro, Solenoid gearShifter, WPI_TalonFX frontRightMotor, WPI_TalonFX frontLeftMotor, WPI_TalonFX backLeftMotor, WPI_TalonFX backRightMotor) {
     super();
@@ -119,19 +131,33 @@ public class DriveTrainSubsystem extends SubsystemBase {
   }
 
   public double getRightDriveEncoderVelocity() {
-    return -frontRightMotor.getSelectedSensorVelocity();
+    return frontRightMotor.getSelectedSensorVelocity();
   }
 
   public double getLeftDriveEncoderPosition() {
-    return Math.abs(frontLeftMotor.getSelectedSensorPosition());
+    return frontLeftMotor.getSelectedSensorPosition();
   }
 
   public double getRightDriveEncoderPosition() {
-    return Math.abs(frontRightMotor.getSelectedSensorPosition());
+    return frontRightMotor.getSelectedSensorPosition();
+  }
+
+  public double getLeftDriveEncoderMeters() {
+    //position = distanceInches * ENCODER_TICKS
+    //so: position / ENCODER_TICKS = distanceInches
+
+    double inches = getLeftDriveEncoderPosition() / Constants.ENCODER_TICKS_PER_INCH;
+    return Units.inchesToMeters(inches);
+
+  }
+
+  public double getRightDriveEncoderMeters() {
+    double inches = getRightDriveEncoderPosition() / Constants.ENCODER_TICKS_PER_INCH;
+    return Units.inchesToMeters(inches);
   }
 
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-    return new DifferentialDriveWheelSpeeds(frontLeftMotor.getSensorCollection().getIntegratedSensorVelocity(), -frontRightMotor.getSensorCollection().getIntegratedSensorVelocity());
+    return new DifferentialDriveWheelSpeeds(getLeftDriveEncoderVelocity() / Constants.ENCODER_TICKS_PER_INCH, getRightDriveEncoderVelocity() / Constants.ENCODER_TICKS_PER_INCH);
   }
 
   public void setLowSpeed() {
@@ -158,8 +184,9 @@ public class DriveTrainSubsystem extends SubsystemBase {
    * @param rightVolts the commanded right output
    */
   public void setVoltage(double leftVolts, double rightVolts) {
-    frontLeftMotor.setVoltage(-leftVolts);
-    frontRightMotor.setVoltage(rightVolts);
+    // frontLeftMotor.setVoltage(leftVolts);
+    frontLeftMotor.set(ControlMode.PercentOutput, -leftVolts / 12 * 25);
+    frontRightMotor.set(ControlMode.PercentOutput, rightVolts / 12 * 25);
 
     System.out.printf("Left Voltage: %f | Right Voltage: %f\n", leftVolts, rightVolts);
 
@@ -254,12 +281,58 @@ public class DriveTrainSubsystem extends SubsystemBase {
     odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
   }
 
+  public void resetOdometry() {
+    resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(-180)));
+  }
+
   /**
    * Updates the odometry with the robot's current heading and encoder positions.
    */
   public void updateOdometry() {
-    odometry.update(Rotation2d.fromDegrees(getHeading()), getLeftDriveEncoderPosition(),
-      getRightDriveEncoderPosition());
+    odometry.update(Rotation2d.fromDegrees(getHeading()), getLeftDriveEncoderMeters(),
+      getRightDriveEncoderMeters());
+  }
+
+  /**
+   * Get differential kinematics
+   */
+  public DifferentialDriveKinematics getKinematics() {
+    return kDriveKinematics;
+  }
+
+  /**
+   * Forward motor feed
+   */
+  public SimpleMotorFeedforward getForwardFeed() {
+    return kFeedforward;
+  }
+
+  /**
+   * Log forward motor feed to SmartDashboard
+   * @return
+   */
+  public void logForwardFeedValues() {
+    double leftWheelSpeed = getForwardFeed().calculate(getWheelSpeeds().leftMetersPerSecond);
+    double rightWheelSpeed = getForwardFeed().calculate(getWheelSpeeds().rightMetersPerSecond);
+
+
+    SmartDashboard.putNumber("leftWheelSpeed", leftWheelSpeed);
+    SmartDashboard.putNumber("rightWheelSpeed", rightWheelSpeed);
+
+  }
+
+  /**
+   * Left PID Controller
+   */
+  public PIDController getLeftPIDController() {
+    return kLeftPidController;
+  }
+
+  /**
+   * Left PID Controller
+   */
+  public PIDController getRightPIDController() {
+    return kRightPidController;
   }
 
 }

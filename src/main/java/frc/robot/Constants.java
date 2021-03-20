@@ -10,6 +10,7 @@ package frc.robot;
 import org.opencv.core.*;
 
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
@@ -219,9 +220,11 @@ public final class Constants {
     // Drive velocity
     public static final double kPDriveVel = 0.0118;//0.998;//8.5;
 
-    // Differential kinematics
+    // Distance between wheels of robot
     public static final double kTrackwidthMeters = 0.635;//0.27;//0.69; // Distance between wheels
-    public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
+
+    // Drive kinematics
+    public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(Constants.kTrackwidthMeters);
 
     // Max trajectory velocity/acceleration
     public static final double kMaxSpeedMetersPerSecond = 0.125;//0.25;//3;
@@ -232,6 +235,8 @@ public final class Constants {
     // Should work well in most robots without any tuning necessary
     public static final double kRamseteB = 2;
     public static final double kRamseteZeta = 0.7;
+
+    public static final RamseteController RAMSETE_CONTROLLER = new RamseteController(Constants.kRamseteB, Constants.kRamseteZeta);
 
     public static final TrajectoryConfig TRAJECTORY_CONFIG = new TrajectoryConfig(Constants.kMaxSpeedMetersPerSecond, Constants.kMaxAccelerationMetersPerSecondSquared)
     // Add kinematics to ensure max speed is actually obeyed

@@ -15,6 +15,7 @@ import java.io.IOException;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -59,6 +60,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("ranPath", false);
     SmartDashboard.putBoolean("reachedInnerRamsete", false);
     SmartDashboard.putBoolean("voltageSet", false);
+
+    DriverStation.getInstance().silenceJoystickConnectionWarning(true);
 
   }
 
@@ -118,7 +121,7 @@ public class Robot extends TimedRobot {
 
     
     System.out.println("Init Auton.........");
-    Gyro.getInstance().calibrate();
+    // Gyro.getInstance().calibrate();
     Gyro.getInstance().calibrationCheck();
     Gyro.getInstance().reset();
 

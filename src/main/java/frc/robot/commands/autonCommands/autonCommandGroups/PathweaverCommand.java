@@ -23,11 +23,15 @@ import frc.robot.Constants;
 import frc.robot.subsystems.DriveTrainSubsystem;
 
 public class PathweaverCommand extends SequentialCommandGroup {
+
   /** Creates a new PathweaverTestCommand. */
   public PathweaverCommand(DriveTrainSubsystem driveTrain, String path) {
     // Use addRequirements() here to declare subsystem dependencies.
 
-    super(getRamseteCommand(driveTrain, path));
+    super();
+    Command ramsete = getRamseteCommand(driveTrain, path);
+
+    addCommands(ramsete);
 
   }
 
@@ -60,11 +64,16 @@ public class PathweaverCommand extends SequentialCommandGroup {
     }
 
     SmartDashboard.putBoolean("reachedInnerRamsete", true);
+    SmartDashboard.putNumber("preAutonHeading", driveTrain.getHeading());
 
     driveTrain.resetOdometry(driveTrain.getPose());
 
     // var transform = driveTrain.getPose().minus(trajectory.getInitialPose());
     // trajectory = trajectory.transformBy(transform);
+
+    // driveTrain.resetOdometry(trajectory.getInitialPose());
+
+    SmartDashboard.putNumber("totalRamseteSecs", trajectory.getTotalTimeSeconds());
 
     RamseteCommand ramsete = new RamseteCommand(
 
@@ -72,37 +81,35 @@ public class PathweaverCommand extends SequentialCommandGroup {
       trajectory,
 
       // Robot pose supplier
-      () -> driveTrain.getPose(),
+      driveTrain::getPose,
 
       // Ramsete controller
-      new RamseteController(Constants.kRamseteB, Constants.kRamseteZeta),
+      Constants.RAMSETE_CONTROLLER,
 
       // Forward motor feed
-      new SimpleMotorFeedforward(Constants.ksVolts,
-                                 Constants.kvVoltSecondsPerMeter,
-                                 Constants.kaVoltSecondsSquaredPerMeter),
+      driveTrain.getForwardFeed(),
       
       // Drive kinematics
-      Constants.kDriveKinematics,
+      driveTrain.getKinematics(),
 
       // Wheel speed supplier
-      () -> driveTrain.getWheelSpeeds(),
+      driveTrain::getWheelSpeeds,
 
       // PID controllers
-      new PIDController(Constants.kPDriveVel, 0, 0),
-      new PIDController(Constants.kPDriveVel, 0, 0),
+      driveTrain.getLeftPIDController(),
+      driveTrain.getRightPIDController(),
 
       // RamseteCommand passes volts to the callback through this supplier
       (leftVolts, rightVolts) -> {
-
         SmartDashboard.putBoolean("voltageSet", true);
-
-          driveTrain.setVoltage(leftVolts, rightVolts);
+        driveTrain.setVoltage(leftVolts, rightVolts);
+        driveTrain.logForwardFeedValues();
       },
 
       // The drive subsystem itself
       driveTrain
     );
+
 
     return ramsete;
     // return ramsete.andThen(() -> {

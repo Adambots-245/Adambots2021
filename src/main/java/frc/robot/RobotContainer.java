@@ -106,6 +106,7 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
     driveTrainSubsystem.resetEncoders();
+    driveTrainSubsystem.resetOdometry();
 
     // configure the dashboard
     dash();
@@ -279,7 +280,10 @@ public class RobotContainer {
     // return new SlalomPathAuton(driveTrainSubsystem);
     // return new TestTrajectory(driveTrainSubsystem);
     // return new PathweaverCommand(driveTrainSubsystem, "TestPath");
-    return PathweaverCommand.getRamseteCommand(driveTrainSubsystem, "TestPath");
+    return PathweaverCommand.getRamseteCommand(driveTrainSubsystem, "Straight").andThen(() -> {
+          driveTrainSubsystem.setVoltage(0.0, 0.0);
+          SmartDashboard.putBoolean("ranPath", true);
+      });
 
     // try {
     //   //return new PathweaverTestCommand(driveTrainSubsystem);
