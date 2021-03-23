@@ -138,8 +138,8 @@ public final class Constants {
     public static final int PROCESSING_FPS = 30;
 
     // Limelight Constants
-    public static final double LIMELIGHT_ANGLE_TO_HORIZONTAL = 6.0; //degrees. Looks pretty good for testing
-    public static final double LIMELIGHT_HEIGHT_FROM_GROUND = 31.5; //inches. When testing on the table. OR: 0.81 meters
+    public static final double LIMELIGHT_ANGLE_TO_HORIZONTAL = 0.0; //degrees. Looks pretty good for testing
+    public static final double LIMELIGHT_HEIGHT_FROM_GROUND = 26.5; //inches. When testing on the table. OR: 0.81 meters
     public static final int ACCEPTABLE_FINAL_DISTANCE = 12; //appx. 30in from limelight to front of intake. get bot super close.
     public static final int LIMELIGHT_DISTANCE_TO_INTAKE_ARM = 28;
 

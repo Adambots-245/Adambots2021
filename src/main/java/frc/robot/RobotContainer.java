@@ -250,6 +250,6 @@ public class RobotContainer {
     // return new  DriveForwardGyroDistanceCommand(driveTrainSubsystem, 0, 0, 0, true).andThen(new DriveForwardGyroDistanceCommand(driveTrainSubsystem, 3500*48, -.75, 0, true)).andThen(new DriveForwardGyroDistanceCommand(driveTrainSubsystem, 3500*84, -.5, 90, false));
     // return autonTurn90DegreeCommand.andThen(new WaitCommand(3)).andThen(new TurnToAngleCommand(driveTrainSubsystem, 0.5, -45, false));
     System.out.println(autoChooser.getSelected());
-    return autoChooser.getSelected();
+    return new DriveToBallCommand(driveTrainSubsystem);
   }
 }

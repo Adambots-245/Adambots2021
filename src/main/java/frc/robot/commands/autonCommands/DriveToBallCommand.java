@@ -34,7 +34,7 @@ public class DriveToBallCommand extends CommandBase {
         SmartDashboard.putNumber("Calculated Distance to Ball", calculatedDistance);
         if(calculatedDistance > Constants.ACCEPTABLE_FINAL_DISTANCE) {
             System.out.println("DRIVING TOWARD BALL. Distance: " + calculatedDistance);
-            driveTrainSubsystem.arcadeDrive(Constants.AUTON_DRIVE_FORWARD_SPEED, 0.0);
+            driveTrainSubsystem.arcadeDrive(-Constants.AUTON_DRIVE_FORWARD_SPEED, 0.0);
         } else {
             System.out.println("CLOSE ENOUGH TO BALL");
             driveTrainSubsystem.arcadeDrive(0.0, 0.0);
