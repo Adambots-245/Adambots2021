@@ -39,10 +39,14 @@ public class BarrelPathAuton extends SequentialCommandGroup {
         // ,
         // new TurnCommand(-90, driveTrainSubsystem)
         // DRIVE TO D5
-        driveForward(driveTrainSubsystem, 130, true)
+        new InstantCommand(() -> System.out.printf("Yaw Before: %f\n", Gyro.getInstance().getYaw())),
+        driveForward(driveTrainSubsystem, 90, true),
+        // new TurnCommand(90, driveTrainSubsystem),
+        // new TurnCommand(90, driveTrainSubsystem),
             
         // LOOP AROUND D5
-        ,loopRight(driveTrainSubsystem)
+        loopRight(driveTrainSubsystem),
+        new InstantCommand(() -> System.out.printf("Yaw After: %f\n", Gyro.getInstance().getYaw()))
         // new WaitCommand(1),
         // DRIVE TO B8
         // turn(driveTrainSubsystem, 90)
@@ -94,22 +98,23 @@ public class BarrelPathAuton extends SequentialCommandGroup {
   public static Command turn(DriveTrainSubsystem driveTrainSubsystem, double angle) {
     // return new ParallelDeadlineGroup(new WaitCommand(3), new TurnToAngleCommand(driveTrainSubsystem, 0.30, angle, true));
     // return new TurnToAngleCommand(driveTrainSubsystem, 0.30, angle, true);
-    return new TurnCommand(angle, driveTrainSubsystem);
+    double drift = 0;
+    return new TurnCommand(angle + drift, driveTrainSubsystem);
   }
 
   public static SequentialCommandGroup loopRight(DriveTrainSubsystem driveTrainSubsystem) {
     return new SequentialCommandGroup(
-        turn(driveTrainSubsystem, 90)
-        // shortPause(),
-        // driveForward(driveTrainSubsystem, 50, true),
-        // shortPause(),
-        // turn(driveTrainSubsystem, 90),
-        // shortPause(),
-        // driveForward(driveTrainSubsystem, 50, true),
-        // shortPause(),
-        // turn(driveTrainSubsystem, 90),
-        // shortPause(),
-        // driveForward(driveTrainSubsystem, 50, true)
+        turn(driveTrainSubsystem, 90),
+        shortPause(),
+        driveForward(driveTrainSubsystem, 30, true),
+        shortPause(),
+        turn(driveTrainSubsystem, 90),
+        shortPause(),
+        driveForward(driveTrainSubsystem, 40, true),
+        shortPause(),
+        turn(driveTrainSubsystem, 90),
+        shortPause(),
+        driveForward(driveTrainSubsystem, 35, true)
     );
   }
 

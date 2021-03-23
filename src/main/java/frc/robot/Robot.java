@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import frc.robot.commands.autonCommands.TurnCommand;
 import frc.robot.sensors.Gyro;
 import frc.robot.subsystems.*;
 import frc.robot.vision.GripPipeline;
@@ -159,12 +160,17 @@ public class Robot extends TimedRobot {
   @Override
   public void testInit() {
     // Cancels all running commands at the start of test mode.
-    CommandScheduler.getInstance().cancelAll();
+    // CommandScheduler.getInstance().cancelAll();
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+    Gyro.getInstance().reset();
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
+      System.out.println("Scheduling test command");
       m_autonomousCommand.schedule();
     }
+    
     
     RobotMap.FrontLeftMotor.setNeutralMode(NeutralMode.Brake);
     RobotMap.BackLeftMotor.setNeutralMode(NeutralMode.Brake);
@@ -178,9 +184,11 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
     
+    // System.out.println("Running test periodic");
     // SmartDashboard.putNumber("pitch",gyroSubsystem.getPitch());
     // SmartDashboard.putNumber("roll",gyroSubsystem.getRoll());
     // SmartDashboard.putNumber("yaw",gyroSubsystem.getYaw());
+    CommandScheduler.getInstance().run();
 
   }
 }
