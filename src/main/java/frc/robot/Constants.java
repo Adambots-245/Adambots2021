@@ -12,6 +12,8 @@ import org.opencv.core.*;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
@@ -237,6 +239,14 @@ public final class Constants {
     public static final double kRamseteZeta = 0.7;
 
     public static final RamseteController RAMSETE_CONTROLLER = new RamseteController(Constants.kRamseteB, Constants.kRamseteZeta);
+
+    public static final RamseteController DISABLED_RAMSETE_CONTROLLER = new RamseteController() {
+        @Override
+        public ChassisSpeeds calculate(Pose2d currentPose, Pose2d poseRef, double linearVelocityRefMeters,
+                double angularVelocityRefRadiansPerSecond) {
+            return new ChassisSpeeds(linearVelocityRefMeters, 0.0, angularVelocityRefRadiansPerSecond);
+        }
+    };
 
     public static final TrajectoryConfig TRAJECTORY_CONFIG = new TrajectoryConfig(Constants.kMaxSpeedMetersPerSecond, Constants.kMaxAccelerationMetersPerSecondSquared)
     // Add kinematics to ensure max speed is actually obeyed

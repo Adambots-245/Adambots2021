@@ -41,7 +41,7 @@ public class Log extends SecurityManager {
         Handler lh = new ConsoleHandler();
         lh.setFormatter(new LogFormatter());
 
-        var lhs = logger.getHandlers();
+        logger.getHandlers();
         logger.addHandler(lh);
     }
 

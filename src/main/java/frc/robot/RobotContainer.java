@@ -8,15 +8,12 @@
 
 package frc.robot;
 
-import java.io.IOException;
-
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Gamepad.Buttons;
 import frc.robot.Gamepad.GamepadConstants;
 import frc.robot.commands.AlignColorCommand;
@@ -40,13 +37,8 @@ import frc.robot.commands.ShiftLowGearCommand;
 import frc.robot.commands.StartIntakeCommand;
 import frc.robot.commands.TurnToTargetCommand;
 import frc.robot.commands.WinchCommand;
-import frc.robot.commands.autonCommands.PathweaverBarrelPath;
-import frc.robot.commands.autonCommands.PathweaverSlalomPath;
-import frc.robot.commands.autonCommands.autonCommandGroups.BarrelPathAuton;
 import frc.robot.commands.autonCommands.autonCommandGroups.CrossBaseline;
-import frc.robot.commands.autonCommands.autonCommandGroups.PathweaverCommand;
 import frc.robot.commands.autonCommands.autonCommandGroups.SnagNYeetCommandGroup;
-import frc.robot.commands.autonCommands.autonCommandGroups.TestTrajectory;
 import frc.robot.commands.autonCommands.autonCommandGroups.Yeet3;
 import frc.robot.commands.autonCommands.autonCommandGroups.Yeet3New;
 import frc.robot.commands.autonCommands.autonCommandGroups.Yeet3Nom3Yeet3;
@@ -108,8 +100,12 @@ public class RobotContainer {
     driveTrainSubsystem.resetEncoders();
     driveTrainSubsystem.resetOdometry();
 
+
+
     // configure the dashboard
     dash();
+
+
 
     //auton commands
     // autonDriveForwardDistanceCommand = new DriveForwardDistanceCommand(driveTrainSubsystem,
@@ -121,6 +117,14 @@ public class RobotContainer {
     // autonDriveForwardGyroDistanceCommand = new DriveForwardGyroDistanceCommand(driveTrainSubsystem, Constants.AUTON_PUSH_ROBOT_DISTANCE, autonSpeed*.5, 0, true).andThen(new WaitCommand(1)).andThen(new DriveForwardGyroDistanceCommand(driveTrainSubsystem, Constants.AUTON_FORWARD_BALL_PICKUP_DISTANCE, -autonSpeed, 0, false));
     
     // autonTurn90DegreeCommand = new TurnToAngleCommand(driveTrainSubsystem, autonSpeed*0.5, 45, true);
+
+
+
+    // Define cached Pathweaver paths for Cannicide's WarpDrive
+    DriveTrainSubsystem.WarpDrive.addCachedPath("Straight");
+    DriveTrainSubsystem.WarpDrive.addCachedPath("CurvedPath");
+    DriveTrainSubsystem.WarpDrive.addCachedPath("TestPath");
+
   }
 
   /**
@@ -280,10 +284,9 @@ public class RobotContainer {
     // return new SlalomPathAuton(driveTrainSubsystem);
     // return new TestTrajectory(driveTrainSubsystem);
     // return new PathweaverCommand(driveTrainSubsystem, "TestPath");
-    return PathweaverCommand.getRamseteCommand(driveTrainSubsystem, "Straight").andThen(() -> {
-          driveTrainSubsystem.setVoltage(0.0, 0.0);
-          SmartDashboard.putBoolean("ranPath", true);
-      });
+
+    // return DriveTrainSubsystem.WarpDrive.getRamseteCommand("CurvedPath");
+    return DriveTrainSubsystem.WarpDrive.getCachedPath("CurvedPath");
 
     // try {
     //   //return new PathweaverTestCommand(driveTrainSubsystem);

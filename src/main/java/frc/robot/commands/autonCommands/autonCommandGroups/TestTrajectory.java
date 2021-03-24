@@ -2,6 +2,23 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+
+
+
+
+
+
+
+
+// NOT CURRENTLY WORKING \\
+
+
+
+
+
+
+
+
 package frc.robot.commands.autonCommands.autonCommandGroups;
 
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -16,15 +33,12 @@ import frc.robot.subsystems.DriveTrainSubsystem;
 public class TestTrajectory extends SequentialCommandGroup {
 
   /** Creates a new TestTrajectory. */
-  public TestTrajectory(DriveTrainSubsystem driveTrain) {
+  public TestTrajectory() {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     super(
 
-        new TrajectoryCommand(
-          //Drive subsystem
-          driveTrain,
-
+        DriveTrainSubsystem.WarpDrive.drawManualPath(
           //Initial pose
           // Start at the origin facing the +X direction
           new Pose2d(0, 0, new Rotation2d(0)),

@@ -7,23 +7,34 @@
 
 package frc.robot.subsystems;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.fasterxml.jackson.databind.deser.std.FromStringDeserializer;
 
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.util.Units;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.sensors.Gyro;
@@ -78,8 +89,8 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
     this.backLeftMotor.setInverted(false);
     frontLeftMotor.setInverted(false);
-    backRightMotor.setInverted(false);
-    frontRightMotor.setInverted(false);
+    backRightMotor.setInverted(true);
+    frontRightMotor.setInverted(true);
 
     frontLeftMotor.configOpenloopRamp(Constants.SEC_NEUTRAL_TO_FULL);
     frontRightMotor.configOpenloopRamp(Constants.SEC_NEUTRAL_TO_FULL);
@@ -90,6 +101,8 @@ public class DriveTrainSubsystem extends SubsystemBase {
     backRightMotor.setNeutralMode(NeutralMode.Brake);
 
     drive = new DifferentialDrive(frontLeftMotor, frontRightMotor);
+    drive.setRightSideInverted(false);
+
     odometry = new DifferentialDriveOdometry(gyro.getRotation2d());
     driveSubsystem = this;
 
@@ -183,9 +196,10 @@ public class DriveTrainSubsystem extends SubsystemBase {
    * @param leftVolts  the commanded left output
    * @param rightVolts the commanded right output
    */
-  public void setVoltage(double leftVolts, double rightVolts) {
+  public void setTankVoltage(double leftVolts, double rightVolts) {
     // frontLeftMotor.setVoltage(leftVolts);
-    frontLeftMotor.set(ControlMode.PercentOutput, -leftVolts / 12 * 25);
+    // frontLeftMotor.set(ControlMode.PercentOutput, -leftVolts / 12 * 25);
+    frontLeftMotor.set(ControlMode.PercentOutput, leftVolts / 12 * 25);
     frontRightMotor.set(ControlMode.PercentOutput, rightVolts / 12 * 25);
 
     System.out.printf("Left Voltage: %f | Right Voltage: %f\n", leftVolts, rightVolts);
@@ -333,6 +347,220 @@ public class DriveTrainSubsystem extends SubsystemBase {
    */
   public PIDController getRightPIDController() {
     return kRightPidController;
+  }
+
+  /**
+   * Warp Drive - smooth Pathweaver trajectory generator for autonomous.
+   */
+  public static class WarpDrive {
+
+    private static HashMap<String, Trajectory> cachedTrajectories = new HashMap<>();
+
+    /**
+     * Returns a runnable RamseteCommand that uses the provided trajectory.
+     * @param driveTrain - The DriveTrainSubsystem to use for driving the trajectory.
+     * @param trajectory - The trajectory object of the path to drive.
+     */
+    public static Command getRamseteCommand(DriveTrainSubsystem driveTrain, Trajectory trajectory) {
+  
+      SmartDashboard.putBoolean("reachedInnerRamsete", true);
+      SmartDashboard.putNumber("preAutonHeading", driveTrain.getHeading());
+  
+      // driveTrain.resetOdometry(driveTrain.getPose());
+  
+      // var transform = driveTrain.getPose().minus(trajectory.getInitialPose());
+      // trajectory = trajectory.transformBy(transform);
+  
+      driveTrain.resetOdometry(trajectory.getInitialPose());
+  
+      SmartDashboard.putNumber("totalRamseteSecs", trajectory.getTotalTimeSeconds());
+  
+      RamseteCommand ramsete = new RamseteCommand(
+  
+        // Generate an optimal trajectory from positions and translations
+        trajectory,
+  
+        // Robot pose supplier
+        driveTrain::getPose,
+  
+        // Ramsete controller
+        Constants.RAMSETE_CONTROLLER,
+        // Constants.DISABLED_RAMSETE_CONTROLLER,
+  
+        // Forward motor feed
+        driveTrain.getForwardFeed(),
+        
+        // Drive kinematics
+        driveTrain.getKinematics(),
+  
+        // Wheel speed supplier
+        driveTrain::getWheelSpeeds,
+  
+        // PID controllers
+        driveTrain.getLeftPIDController(),
+        driveTrain.getRightPIDController(),
+  
+        // RamseteCommand passes volts to the callback through this supplier
+        (leftVolts, rightVolts) -> {
+          SmartDashboard.putBoolean("voltageSet", true);
+          driveTrain.setTankVoltage(leftVolts, rightVolts);
+          driveTrain.logForwardFeedValues();
+        },
+  
+        // The drive subsystem itself
+        driveTrain
+      );
+  
+  
+      return ramsete.andThen(() -> {
+          driveTrain.setTankVoltage(0.0, 0.0);
+          SmartDashboard.putBoolean("ranPath", true);
+      });
+  
+    }
+
+    /**
+     * Returns a runnable RamseteCommand that uses a Pathweaver trajectory at the provided path.
+     * @param driveTrain - The DriveTrainSubsystem to use for driving the trajectory.
+     * @param path - The name of the Pathweaver path saved in the filepath deploy/[path]
+     */
+    public static Command getRamseteCommand(DriveTrainSubsystem driveTrain, String path) {
+
+      Trajectory trajectory = generateTrajectory(path);
+
+      if (trajectory == null) {
+          return new InstantCommand();
+      }
+  
+      return getRamseteCommand(driveTrain, trajectory);
+  
+    }
+
+    /**
+     * Generates a trajectory from a Pathweaver path at a specified filepath.
+     * @param path - The filepath of the Pathweaver path.
+     * @return Trajectory object
+     */
+    private static Trajectory generateTrajectory(String path) {
+      Trajectory trajectory;
+      try {
+          trajectory = TrajectoryUtil.fromPathweaverJson(Filesystem.getDeployDirectory().toPath().resolve(path));
+      } catch (IOException e) {
+          System.out.println("///////////// Error occurred in WarpDrive.generateTrajectory(): " + e.getMessage());
+          return null;
+      }
+
+      return trajectory;
+    }
+
+    /**
+     * Returns a runnable RamseteCommand that uses a Pathweaver trajectory with the provided name.
+     * @param filename - The name of the Pathweaver path saved in the filepath deploy/paths/[filename].wpilib.json
+     */
+    public static Command getRamseteCommand(String filename) {
+
+      return getRamseteCommand(getCurrentDriveTrain(), "paths/" + filename + ".wpilib.json");
+
+    }
+
+    /**
+     * Generates the Pathweaver trajectory with the specified name, and caches it for later (immediate) use.
+     * Generating the trajectory takes a few seconds, so this allows you to pre-generate the trajectories before running commands.
+     * @param filename - The name of the Pathweaver path saved in the filepath deploy/paths/[filename].wpilib.json
+     */
+    public static void addCachedPath(String filename) {
+      Trajectory trajectory = generateTrajectory("paths/" + filename + ".wpilib.json");
+      cachedTrajectories.put(filename, trajectory);
+    }
+
+    /**
+     * Gets a cached, pre-generated Pathweaver trajectory with the specified name that was generated with WarpDrive.addCachedPath().
+     * The command returned by this method can execute much faster than that returned by WarpDrive.getRamseteCommand().
+     * @param filename - The name of the Pathweaver path saved in the filepath deploy/paths/[filename].wpilib.json
+     * @return A RamseteCommand containing the specified cached Pathweaver trajectory.
+     */
+    public static Command getCachedPath(String filename) {
+
+      Trajectory trajectory = cachedTrajectories.get(filename);
+
+      if (trajectory == null) {
+        System.out.println("/////////////// Error occurred in WarpDrive.getCachedPath(): requested trajectory does not exist in the cache.");
+        return new InstantCommand();
+      }
+      else {
+        return getRamseteCommand(getCurrentDriveTrain(), trajectory);
+      }
+
+    }
+
+    /**
+     * Generates a Ramsete Trajectory without using Pathweaver.
+     * Requires manually defined waypoints, rotations, and translations.
+     * This is <b><i>not working</i></b> as of the latest test.
+     * 
+     * @param startPosition - The position in which the robot starts its path.
+     * @param endPosition - The position in which the robot ends its path.
+     * @param translations - All translations and rotations forming the waypoints between start and end of the path.
+     * @return A RamseteCommand using a manually generated trajectory.
+     */
+    public static Command drawManualPath(Pose2d startPosition, Pose2d endPosition, Translation2d...translations) {
+      // Generate an optimal trajectory from positions and translations
+      Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
+        
+        // Start pose
+        startPosition,
+
+        // Pass through these interior waypoints, making a curve path
+        List.of(translations),
+        
+        // End pose
+        endPosition,
+
+        // Pass trajectory config
+        Constants.TRAJECTORY_CONFIG
+      );
+
+      DriveTrainSubsystem driveTrain = getCurrentDriveTrain();
+      driveTrain.resetOdometry(startPosition);
+
+      Command ramsete = new RamseteCommand(
+
+        // Generate an optimal trajectory from positions and translations
+        trajectory,
+
+        // Robot pose supplier
+        driveTrain::getPose,
+
+        // Ramsete controller
+        Constants.RAMSETE_CONTROLLER,
+
+        // Forward motor feed
+        driveTrain.getForwardFeed(),
+        
+        // Drive kinematics
+        driveTrain.getKinematics(),
+
+        // Wheel speed supplier
+        driveTrain::getWheelSpeeds,
+
+        // PID controllers
+        driveTrain.getLeftPIDController(),
+        driveTrain.getRightPIDController(),
+
+        // RamseteCommand passes volts to the callback through this supplier
+        driveTrain::setTankVoltage,
+
+        // The drive subsystem itself
+        driveTrain
+      );
+
+      return ramsete.andThen(() -> {
+        driveTrain.setTankVoltage(0.0, 0.0);
+        SmartDashboard.putBoolean("ranPath", true);
+      });      
+
+    }
+
   }
 
 }
