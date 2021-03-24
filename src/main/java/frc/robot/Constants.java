@@ -154,6 +154,7 @@ public final class Constants {
     public static double TURRET_TOLERANCE = 0.25; //0.25;
     public static final double TURRET_TARGET_ANGLE = 0;
     public static final double TURRET_SPEED = 0.5;
+	public static final double CAMERA_OFFSET = 4;
 
     // blaster PID constants
     public static final double BLASTER_KF = .054;
@@ -166,11 +167,13 @@ public final class Constants {
     public static final double SHOOTER_OFFSET_DISTANCE = Constants.KNOWN_LIDAR_DISTANCE_TO_TARGET*Math.tan(Constants.KNOWN_OFFSET_ANGLE);
 	
     //gyro PID constants
-	public static final double GYRO_kP = 0.1323; //0.1240
+	public static final double GYRO_kP = 0.0352; //0.1323; //0.1240
 	public static final double GYRO_kI = 0;
-	public static final double GYRO_kD = 0.0479; //0.0572
-	public static final double GYRO_TOLERANCE = 0.5;
+	public static final double GYRO_kD = 0.01271; // 0.0479; //0.0572
+	public static final double GYRO_TOLERANCE = 0.5; //degrees tolerance for measurement
+	public static final double GYRO_RATE_TOLERANCE_DEG_PER_SEC = 10; // degrees per second
     public static final float GYRO_TARGET_ANGLE = 0;
+	public static final boolean GYRO_REVERSED = false;
     
     //auton constants    
     public static final double ENCODER_TICKS_PER_INCH = 3500;

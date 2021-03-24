@@ -12,14 +12,15 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Solenoid;
 import frc.robot.sensors.ColorSensor;
 import frc.robot.sensors.Gyro;
 import frc.robot.sensors.Lidar;
+import frc.robot.sensors.PhotoEye;
 
 /**
  * Add your docs here.
@@ -61,4 +62,11 @@ public class RobotMap {
 	public static final DigitalInput RightLimitSwitch = new DigitalInput(Constants.TURRET_RIGHT_DIO);
 
     public static final Solenoid RingLight = new Solenoid(Constants.RING_LIGHT_PORT);
+
+    public static final PhotoEye IntakePhotoEye = new PhotoEye(7);
+	public static final PhotoEye SpacingPhotoEye = new PhotoEye(8);
+    public static final PhotoEye ExitPhotoEye = new PhotoEye(9);
+
+    public static final Counter IntakeCounter = new Counter(IntakePhotoEye.getDigitalInput());
+    public static final Counter ExitCounter = new Counter(ExitPhotoEye.getDigitalInput());
 }

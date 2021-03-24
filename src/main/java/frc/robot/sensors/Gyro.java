@@ -19,6 +19,10 @@ public class Gyro extends BaseSensor implements edu.wpi.first.wpilibj.interfaces
     private static Gyro _instance = null;
     private static AHRS _navx = null;
 
+    private static class InstanceHolder {
+        public static final Gyro instance = new Gyro();
+    }
+
     private Gyro(){
         try {
             if (_navx == null){
@@ -39,9 +43,10 @@ public class Gyro extends BaseSensor implements edu.wpi.first.wpilibj.interfaces
     }
 
     public static Gyro getInstance(){
-        if (_instance == null){
-            _instance = new Gyro();
-        }
+        // if (_instance == null){
+        //     _instance = new Gyro();
+        // }
+        _instance = InstanceHolder.instance;
         return _instance;
     }
 
@@ -50,27 +55,38 @@ public class Gyro extends BaseSensor implements edu.wpi.first.wpilibj.interfaces
         // _navx.enableBoardlevelYawReset(true);
     }
 
+    public void lowLevelReset(){
+        _navx.enableBoardlevelYawReset(true);
+        _navx.reset();
+    }
+
+    /**
+     * Use only in Robot Init
+     */
     public void calibrationCheck() {
 
         boolean isCalibrating = _navx.isCalibrating();
         
         if (isCalibrating) {
-            Timer.delay(0.02); // wait 0.02 seconds to let it complete calibration
+            System.out.println("In Calibration Check - waiting 2 seconds to complete Gyro Calibration");
+            Timer.delay(2); // wait 2 seconds to let it complete calibration
         }
     }
 
     public float getRoll() {
-        calibrationCheck();
         return _navx.getRoll();
     }
 
     public float getPitch() {
-        calibrationCheck();
         return _navx.getPitch();
     }
 
+    /**
+     * Returns current Yaw value between a range of -180 to 180 degrees. 
+     * Note that this Yaw value can accumulate errors over a period of time.
+     * @return
+     */
     public float getYaw() {
-        calibrationCheck();
         return _navx.getYaw();
     }
 
@@ -80,19 +96,22 @@ public class Gyro extends BaseSensor implements edu.wpi.first.wpilibj.interfaces
 
     }
 
-    @Override
-    public void calibrate() {
-        _navx.enableBoardlevelYawReset(true);
-
-    }
-
+    /**
+     * Returns accumulated Yaw angles and can be > than 360 degrees. This is in contrast to getYaw that returns -180 to 180 degree values.
+     */
     @Override
     public double getAngle() {
-        return getYaw();
+        return _navx.getAngle();
     }
 
     @Override
     public double getRate() {
         return _navx.getRate();
+    }
+
+    @Override
+    public void calibrate() {
+        // do nothing - NavX automatically calibrates at startup
+        
     }
 }

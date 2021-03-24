@@ -11,41 +11,26 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.sensors.Gyro;
 import frc.robot.subsystems.DriveTrainSubsystem;
-import frc.robot.subsystems.GyroPIDSubsystem;
 
-public class TurnToAngleCommand extends CommandBase {
+public class TurnToAngleNoPIDCommand extends CommandBase {
   /**
    * Creates a new DriveForwardDistance.
    */
   DriveTrainSubsystem driveTrain;
-  double speed;
-  private GyroPIDSubsystem gyroPIDSubsystem;
   private Gyro gyro;
   private double targetAngle;
   private boolean resetGyro = true;
+  private double inputSpeed = 0.8; //don't turn too fast
 
-  public TurnToAngleCommand(DriveTrainSubsystem inpuDriveTrain, double inputSpeed,
-      double targetAngle, boolean resetGyro) {
+  public TurnToAngleNoPIDCommand(DriveTrainSubsystem inpuDriveTrain, double targetAngle) {
     // Use addRequirements() here to declare subsystem dependencies.
     driveTrain = inpuDriveTrain;
-    // speed = inputSpeed;
-    speed = 0;
 
     this.targetAngle = targetAngle;
 
-    gyroPIDSubsystem = new GyroPIDSubsystem();
+    // gyroPIDSubsystem = new GyroPIDSubsystem();
     gyro = Gyro.getInstance();
-
-    gyroPIDSubsystem.getController().enableContinuousInput(-180, 180);
-
-
     addRequirements(driveTrain);
-
-  }
-
-  TurnToAngleCommand(DriveTrainSubsystem inpuDriveTrain, double inputSpeed,
-      double targetAngle) {
-    this(inpuDriveTrain, inputSpeed, targetAngle, true);
   }
 
   // Called when the command is initially scheduled.
@@ -54,25 +39,27 @@ public class TurnToAngleCommand extends CommandBase {
     if (resetGyro) {
       gyro.reset();
     }
+
+    this.targetAngle += gyro.getYaw(); //if not set to zero, adjust to whatever the initial value is
+
     driveTrain.resetEncoders();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double turnSpeed = gyroPIDSubsystem.getController().calculate(gyroPIDSubsystem.getMeasurement(), targetAngle);
+    double turnSpeed = inputSpeed * Math.signum(targetAngle); 
     System.out.println("executing turn to angle");
     System.out.println("yaw:" + gyro.getYaw());
     SmartDashboard.putNumber("yaw", gyro.getYaw());
     // SmartDashboard.putNumber("yaw",gyroPIDSubsystem.getGyroSubsystem().getYaw());
-    SmartDashboard.putNumber("gyroPIDSubsystem.getMeasurement()", gyroPIDSubsystem.getMeasurement());
+    // SmartDashboard.putNumber("gyroPIDSubsystem.getMeasurement()", gyroPIDSubsystem.getMeasurement());
 
-    System.out.println("turnSpeed" + turnSpeed);
+    SmartDashboard.putNumber("turnSpeed", turnSpeed);
     SmartDashboard.putNumber("leftSpeed", driveTrain.getLeftDriveEncoderVelocity());
     SmartDashboard.putNumber("rightSpeed", driveTrain.getRightDriveEncoderVelocity());
 
-    // driveTrain.arcadeDrive(speed, turnSpeed/Math.abs(turnSpeed));
-    driveTrain.arcadeDrive(speed, turnSpeed);
+    driveTrain.arcadeDrive(0, turnSpeed);
     // driveTrain.driveDistance(distance);
   }
 
@@ -82,7 +69,8 @@ public class TurnToAngleCommand extends CommandBase {
     if (interrupted) {
       System.out.println("turn to angle interrupted");
     }
-    gyro.reset();
+
+    driveTrain.arcadeDrive(0,0);
   }
 
   // Returns true when the command should end.
@@ -90,6 +78,10 @@ public class TurnToAngleCommand extends CommandBase {
   public boolean isFinished() {
     // return false;
 
-    return gyroPIDSubsystem.getController().atSetpoint();
+    // return gyroPIDSubsystem.getController().atSetpoint();
+    if (targetAngle < 0)
+      return gyro.getYaw() <= targetAngle;
+    else
+      return gyro.getYaw() >= targetAngle;
   }
 }

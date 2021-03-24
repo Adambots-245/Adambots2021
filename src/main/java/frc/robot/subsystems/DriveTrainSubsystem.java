@@ -87,7 +87,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
   public double getAverageDriveEncoderValue() {
     double averageEncoderPos = (Math
-        .abs(frontLeftMotor.getSelectedSensorPosition()) + Math.abs(frontRightMotor.getSelectedSensorPosition()) / 2);
+        .abs(frontLeftMotor.getSelectedSensorPosition()) + Math.abs(frontRightMotor.getSelectedSensorPosition())) / 2;
     return averageEncoderPos;
   }
 
@@ -97,6 +97,14 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
   public double getRightDriveEncoderVelocity() {
     return frontRightMotor.getSelectedSensorVelocity();
+  }
+
+  public double getLeftDistanceInch(){
+    return frontLeftMotor.getSelectedSensorPosition() * Constants.ENCODER_TICKS_PER_INCH;
+  }
+
+  public double getRightDistanceInch(){
+    return frontRightMotor.getSelectedSensorPosition() * Constants.ENCODER_TICKS_PER_INCH;
   }
 
   public void setLowSpeed() {
@@ -110,7 +118,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
   public void arcadeDrive(double speed, double turnSpeed) {
     int frontRobotDirection = -1;
     double straightSpeed = frontRobotDirection * speed * speedModifier;
-    SmartDashboard.putNumber("Yaw", gyro.getAngle());
+    SmartDashboard.putNumber("Yaw", gyro.getYaw());
 
     //Log.infoF("Arcade Drive - Straight Speed = %f - Turn Speed = %f - Gyro Angle = %f", straightSpeed, turnSpeed * speedModifier, gyro.getAngle());
     drive.arcadeDrive(straightSpeed, turnSpeed * speedModifier);
@@ -133,6 +141,20 @@ public class DriveTrainSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
+  /**
+   * Get yaw - -180 to 180 range
+   * 
+   * @return
+   */
+  public double getYaw() {
+    return gyro.getYaw();
+  }
+
+  /**
+   * Get cummulative yaw - can be greater than 360
+   * 
+   * @return
+   */
   public double getAngle() {
     return gyro.getAngle();
   }
@@ -141,8 +163,36 @@ public class DriveTrainSubsystem extends SubsystemBase {
     if (!hasGyroBeenReset || force) {
       gyro.reset();
       Log.info("Gyro has been reset");
+      System.out.println("Gyro has been reset");
       hasGyroBeenReset = true;
     }
+  }
+
+  /**
+   * Returns the heading of the robot.
+   *
+   * @return the robot's heading in degrees, from 180 to 180
+   */
+  public double getHeading(){
+    double heading = gyro.getYaw() * (Constants.GYRO_REVERSED ? -1.0 : 1.0);
+    // double heading = Math.IEEEremainder(gyro.getAngle(), 360) * (Constants.GYRO_REVERSED ? -1.0 : 1.0);
+  
+    // System.out.println("Heading: " + heading);
+    return heading;
+  }
+
+  /**
+   * Returns the turn rate of the robot.
+   *
+   * @return The turn rate of the robot, in degrees per second
+   */
+  public double getTurnRate() {
+    return gyro.getRate() * (Constants.GYRO_REVERSED ? -1.0 : 1.0);
+  }
+
+  /** Zeroes the heading of the robot. */
+  public void zeroHeading() {
+    resetGyro(false);
   }
 
   public void resetGyro(){

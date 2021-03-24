@@ -21,6 +21,7 @@ import frc.robot.Gamepad.GamepadConstants;
 
 import frc.robot.commands.*;
 import frc.robot.commands.autonCommands.*;
+import frc.robot.commands.autonCommands.autonCommandGroups.BarrelPathAuton;
 import frc.robot.commands.autonCommands.autonCommandGroups.CrossBaseline;
 import frc.robot.commands.autonCommands.autonCommandGroups.NerdsAuton;
 import frc.robot.commands.autonCommands.autonCommandGroups.NoTurnAuton;
@@ -28,6 +29,7 @@ import frc.robot.commands.autonCommands.autonCommandGroups.Nom2Turn45Yeet5;
 import frc.robot.commands.autonCommands.autonCommandGroups.Nom2Yeet5;
 import frc.robot.commands.autonCommands.autonCommandGroups.PushNom2Yeet5;
 import frc.robot.commands.autonCommands.autonCommandGroups.PushNom2Yeet5Nom1;
+import frc.robot.commands.autonCommands.autonCommandGroups.SlalomPathAuton;
 import frc.robot.commands.autonCommands.autonCommandGroups.SnagNYeetCommandGroup;
 import frc.robot.commands.autonCommands.autonCommandGroups.Yeet3;
 import frc.robot.commands.autonCommands.autonCommandGroups.Yeet3FinalsAuton;
@@ -51,7 +53,7 @@ public class RobotContainer {
   // subsystems
   private final BlasterSubsystem blasterSubsystem = new BlasterSubsystem(RobotMap.BlasterMotor, RobotMap.BlasterHood);
   private final ControlPanelSubsystem panelSubsystem = new ControlPanelSubsystem(RobotMap.PanelMotor, RobotMap.ColorSensor);
-  private final ConveyorSubsystem conveyorSubsystem = new ConveyorSubsystem(RobotMap.ConveyorMotor, RobotMap.AlignmentBeltMotor);
+  private final ConveyorSubsystem conveyorSubsystem = new ConveyorSubsystem(RobotMap.ConveyorMotor, RobotMap.AlignmentBeltMotor, RobotMap.IntakePhotoEye, RobotMap.SpacingPhotoEye, RobotMap.ExitPhotoEye);
   private final DriveTrainSubsystem driveTrainSubsystem = new DriveTrainSubsystem(RobotMap.GyroSensor, RobotMap.GearShifter, RobotMap.FrontRightMotor, RobotMap.FrontLeftMotor, RobotMap.BackLeftMotor, RobotMap.BackRightMotor);
   private final GondolaSubsystem gondolaSubsystem = new GondolaSubsystem(RobotMap.GondolaMotor);
   private final HangSubsystem hangSubsystem = new HangSubsystem(RobotMap.HangMotor, RobotMap.WinchMotor1, RobotMap.WinchMotor2, RobotMap.LimitSwitch1, RobotMap.LimitSwitch2);
@@ -249,7 +251,11 @@ public class RobotContainer {
     // return autonDriveForwardGyroDistanceCommand;
     // return new  DriveForwardGyroDistanceCommand(driveTrainSubsystem, 0, 0, 0, true).andThen(new DriveForwardGyroDistanceCommand(driveTrainSubsystem, 3500*48, -.75, 0, true)).andThen(new DriveForwardGyroDistanceCommand(driveTrainSubsystem, 3500*84, -.5, 90, false));
     // return autonTurn90DegreeCommand.andThen(new WaitCommand(3)).andThen(new TurnToAngleCommand(driveTrainSubsystem, 0.5, -45, false));
-    System.out.println(autoChooser.getSelected());
-    return autoChooser.getSelected();
+    // System.out.println(autoChooser.getSelected());
+    // return autoChooser.getSelected();
+
+    return new BarrelPathAuton(driveTrainSubsystem);
+    // return new PIDTuner(90, driveTrainSubsystem);
+    // return new SlalomPathAuton(driveTrainSubsystem);
   }
 }
