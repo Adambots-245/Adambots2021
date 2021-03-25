@@ -18,9 +18,9 @@ public class TurnCommand extends PIDCommand {
 
   private DriveTrainSubsystem driveTrain;
 
-  private static final double kP = Constants.GYRO_kP;
+  private static final double kP = 0.0352; //0.008; //Constants.GYRO_kP;
   private static final double kI = Constants.GYRO_kI;
-  private static final double kD = Constants.GYRO_kD;
+  private static final double kD = 0.01271;//0.010021; //Constants.GYRO_kD;
 
   private double targetAngle = 0;
 
@@ -44,7 +44,6 @@ public class TurnCommand extends PIDCommand {
           // not move
           // Do not exceed a certain speed as it may overshoot too much
           double rotationSpeed = MathUtil.clamp(Math.abs(output), 0.9, 1.5);
-
           // if (Math.abs(output) > 1.5) rotationSpeed = 1.5;
 
           // double rotationSpeed = output;

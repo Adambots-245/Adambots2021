@@ -42,7 +42,7 @@ public class PIDTuner extends PIDCommand {
           double elapsed = (endTime - startTime) / 1000; // convert to seconds
           System.out.printf(">>%f,%f,%f\n", elapsed, feed, drive.getHeading());
 
-          feed = feed + 0.2;
+          feed = feed + 0.01;
         }, drive);
 
     this.driveTrain = drive;
