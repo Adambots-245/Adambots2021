@@ -267,7 +267,7 @@ public class RobotContainer {
     // return autoChooser.getSelected();
 
     // return new BarrelPathAuton(driveTrainSubsystem);
-    return new PathFollower("barrel-roll-01.txt", driveTrainSubsystem);
+    return new PathFollower("/home/lvuser/barrel-roll-01.txt", driveTrainSubsystem);
     // return new BarrelPathAuton(driveTrainSubsystem);
     // return new PIDTuner(90, driveTrainSubsystem);
     // return new SlalomPathAuton(driveTrainSubsystem);

@@ -26,8 +26,10 @@ public class PathRecorder {
 
     public void createRecording(String filePath) throws IOException{
 
+        filePath = "/home/lvuser/" + filePath;
         // new File(filePath).delete();
         new File(filePath).createNewFile();
+
         file = new PrintWriter(new FileWriter(filePath));
     }
 
