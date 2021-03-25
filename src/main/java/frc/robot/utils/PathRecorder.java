@@ -9,11 +9,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-
-/** Add your docs here. */
+/**
+ * Record joystick movements as path instructions that can be played back.
+ * 
+ */
 public class PathRecorder {
 
     private static PathRecorder _instance = new PathRecorder();
+    private long startTime = 0L;
 
     private PrintWriter file = null;
     
@@ -38,8 +41,21 @@ public class PathRecorder {
     }
 
     public void record(double speed, double rotationSpeed){
-        file.printf("%f,%f,%f,", System.currentTimeMillis(), speed, rotationSpeed);
-        file.flush();
-    }
+        // System.out.println("Writing to file: " + speed);
 
+        if (file == null)
+            return;
+
+        long currentTime = System.currentTimeMillis();
+
+        if (startTime == 0)
+            startTime = currentTime;
+        
+        long delay = currentTime - startTime;
+        
+        file.printf("%d,%f,%f%n", delay, speed, rotationSpeed);
+        file.flush();
+
+        startTime = currentTime;
+    }
 }

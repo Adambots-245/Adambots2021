@@ -12,6 +12,7 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveTrainSubsystem;
+import frc.robot.utils.PathRecorder;
 
 public class DriveCommand extends CommandBase {
   public final DriveTrainSubsystem drivetrain;
@@ -45,6 +46,7 @@ public class DriveCommand extends CommandBase {
     // rotationInput.getAsDouble());
     drivetrain.getAverageDriveEncoderValue();
     // System.out.println("Rotation: " + rotationInput.getAsDouble());
+    PathRecorder.getInstance().record(forwardBackwardInput.getAsDouble(), rotationInput.getAsDouble());
     drivetrain.arcadeDrive(forwardBackwardInput.getAsDouble(), rotationInput.getAsDouble());
     SmartDashboard.putNumber("driveencoder", drivetrain.getAverageDriveEncoderValue());
   }

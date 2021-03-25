@@ -8,6 +8,9 @@
 
 package frc.robot;
 
+import java.io.IOException;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.XboxController;
@@ -38,6 +41,7 @@ import frc.robot.commands.autonCommands.autonCommandGroups.Yeet3Nom3Yeet3;
 import frc.robot.commands.autonCommands.autonCommandGroups.Yeet3PushNom3;
 import frc.robot.subsystems.*;
 import frc.robot.utils.Log;
+import frc.robot.utils.PathRecorder;
 
 
 /**
@@ -203,6 +207,14 @@ public class RobotContainer {
   }
 
   private void setupDefaultCommands(){
+    try {
+      if (!DriverStation.getInstance().isAutonomous())
+        PathRecorder.getInstance().createRecording("barrel-roll-01.txt");
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    
     driveTrainSubsystem.setDefaultCommand(
         new DriveCommand(driveTrainSubsystem, 
         () -> deaden(Buttons.primaryJoystick.getY(Hand.kLeft)),
