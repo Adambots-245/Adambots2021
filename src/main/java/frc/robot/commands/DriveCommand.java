@@ -46,8 +46,10 @@ public class DriveCommand extends CommandBase {
     // rotationInput.getAsDouble());
     drivetrain.getAverageDriveEncoderValue();
     // System.out.println("Rotation: " + rotationInput.getAsDouble());
-    PathRecorder.getInstance().record(forwardBackwardInput.getAsDouble(), rotationInput.getAsDouble());
-    drivetrain.arcadeDrive(forwardBackwardInput.getAsDouble(), rotationInput.getAsDouble());
+    double speed = forwardBackwardInput.getAsDouble();
+    double turnspeed = rotationInput.getAsDouble();
+    PathRecorder.getInstance().record(speed, turnspeed);
+    drivetrain.arcadeDrive(speed, turnspeed);
     SmartDashboard.putNumber("driveencoder", drivetrain.getAverageDriveEncoderValue());
   }
 

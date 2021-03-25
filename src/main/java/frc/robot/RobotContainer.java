@@ -208,8 +208,8 @@ public class RobotContainer {
 
   private void setupDefaultCommands(){
     try {
-      if (!DriverStation.getInstance().isAutonomous())
-        PathRecorder.getInstance().createRecording("barrel-roll-01.txt");
+      if (!DriverStation.getInstance().isAutonomous() && false) //change to true to start recording this
+        PathRecorder.getInstance().createRecording("barrel-roll-01.txt"); //should write to /home/lvuser/ folder
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -266,7 +266,8 @@ public class RobotContainer {
     // System.out.println(autoChooser.getSelected());
     // return autoChooser.getSelected();
 
-    return new BarrelPathAuton(driveTrainSubsystem);
+    // return new BarrelPathAuton(driveTrainSubsystem);
+    return new PathFollower("barrel-roll-01.txt", driveTrainSubsystem);
     // return new SlalomPathAuton(driveTrainSubsystem);
   }
 }
