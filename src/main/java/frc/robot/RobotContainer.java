@@ -8,8 +8,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -250,6 +252,13 @@ public class RobotContainer {
     // return new  DriveForwardGyroDistanceCommand(driveTrainSubsystem, 0, 0, 0, true).andThen(new DriveForwardGyroDistanceCommand(driveTrainSubsystem, 3500*48, -.75, 0, true)).andThen(new DriveForwardGyroDistanceCommand(driveTrainSubsystem, 3500*84, -.5, 90, false));
     // return autonTurn90DegreeCommand.andThen(new WaitCommand(3)).andThen(new TurnToAngleCommand(driveTrainSubsystem, 0.5, -45, false));
     System.out.println(autoChooser.getSelected());
-    return new DriveToBallCommand(driveTrainSubsystem);
+    // return new LowerIntakeArmCommand(intakeSubsystem)
+    // .andThen(new WaitCommand(4))
+    // // .andThen(new TurnToAngleFromCameraCommand(driveTrainSubsystem))
+    // .andThen(new DriveToBallCommand(driveTrainSubsystem))
+    // .andThen(new StartIntakeCommand(intakeSubsystem, () -> -1.0))
+    // .andThen(new DriveForwardDistanceCommand(driveTrainSubsystem, 20000, -Constants.AUTON_DRIVE_FORWARD_SPEED))
+    // .andThen(new WaitCommand(2))
+    // .andThen(new StopIntakeOuttakeCommand(intakeSubsystem));
   }
 }

@@ -87,7 +87,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
   public double getAverageDriveEncoderValue() {
     double averageEncoderPos = (Math
-        .abs(frontLeftMotor.getSelectedSensorPosition()) + Math.abs(frontRightMotor.getSelectedSensorPosition()) / 2);
+        .abs((frontLeftMotor.getSelectedSensorPosition()) + Math.abs(frontRightMotor.getSelectedSensorPosition())) / 2);
     return averageEncoderPos;
   }
 
