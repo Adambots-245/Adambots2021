@@ -6,19 +6,24 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.Constants;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.sensors.*;
 
 public class DriveToBallCommand extends CommandBase {
     
     private NetworkTable table;
     private boolean closeToBall = false;
     private DriveTrainSubsystem driveTrainSubsystem;
+    private IntakeSubsystem intakeSubsystem;
     private double distanceFromIntakeArm;
     private double calculatedDistance;
+    private boolean intakeDetectedBall = false;
+    private PhotoEye intakePhotoEye;
 
-    public DriveToBallCommand(DriveTrainSubsystem driveTrainSubsystem) {
+    public DriveToBallCommand(DriveTrainSubsystem driveTrainSubsystem, IntakeSubsystem intakeSubsystem) {
         table = NetworkTableInstance.getDefault().getTable("limelight");
         this.driveTrainSubsystem = driveTrainSubsystem;
-        addRequirements(driveTrainSubsystem);
+        
+        addRequirements(driveTrainSubsystem, intakeSubsystem);
     }
 
     @Override
@@ -27,7 +32,7 @@ public class DriveToBallCommand extends CommandBase {
 
         double verticalDegreesToCenter = table.getEntry("ty").getDouble(0);
 
-        // calculate distance and drive if too far
+        // calculate distance
         calculatedDistance = Constants.LIMELIGHT_HEIGHT_FROM_GROUND / Math.tan(Math.abs(verticalDegreesToCenter) * (Math.PI / 180.0) + Constants.LIMELIGHT_ANGLE_TO_HORIZONTAL * (Math.PI / 180.0));
         distanceFromIntakeArm = calculatedDistance - Constants.LIMELIGHT_DISTANCE_TO_INTAKE_ARM;
         SmartDashboard.putNumber("Calculated Distance to Ball", calculatedDistance);
@@ -60,7 +65,11 @@ public class DriveToBallCommand extends CommandBase {
     @Override
     public boolean isFinished() {
         System.out.println("Drive encoder values:" + driveTrainSubsystem.getAverageDriveEncoderValue());
-        return (driveTrainSubsystem.getAverageDriveEncoderValue() >= calculatedDistance * Constants.ENCODER_TICKS_PER_INCH);
+        if(driveTrainSubsystem.getAverageDriveEncoderValue() >= ( calculatedDistance * Constants.ENCODER_TICKS_PER_INCH ) + 70000)
+            closeToBall = true;
+        // else if ()
+        //     closeToBall = true;
+        return closeToBall;
     }
 
 }

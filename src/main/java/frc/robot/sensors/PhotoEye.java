@@ -11,4 +11,8 @@ public class PhotoEye extends BaseSensor {
     public boolean isDetecting() {
         return photoEye.get();
     }
+
+    public DigitalInput getDigitalInput() {
+        return photoEye;
+    }
 }
