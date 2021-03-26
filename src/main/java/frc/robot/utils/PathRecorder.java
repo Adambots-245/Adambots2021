@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Record joystick movements as path instructions that can be played back.
@@ -19,23 +21,37 @@ public class PathRecorder {
     private long startTime = 0L;
 
     private PrintWriter file = null;
+    private ArrayList<String> pathPoints = new ArrayList<String>();
     
     public PathRecorder(){
 
     }
 
-    public void createRecording(String filePath) throws IOException{
+    public void createRecording(String filePath){
 
-        filePath = "/home/lvuser/" + filePath;
+        startTime = 0;
+
+        int unique_id = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE); 
+
+        filePath = "/home/lvuser/" + filePath + "-" + unique_id + ".txt";
         // new File(filePath).delete();
-        new File(filePath).createNewFile();
-
-        file = new PrintWriter(new FileWriter(filePath));
+        try {
+            new File(filePath).createNewFile();
+            file = new PrintWriter(new FileWriter(filePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void stopRecording(){
-        if (file != null)
+        if (file != null){
+
+            for (String pathPoint : pathPoints) {
+                file.printf("%s%n", pathPoint);
+            }
+            file.flush();
             file.close();
+        }
     }
 
     public static PathRecorder getInstance(){
@@ -55,8 +71,9 @@ public class PathRecorder {
         
         long delay = currentTime - startTime;
         
-        file.printf("%d,%f,%f%n", delay, speed, rotationSpeed);
-        file.flush();
+        // file.printf("%d,%f,%f%n", delay, speed, rotationSpeed);
+        // file.flush();
+        pathPoints.add(String.format("%d,%f,%f", delay, speed, rotationSpeed));
 
         startTime = currentTime;
     }

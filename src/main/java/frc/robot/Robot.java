@@ -10,6 +10,7 @@ package frc.robot;
 import frc.robot.commands.autonCommands.TurnCommand;
 import frc.robot.sensors.Gyro;
 import frc.robot.subsystems.*;
+import frc.robot.utils.PathRecorder;
 import frc.robot.vision.GripPipeline;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -87,6 +88,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
+
+    PathRecorder.getInstance().stopRecording();
+    
     RobotMap.FrontLeftMotor.setNeutralMode(NeutralMode.Coast);
     RobotMap.BackLeftMotor.setNeutralMode(NeutralMode.Coast);
     RobotMap.FrontRightMotor.setNeutralMode(NeutralMode.Coast);

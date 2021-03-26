@@ -13,6 +13,7 @@ import java.io.IOException;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -112,6 +113,9 @@ public class RobotContainer {
    * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+
+      Buttons.primaryStartButton.whenPressed(new InstantCommand(()-> PathRecorder.getInstance().createRecording("barrel-roll-04.txt")));
+      Buttons.primaryBackButton.whenPressed(new InstantCommand(()-> PathRecorder.getInstance().stopRecording()));
     
       // primary controls
       Buttons.primaryAButton.whenPressed(new ShiftLowGearCommand(driveTrainSubsystem));
@@ -207,13 +211,13 @@ public class RobotContainer {
   }
 
   private void setupDefaultCommands(){
-    try {
-      if (!DriverStation.getInstance().isAutonomous() && false) //change to true to start recording this
-        PathRecorder.getInstance().createRecording("barrel-roll-01.txt"); //should write to /home/lvuser/ folder
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+    // try {
+    //   if (!DriverStation.getInstance().isAutonomous() && false) //change to true to start recording this
+    //     PathRecorder.getInstance().createRecording("barrel-roll-recplay.txt"); //should write to /home/lvuser/ folder
+    // } catch (IOException e) {
+    //   // TODO Auto-generated catch block
+    //   e.printStackTrace();
+    // }
     
     driveTrainSubsystem.setDefaultCommand(
         new DriveCommand(driveTrainSubsystem, 
@@ -267,7 +271,7 @@ public class RobotContainer {
     // return autoChooser.getSelected();
 
     // return new BarrelPathAuton(driveTrainSubsystem);
-    return new PathFollower("/home/lvuser/barrel-roll-01.txt", driveTrainSubsystem);
+    return new PathFollower("/home/lvuser/barrel-roll-04.txt-1616721643.txt", driveTrainSubsystem);
     // return new BarrelPathAuton(driveTrainSubsystem);
     // return new PIDTuner(90, driveTrainSubsystem);
     // return new SlalomPathAuton(driveTrainSubsystem);
