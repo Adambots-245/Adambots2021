@@ -85,7 +85,7 @@ public class IntakeSubsystem extends SubsystemBase {
       //if (GamepadConstants.AXIS_DPAD_POV==true)
       // lol I tried
     Log.info("Raising Intake");
-    armMover.set(Value.kReverse);     
+    armMover.set(Value.kForward);     
   }
   
   public void LowerIntake(){
@@ -93,7 +93,7 @@ public class IntakeSubsystem extends SubsystemBase {
       //if (GamepadConstants.BUTTON_RB==false)
       //lol I tried
     Log.info("Lowering Intake");
-    armMover.set(Value.kForward);
+    armMover.set(Value.kReverse);
   }
 
   @Override

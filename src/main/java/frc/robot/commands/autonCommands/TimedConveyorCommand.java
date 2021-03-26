@@ -40,14 +40,14 @@ public class TimedConveyorCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    conveyorSubsystem.runConveyor(speedInput.getAsDouble());
+    conveyorSubsystem.runConveyor(speedInput.getAsDouble(), true); //change boolean to false to enable photo eyes
     conveyorSubsystem.runAlignmentBelt(speedInput.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    conveyorSubsystem.runConveyor(0);
+    conveyorSubsystem.stopConveyorMotor();
     System.out.println("conveyor end");
     
   }

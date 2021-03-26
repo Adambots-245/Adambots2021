@@ -53,7 +53,7 @@ public class RobotContainer {
   // subsystems
   private final BlasterSubsystem blasterSubsystem = new BlasterSubsystem(RobotMap.BlasterMotor, RobotMap.BlasterHood);
   private final ControlPanelSubsystem panelSubsystem = new ControlPanelSubsystem(RobotMap.PanelMotor, RobotMap.ColorSensor);
-  private final ConveyorSubsystem conveyorSubsystem = new ConveyorSubsystem(RobotMap.ConveyorMotor, RobotMap.AlignmentBeltMotor);
+  private final ConveyorSubsystem conveyorSubsystem = new ConveyorSubsystem(RobotMap.ConveyorMotor, RobotMap.AlignmentBeltMotor, RobotMap.IntakePhotoEye, RobotMap.SpacingPhotoEye, RobotMap.ExitPhotoEye);
   private final DriveTrainSubsystem driveTrainSubsystem = new DriveTrainSubsystem(RobotMap.GyroSensor, RobotMap.GearShifter, RobotMap.FrontRightMotor, RobotMap.FrontLeftMotor, RobotMap.BackLeftMotor, RobotMap.BackRightMotor);
   private final GondolaSubsystem gondolaSubsystem = new GondolaSubsystem(RobotMap.GondolaMotor);
   private final HangSubsystem hangSubsystem = new HangSubsystem(RobotMap.HangMotor, RobotMap.WinchMotor1, RobotMap.WinchMotor2, RobotMap.LimitSwitch1, RobotMap.LimitSwitch2);
@@ -252,7 +252,7 @@ public class RobotContainer {
     // return new  DriveForwardGyroDistanceCommand(driveTrainSubsystem, 0, 0, 0, true).andThen(new DriveForwardGyroDistanceCommand(driveTrainSubsystem, 3500*48, -.75, 0, true)).andThen(new DriveForwardGyroDistanceCommand(driveTrainSubsystem, 3500*84, -.5, 90, false));
     // return autonTurn90DegreeCommand.andThen(new WaitCommand(3)).andThen(new TurnToAngleCommand(driveTrainSubsystem, 0.5, -45, false));
     System.out.println(autoChooser.getSelected());
-    // return new LowerIntakeArmCommand(intakeSubsystem)
+    return new LowerIntakeArmCommand(intakeSubsystem);
     // .andThen(new WaitCommand(4))
     // // .andThen(new TurnToAngleFromCameraCommand(driveTrainSubsystem))
     // .andThen(new DriveToBallCommand(driveTrainSubsystem))
