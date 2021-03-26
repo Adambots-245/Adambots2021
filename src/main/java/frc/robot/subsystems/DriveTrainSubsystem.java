@@ -37,6 +37,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.commands.MyRamsete;
 import frc.robot.sensors.Gyro;
 import frc.robot.utils.Log;
 
@@ -103,7 +104,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
     drive = new DifferentialDrive(frontLeftMotor, frontRightMotor);
     drive.setRightSideInverted(false);
 
-    odometry = new DifferentialDriveOdometry(gyro.getRotation2d());
+    odometry = new DifferentialDriveOdometry(getRotation());
     driveSubsystem = this;
 
     Log.info("Initializing Drive Subsystem");
@@ -197,10 +198,11 @@ public class DriveTrainSubsystem extends SubsystemBase {
    * @param rightVolts the commanded right output
    */
   public void setTankVoltage(double leftVolts, double rightVolts) {
-    // frontLeftMotor.setVoltage(leftVolts);
-    // frontLeftMotor.set(ControlMode.PercentOutput, -leftVolts / 12 * 25);
-    frontLeftMotor.set(ControlMode.PercentOutput, leftVolts / 12 * 25);
-    frontRightMotor.set(ControlMode.PercentOutput, rightVolts / 12 * 25);
+    frontLeftMotor.setVoltage(leftVolts);
+    frontRightMotor.setVoltage(rightVolts);
+    
+    // frontLeftMotor.set(ControlMode.PercentOutput, leftVolts / 12 * 25);
+    // frontRightMotor.set(ControlMode.PercentOutput, rightVolts / 12 * 25);
 
     System.out.printf("Left Voltage: %f | Right Voltage: %f\n", leftVolts, rightVolts);
 
@@ -261,9 +263,14 @@ public class DriveTrainSubsystem extends SubsystemBase {
    * @return the robot's heading in degrees, from 180 to 180
    */
   public double getHeading(){
-    return Math.IEEEremainder(gyro.getAngle(), 360) * (Constants.GYRO_REVERSED ? -1.0 : 1.0);
-    // return gyro.getRotation2d().getDegrees() * (Constants.GYRO_REVERSED ? -1.0 : 1.0);
+    // return Math.IEEEremainder(gyro.getAngle(), 360) * (Constants.GYRO_REVERSED ? -1.0 : 1.0);
+    return getRotation().getDegrees() * (Constants.GYRO_REVERSED ? -1.0 : 1.0);
+
     // return Math.IEEEremainder(gyro.getRotation2d().getDegrees(), 360) * (Constants.GYRO_REVERSED ? -1.0 : 1.0);
+  }
+
+  public Rotation2d getRotation() {
+    return gyro.getRotation2d();
   }
 
   /**
@@ -277,7 +284,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
   /** Zeroes the heading of the robot. */
   public void zeroHeading() {
-    resetGyro(false);
+    resetGyro(true);
   }
 
   public void resetGyro(){
@@ -292,18 +299,19 @@ public class DriveTrainSubsystem extends SubsystemBase {
    */
   public void resetOdometry(Pose2d pose) {
     resetEncoders();
-    odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
+    odometry.resetPosition(pose, getRotation());
   }
 
   public void resetOdometry() {
-    resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(-180)));
+    // resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(-180)));
+    resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
   }
 
   /**
    * Updates the odometry with the robot's current heading and encoder positions.
    */
   public void updateOdometry() {
-    odometry.update(Rotation2d.fromDegrees(getHeading()), getLeftDriveEncoderMeters(),
+    odometry.update(getRotation(), getLeftDriveEncoderMeters(),
       getRightDriveEncoderMeters());
   }
 
@@ -375,7 +383,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
   
       SmartDashboard.putNumber("totalRamseteSecs", trajectory.getTotalTimeSeconds());
   
-      RamseteCommand ramsete = new RamseteCommand(
+      MyRamsete ramsete = new MyRamsete(
   
         // Generate an optimal trajectory from positions and translations
         trajectory,
@@ -412,10 +420,12 @@ public class DriveTrainSubsystem extends SubsystemBase {
       );
   
   
-      return ramsete.andThen(() -> {
+      return new InstantCommand(() -> driveTrain.resetOdometry(trajectory.getInitialPose()), driveTrain)
+      .andThen(ramsete)
+      .andThen(new InstantCommand(() -> {
           driveTrain.setTankVoltage(0.0, 0.0);
           SmartDashboard.putBoolean("ranPath", true);
-      });
+      }, driveTrain));
   
     }
 

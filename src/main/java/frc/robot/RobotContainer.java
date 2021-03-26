@@ -99,7 +99,7 @@ public class RobotContainer {
     configureButtonBindings();
     driveTrainSubsystem.resetEncoders();
     driveTrainSubsystem.resetOdometry();
-
+    driveTrainSubsystem.zeroHeading();
 
 
     // configure the dashboard
