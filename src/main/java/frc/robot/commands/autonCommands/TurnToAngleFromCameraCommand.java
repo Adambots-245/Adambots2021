@@ -59,7 +59,7 @@ public class TurnToAngleFromCameraCommand extends CommandBase {
     double verticalDegreesToCenter = table.getEntry("ty").getDouble(0);
     double calculatedDistance = Constants.LIMELIGHT_HEIGHT_FROM_GROUND / Math.tan(Math.abs(verticalDegreesToCenter) * (Math.PI / 180.0) + Constants.LIMELIGHT_ANGLE_TO_HORIZONTAL * (Math.PI / 180.0));
     double distanceFromIntakeArm = calculatedDistance - Constants.LIMELIGHT_DISTANCE_TO_INTAKE_ARM;
-    this.targetAngle = table.getEntry("tx").getDouble(0) + 5 * (1);
+    this.targetAngle = table.getEntry("tx").getDouble(0) + 3 * (1);
     SmartDashboard.putNumber("Target Angle", targetAngle);
   }
 
