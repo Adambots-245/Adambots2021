@@ -19,17 +19,16 @@ public class DriveToBallCommand extends CommandBase {
     private boolean intakeDetectedBall = false;
     private PhotoEye intakePhotoEye;
 
-    public DriveToBallCommand(DriveTrainSubsystem driveTrainSubsystem, IntakeSubsystem intakeSubsystem) {
+    public DriveToBallCommand(DriveTrainSubsystem driveTrainSubsystem, PhotoEye intakePhotoEye) {
         table = NetworkTableInstance.getDefault().getTable("limelight");
         this.driveTrainSubsystem = driveTrainSubsystem;
-        
+        this.intakePhotoEye = intakePhotoEye;
         addRequirements(driveTrainSubsystem, intakeSubsystem);
     }
 
     @Override
     public void initialize() {
         driveTrainSubsystem.resetEncoders();
-
         double verticalDegreesToCenter = table.getEntry("ty").getDouble(0);
 
         // calculate distance
@@ -67,9 +66,10 @@ public class DriveToBallCommand extends CommandBase {
         System.out.println("Drive encoder values:" + driveTrainSubsystem.getAverageDriveEncoderValue());
         if(driveTrainSubsystem.getAverageDriveEncoderValue() >= ( calculatedDistance * Constants.ENCODER_TICKS_PER_INCH ) + 70000)
             closeToBall = true;
-        // else if ()
-        //     closeToBall = true;
-        return closeToBall;
+        else if (intakePhotoEye.isDetecting())
+             intakeDetectedBall = true;
+        System.out.println("Intake Detected Ball: " + intakeDetectedBall + ". Close to Ball: " + closeToBall);
+        return closeToBall || intakeDetectedBall;
     }
 
 }
