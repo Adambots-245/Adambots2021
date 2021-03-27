@@ -204,6 +204,7 @@ public final class Constants {
     // CALIBRATE THESE
 	public static final double AUTON_TARGET_CENTER_LINE_CONSTANT_VELOCITY = 10343;
 	public static final double TRENCH_SHOOTER_VELOCITY = 10343;
+	public static final String ROBOT_HOME_FOLDER = "/home/lvuser/";
     
 
 }

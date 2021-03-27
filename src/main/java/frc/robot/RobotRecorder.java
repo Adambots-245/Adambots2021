@@ -14,6 +14,7 @@ import frc.robot.commands.SetLowSpeedCommand;
 import frc.robot.commands.SetNormalSpeedCommand;
 import frc.robot.commands.ShiftHighGearCommand;
 import frc.robot.commands.ShiftLowGearCommand;
+import frc.robot.commands.autonCommands.PathFollower;
 import frc.robot.sensors.Gyro;
 import frc.robot.subsystems.*;
 import frc.robot.utils.PathRecorder;
@@ -24,6 +25,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -42,6 +44,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class RobotRecorder extends TimedRobot {
   private Command m_autonomousCommand;
   private final DriveTrainSubsystem driveTrainSubsystem = new DriveTrainSubsystem(RobotMap.GyroSensor, RobotMap.GearShifter, RobotMap.FrontRightMotor, RobotMap.FrontLeftMotor, RobotMap.BackLeftMotor, RobotMap.BackRightMotor);
+
+  private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
   // private RobotContainer m_robotContainer;
 
@@ -70,10 +74,28 @@ public class RobotRecorder extends TimedRobot {
         );  
     }
 
+    SmartDashboard.putBoolean("Recording", false);
+
     Buttons.primaryStartButton.whenPressed(
       new InstantCommand(
-        ()-> PathRecorder.getInstance().createRecording("barrel-roll-04.txt")));
-    Buttons.primaryBackButton.whenPressed(new InstantCommand(()-> PathRecorder.getInstance().stopRecording()));
+        // ()-> PathRecorder.getInstance().createRecording("barrel-roll-test")));
+        ()-> PathRecorder.getInstance().createRecording(PathRecorder.getFileNameFromSmartDashboard())).
+          andThen(new InstantCommand(
+            () -> SmartDashboard.putBoolean("Recording", true)
+          ))
+        );
+
+    Buttons.primaryBackButton.whenPressed(
+      new InstantCommand(
+        ()-> PathRecorder.getInstance().stopRecording()).
+          andThen(new InstantCommand(
+            () -> SmartDashboard.putBoolean("Recording", false)
+          ))
+    );
+
+    setupAutonRoutines();
+
+    SmartDashboard.putData("Auton Mode", autoChooser);
 
     // Buttons.primaryAButton.whenPressed(new ShiftLowGearCommand(driveTrainSubsystem));
     // Buttons.primaryYButton.whenPressed(new ShiftHighGearCommand(driveTrainSubsystem));
@@ -85,6 +107,13 @@ public class RobotRecorder extends TimedRobot {
     // autonomous chooser on the dashboard.
     // m_robotContainer = new RobotContainer();
 
+  }
+
+  private void setupAutonRoutines(){
+    for (String file: PathFollower.getListofRecordings()){
+      String name = file.substring(file.lastIndexOf("/") + 1);
+      autoChooser.addOption(name, new PathFollower(file, driveTrainSubsystem));
+    }
   }
 
   private double deaden(double rawInput) {
@@ -124,6 +153,13 @@ public class RobotRecorder extends TimedRobot {
 
     PathRecorder.getInstance().stopRecording();
     
+    String file = PathFollower.getLastRecordedFile();
+    String name = file.substring(file.lastIndexOf("/") + 1);
+    autoChooser.addOption(name, new PathFollower(file, driveTrainSubsystem));
+
+    autoChooser.addOption("Last One", new PathFollower(file, driveTrainSubsystem));
+    SmartDashboard.putData("Auton Mode", autoChooser);
+    
     RobotMap.FrontLeftMotor.setNeutralMode(NeutralMode.Coast);
     RobotMap.BackLeftMotor.setNeutralMode(NeutralMode.Coast);
     RobotMap.FrontRightMotor.setNeutralMode(NeutralMode.Coast);
@@ -150,10 +186,13 @@ public class RobotRecorder extends TimedRobot {
     // System.out.println("Gyro Yaw at Startup: " + Gyro.getInstance().getYaw());
     // // CommandScheduler.getInstance().cancelAll(); // cancel all teleop commands
 
-    // // schedule the autonomous command (example)
-    // if (m_autonomousCommand != null) {
-    //   m_autonomousCommand.schedule();
-    // }
+    // m_autonomousCommand = new PathFollower("/home/lvuser/barrel-roll-test-1616853151.txt", driveTrainSubsystem);
+    m_autonomousCommand = autoChooser.getSelected();
+
+    // schedule the autonomous command (example)
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.schedule();
+    }
     
     RobotMap.FrontLeftMotor.setNeutralMode(NeutralMode.Brake);
     RobotMap.BackLeftMotor.setNeutralMode(NeutralMode.Brake);

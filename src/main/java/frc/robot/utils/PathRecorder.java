@@ -11,6 +11,12 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
+
 /**
  * Record joystick movements as path instructions that can be played back.
  * 
@@ -22,18 +28,24 @@ public class PathRecorder {
 
     private PrintWriter file = null;
     private ArrayList<String> pathPoints = new ArrayList<String>();
-    
-    public PathRecorder(){
+    private long line = 1;
+    private static ShuffleboardTab tab = Shuffleboard.getTab("Auton");
+    private static NetworkTableEntry fileName = tab.add("RecordMacroTo", "autonPath").getEntry();
 
+    public PathRecorder(){
+        SmartDashboard.putString("Recording to File", "");
+        // SmartDashboard.putString("Record Macro To", "autonPath");
     }
 
     public void createRecording(String filePath){
+
+        SmartDashboard.putString("Recording to File", filePath);
 
         startTime = 0;
 
         int unique_id = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE); 
 
-        filePath = "/home/lvuser/" + filePath + "-" + unique_id + ".txt";
+        filePath = Constants.ROBOT_HOME_FOLDER + filePath + "-" + unique_id + ".txt";
         // new File(filePath).delete();
         try {
             new File(filePath).createNewFile();
@@ -52,6 +64,11 @@ public class PathRecorder {
             file.flush();
             file.close();
         }
+    }
+
+    public static String getFileNameFromSmartDashboard(){
+
+        return fileName.getString("autonPath");
     }
 
     public static PathRecorder getInstance(){
@@ -75,6 +92,12 @@ public class PathRecorder {
         // file.flush();
         pathPoints.add(String.format("%d,%f,%f", delay, speed, rotationSpeed));
 
+        if (delay > 25){
+            // these lines where the robot skipped 20 ms delay should be manually inspected and corrected
+            System.out.println("WARNING: Delay > 25 at line: " + this.line);
+        }
+
+        line++;
         startTime = currentTime;
     }
 }

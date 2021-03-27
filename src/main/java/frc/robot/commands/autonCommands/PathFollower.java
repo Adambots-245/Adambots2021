@@ -5,10 +5,14 @@
 package frc.robot.commands.autonCommands;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.DriveTrainSubsystem;
 
 public class PathFollower extends CommandBase {
@@ -28,6 +32,8 @@ public class PathFollower extends CommandBase {
     this.filePath = filePath;
     this.drive = drive;
 
+    SmartDashboard.putString("Playback: Auton Macro File", filePath);
+
     addRequirements(drive);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -35,6 +41,7 @@ public class PathFollower extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+
     File file = new File(filePath);
 
     try {
@@ -44,6 +51,53 @@ public class PathFollower extends CommandBase {
       e.printStackTrace();
       this.finishedFlag = true;
     }
+  }
+
+  public static String getLastRecordedFile(){
+    File dir = new File (Constants.ROBOT_HOME_FOLDER);
+
+    File[] files = dir.listFiles(File::isFile);
+    long lastModifiedTIme = Long.MIN_VALUE;
+    
+    String chosenFile = null;
+
+    if (files == null || files.length == 0)
+      return chosenFile;
+    else{
+      for (File file:files){
+        String fileName = file.getName();
+        String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
+        if (ext.equals("txt") && file.lastModified() > lastModifiedTIme)
+        {
+          chosenFile = file.getAbsolutePath();
+          lastModifiedTIme = file.lastModified();
+        }
+      }
+    }
+
+    return chosenFile;
+  }
+
+  public static String[] getListofRecordings(){
+    File dir = new File (Constants.ROBOT_HOME_FOLDER);
+
+    File[] files = dir.listFiles(File::isFile);
+    
+    ArrayList<String> list = new ArrayList<String>();
+
+    if (files!= null && files.length != 0)
+    {
+      for (File file:files){
+        String fileName = file.getName();
+        String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
+
+        if (ext.equals("txt")){
+          list.add(file.getAbsolutePath());
+        }
+      }
+    }
+
+    return list.toArray(new String[list.size()]);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -59,6 +113,8 @@ public class PathFollower extends CommandBase {
       double turnSpeed = Double.valueOf(fields[2]);
 
       System.out.printf("Auto drive %f:%f%n", speed, turnSpeed);
+      SmartDashboard.putNumber("Auton Speed", speed);
+      SmartDashboard.putNumber("Auton Turn Speed", turnSpeed);
 
       drive.arcadeDrive(speed, turnSpeed);
     }
