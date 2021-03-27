@@ -30,7 +30,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
-
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the TimedRobot
@@ -38,14 +37,17 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * creating this project, you must also update the build.gradle file in the
  * project.
  * 
- * Very Lightweight Robot class that focuses on the drivetrain.
- * Change the Robot.java's Main to use the other Robot.java.
+ * Very Lightweight Robot class that focuses on the drivetrain. Change the
+ * Robot.java's Main to use the other Robot.java.
  */
 public class RobotRecorder extends TimedRobot {
   private Command m_autonomousCommand;
-  private final DriveTrainSubsystem driveTrainSubsystem = new DriveTrainSubsystem(RobotMap.GyroSensor, RobotMap.GearShifter, RobotMap.FrontRightMotor, RobotMap.FrontLeftMotor, RobotMap.BackLeftMotor, RobotMap.BackRightMotor);
+  private final DriveTrainSubsystem driveTrainSubsystem = new DriveTrainSubsystem(RobotMap.GyroSensor,
+      RobotMap.GearShifter, RobotMap.FrontRightMotor, RobotMap.FrontLeftMotor, RobotMap.BackLeftMotor,
+      RobotMap.BackRightMotor);
 
-  private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(RobotMap.ArmMover, RobotMap.IntakeMotor, RobotMap.FeedToBlasterMotor);
+  private SendableChooser<Command> autoChooser = new SendableChooser<>();
 
   // private RobotContainer m_robotContainer;
 
@@ -58,49 +60,43 @@ public class RobotRecorder extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    
+
     if (Robot.isReal()) {
       // Starts vision thread only if not running in simulation mode
-      // Vision System calculates the angle to the target and posts it to the NetworkTable
-      // vision = new VisionProcessorSubsystem(RobotMap.RingLight, new GripPipeline());
+      // Vision System calculates the angle to the target and posts it to the
+      // NetworkTable
+      // vision = new VisionProcessorSubsystem(RobotMap.RingLight, new
+      // GripPipeline());
       // visionThread = vision.getVisionThread();
       // visionThread.setDaemon(true);
       // visionThread.start();
 
-      driveTrainSubsystem.setDefaultCommand(
-        new DriveCommand(driveTrainSubsystem, 
-        () -> deaden(Buttons.primaryJoystick.getY(Hand.kLeft)),
-        () -> Buttons.primaryJoystick.getX(Hand.kRight))
-        );  
+      driveTrainSubsystem.setDefaultCommand(new DriveCommand(driveTrainSubsystem,
+          () -> deaden(Buttons.primaryJoystick.getY(Hand.kLeft)), () -> Buttons.primaryJoystick.getX(Hand.kRight)));
     }
 
     SmartDashboard.putBoolean("Recording", false);
 
-    Buttons.primaryStartButton.whenPressed(
-      new InstantCommand(
+    Buttons.primaryStartButton.whenPressed(new InstantCommand(
         // ()-> PathRecorder.getInstance().createRecording("barrel-roll-test")));
-        ()-> PathRecorder.getInstance().createRecording(PathRecorder.getFileNameFromSmartDashboard())).
-          andThen(new InstantCommand(
-            () -> SmartDashboard.putBoolean("Recording", true)
-          ))
-        );
+        () -> PathRecorder.getInstance().createRecording(PathRecorder.getFileNameFromSmartDashboard()))
+            .andThen(new InstantCommand(() -> SmartDashboard.putBoolean("Recording", true))));
 
-    Buttons.primaryBackButton.whenPressed(
-      new InstantCommand(
-        ()-> PathRecorder.getInstance().stopRecording()).
-          andThen(new InstantCommand(
-            () -> SmartDashboard.putBoolean("Recording", false)
-          ))
-    );
+    Buttons.primaryBackButton.whenPressed(new InstantCommand(() -> PathRecorder.getInstance().stopRecording())
+        .andThen(new InstantCommand(() -> SmartDashboard.putBoolean("Recording", false))));
 
     setupAutonRoutines();
 
-    SmartDashboard.putData("Auton Mode", autoChooser);
+    // intakeSubsystem.RaiseIntake();
+    // driveTrainSubsystem.shiftHighGear();
 
-    // Buttons.primaryAButton.whenPressed(new ShiftLowGearCommand(driveTrainSubsystem));
-    // Buttons.primaryYButton.whenPressed(new ShiftHighGearCommand(driveTrainSubsystem));
+    // Buttons.primaryAButton.whenPressed(new
+    // ShiftLowGearCommand(driveTrainSubsystem));
+    // Buttons.primaryYButton.whenPressed(new
+    // ShiftHighGearCommand(driveTrainSubsystem));
     // Buttons.primaryLB.whenPressed(new SetLowSpeedCommand(driveTrainSubsystem));
-    // Buttons.primaryRB.whenPressed(new SetNormalSpeedCommand(driveTrainSubsystem));
+    // Buttons.primaryRB.whenPressed(new
+    // SetNormalSpeedCommand(driveTrainSubsystem));
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
@@ -109,11 +105,16 @@ public class RobotRecorder extends TimedRobot {
 
   }
 
-  private void setupAutonRoutines(){
-    for (String file: PathFollower.getListofRecordings()){
+  private void setupAutonRoutines() {
+    // SmartDashboard.delete("Auton Mode");
+    // autoChooser = new SendableChooser<>();
+
+    for (String file : PathFollower.getListofRecordings()) {
       String name = file.substring(file.lastIndexOf("/") + 1);
       autoChooser.addOption(name, new PathFollower(file, driveTrainSubsystem));
     }
+
+    SmartDashboard.putData("Auton Mode", autoChooser);
   }
 
   private double deaden(double rawInput) {
@@ -131,9 +132,9 @@ public class RobotRecorder extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    
+
     // if (Robot.isReal()) {
-      // SmartDashboard.putNumber("ANGLE", vision.getAngle());
+    // SmartDashboard.putNumber("ANGLE", vision.getAngle());
     // }
     // newly-scheduled
     // commands, running already-scheduled commands, removing finished or
@@ -142,7 +143,7 @@ public class RobotRecorder extends TimedRobot {
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    
+
   }
 
   /**
@@ -152,14 +153,17 @@ public class RobotRecorder extends TimedRobot {
   public void disabledInit() {
 
     PathRecorder.getInstance().stopRecording();
-    
-    String file = PathFollower.getLastRecordedFile();
-    String name = file.substring(file.lastIndexOf("/") + 1);
-    autoChooser.addOption(name, new PathFollower(file, driveTrainSubsystem));
 
-    autoChooser.addOption("Last One", new PathFollower(file, driveTrainSubsystem));
-    SmartDashboard.putData("Auton Mode", autoChooser);
+    // String file = PathFollower.getLastRecordedFile();
+    // if (file != null) {
+    //   String name = file.substring(file.lastIndexOf("/") + 1);
+    //   autoChooser.addOption(name, new PathFollower(file, driveTrainSubsystem));
+
+    //   autoChooser.addOption("Last One", new PathFollower(file, driveTrainSubsystem));
+    // }
     
+    // setupAutonRoutines();
+
     RobotMap.FrontLeftMotor.setNeutralMode(NeutralMode.Coast);
     RobotMap.BackLeftMotor.setNeutralMode(NeutralMode.Coast);
     RobotMap.FrontRightMotor.setNeutralMode(NeutralMode.Coast);
@@ -179,21 +183,35 @@ public class RobotRecorder extends TimedRobot {
     // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     // SmartDashboard.putString("auton selected", m_autonomousCommand.toString());
 
-    
     // System.out.println("Init Auton.........");
     // Gyro.getInstance().reset();
-    // Gyro.getInstance().calibrationCheck(); // may take up to two seconds to complete
+    // Gyro.getInstance().calibrationCheck(); // may take up to two seconds to
+    // complete
     // System.out.println("Gyro Yaw at Startup: " + Gyro.getInstance().getYaw());
     // // CommandScheduler.getInstance().cancelAll(); // cancel all teleop commands
 
-    // m_autonomousCommand = new PathFollower("/home/lvuser/barrel-roll-test-1616853151.txt", driveTrainSubsystem);
-    m_autonomousCommand = autoChooser.getSelected();
+    // m_autonomousCommand = new
+    // PathFollower("/home/lvuser/barrel-roll-test-1616853151.txt",
+    // driveTrainSubsystem);
+    
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.cancel();
+    }
+
+    // m_autonomousCommand = autoChooser.getSelected();
+    m_autonomousCommand = new PathFollower("/home/lvuser/barrel-roll-path1-1616860875.txt", driveTrainSubsystem).
+      andThen(new PathFollower("/home/lvuser/barrel-roll-path2-1616861903.txt", driveTrainSubsystem)).
+      andThen(new PathFollower("/home/lvuser/barrel-roll-path3-1616862754.txt", driveTrainSubsystem));
+
+      // m_autonomousCommand = new PathFollower("/home/lvuser/slalom-path1-1616870027.txt", driveTrainSubsystem).
+      // andThen(new PathFollower("/home/lvuser/slalom-path2-1616875674.txt", driveTrainSubsystem)).
+      // andThen(new PathFollower("/home/lvuser/slalom-path3-1616876271.txt", driveTrainSubsystem));
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
-    
+
     RobotMap.FrontLeftMotor.setNeutralMode(NeutralMode.Brake);
     RobotMap.BackLeftMotor.setNeutralMode(NeutralMode.Brake);
     RobotMap.FrontRightMotor.setNeutralMode(NeutralMode.Brake);
@@ -218,7 +236,7 @@ public class RobotRecorder extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    
+
     RobotMap.FrontLeftMotor.setNeutralMode(NeutralMode.Coast);
     RobotMap.BackLeftMotor.setNeutralMode(NeutralMode.Coast);
     RobotMap.FrontRightMotor.setNeutralMode(NeutralMode.Coast);
@@ -235,7 +253,7 @@ public class RobotRecorder extends TimedRobot {
 
   @Override
   public void testInit() {
-    
+
   }
 
   /**
@@ -243,7 +261,7 @@ public class RobotRecorder extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-    
+
     // System.out.println("Running test periodic");
     // SmartDashboard.putNumber("pitch",gyroSubsystem.getPitch());
     // SmartDashboard.putNumber("roll",gyroSubsystem.getRoll());

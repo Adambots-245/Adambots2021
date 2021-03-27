@@ -63,6 +63,7 @@ public class PathRecorder {
             }
             file.flush();
             file.close();
+            file = null;
         }
     }
 

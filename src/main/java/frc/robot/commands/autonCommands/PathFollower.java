@@ -32,8 +32,6 @@ public class PathFollower extends CommandBase {
     this.filePath = filePath;
     this.drive = drive;
 
-    SmartDashboard.putString("Playback: Auton Macro File", filePath);
-
     addRequirements(drive);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -103,6 +101,8 @@ public class PathFollower extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    SmartDashboard.putString("Playback: Auton Macro File", filePath);
+
     if (fileScanner.hasNextLine()){
       String line = fileScanner.nextLine();
 
@@ -112,7 +112,7 @@ public class PathFollower extends CommandBase {
       double speed = Double.valueOf(fields[1]);
       double turnSpeed = Double.valueOf(fields[2]);
 
-      System.out.printf("Auto drive %f:%f%n", speed, turnSpeed);
+      // System.out.printf("Auto drive %f:%f%n", speed, turnSpeed);
       SmartDashboard.putNumber("Auton Speed", speed);
       SmartDashboard.putNumber("Auton Turn Speed", turnSpeed);
 
