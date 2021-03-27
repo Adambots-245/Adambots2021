@@ -18,9 +18,9 @@ public class TurnCommand extends PIDCommand {
 
   private DriveTrainSubsystem driveTrain;
 
-  private static final double kP = 0.0352; //0.008; //Constants.GYRO_kP;
-  private static final double kI = Constants.GYRO_kI;
-  private static final double kD = 0.01271;//0.010021; //Constants.GYRO_kD;
+  private static final double kP = 0.0331; //0.008; //Constants.GYRO_kP;
+  private static final double kI = 0; //Constants.GYRO_kI;
+  private static final double kD = 0.00951; // 0.01271;//0.010021; //Constants.GYRO_kD;
 
   private double targetAngle = 0;
 
@@ -35,7 +35,7 @@ public class TurnCommand extends PIDCommand {
         // The controller that the command will use
         new PIDController(kP, kI, kD),
         // This should return the measurement
-        driveTrain::getHeading,
+        driveTrain::getAngle,
         // This should return the setpoint (can also be a constant)
         targetAngleDegrees,
         // This uses the output
@@ -43,7 +43,7 @@ public class TurnCommand extends PIDCommand {
           // Set minimum output to turn the robot - anything lower than this and it may
           // not move
           // Do not exceed a certain speed as it may overshoot too much
-          double rotationSpeed = MathUtil.clamp(Math.abs(output), 0.9, 1.5);
+          double rotationSpeed = MathUtil.clamp(Math.abs(output), 0.50, 1.3);
           // if (Math.abs(output) > 1.5) rotationSpeed = 1.5;
 
           // double rotationSpeed = output;
@@ -61,7 +61,7 @@ public class TurnCommand extends PIDCommand {
 
     SmartDashboard.putData("Turn PID Controller", getController());
     // Set the controller input to be continuous (because it is an angle controller and getYaw returns values from -180 to 180)
-    getController().enableContinuousInput(-180, 180);
+    // getController().enableContinuousInput(-180, 180);
 
     // Set the controller tolerance - the delta tolerance ensures the robot is
     // stationary at the
@@ -79,8 +79,8 @@ public class TurnCommand extends PIDCommand {
     // Sometimes there is drift in the Gyro and sometimes resetting it doesn't do much.
     // So, add the target angle to starting value
     
-    System.out.printf("Initialize - Current Heading= %f + Angle = %f\n", driveTrain.getHeading(), this.targetAngle);
-    double relativeSetPoint = driveTrain.getHeading() + this.targetAngle;
+    System.out.printf("Initialize - Current Heading= %f + Angle = %f\n", driveTrain.getAngle(), this.targetAngle);
+    double relativeSetPoint = driveTrain.getAngle() + this.targetAngle;
     // relativeSetPoint = Math.signum(this.targetAngle) * relativeSetPoint;
     getController().setSetpoint(relativeSetPoint);
     System.out.println("Initialize - SetPoint:"+ relativeSetPoint);

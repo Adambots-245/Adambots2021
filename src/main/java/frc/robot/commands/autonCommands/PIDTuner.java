@@ -28,7 +28,7 @@ public class PIDTuner extends PIDCommand {
         // The controller that the command will use
         new PIDController(kP, kI, kD),
         // This should return the measurement
-        drive::getHeading,
+        drive::getAngle,
         // This should return the setpoint (can also be a constant)
         targetAngleDegrees,
         // This uses the output
@@ -40,17 +40,16 @@ public class PIDTuner extends PIDCommand {
           endTime = System.currentTimeMillis();
 
           double elapsed = (endTime - startTime) / 1000; // convert to seconds
-          System.out.printf(">>%f,%f,%f\n", elapsed, feed, drive.getHeading());
+          System.out.printf(">>%f,%f,%f\n", elapsed, feed, drive.getAngle());
 
           feed = feed + 0.01;
         }, drive);
 
     this.driveTrain = drive;
 
-    frc.robot.sensors.Gyro.getInstance().reset();
 
     // Set the controller to be continuous (because it is an angle controller)
-    getController().enableContinuousInput(-180, 180);
+    // getController().enableContinuousInput(-180, 180);
     // Set the controller tolerance - the delta tolerance ensures the robot is
     // stationary at the
     // setpoint before it is considered as having reached the reference
@@ -60,6 +59,8 @@ public class PIDTuner extends PIDCommand {
   @Override
   public void initialize() {
     super.initialize();
+
+    frc.robot.sensors.Gyro.getInstance().reset();
 
     startTime = System.currentTimeMillis();
   }

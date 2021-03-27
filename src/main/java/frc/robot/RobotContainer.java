@@ -254,7 +254,8 @@ public class RobotContainer {
     // System.out.println(autoChooser.getSelected());
     // return autoChooser.getSelected();
 
-    return new BarrelPathAuton(driveTrainSubsystem);
+    // return new BarrelPathAuton(driveTrainSubsystem);
+    return new TurnCommand(90, driveTrainSubsystem);
     // return new PIDTuner(90, driveTrainSubsystem);
     // return new SlalomPathAuton(driveTrainSubsystem);
   }

@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.sensors.Lidar;
 import frc.robot.subsystems.BlasterSubsystem;
 import frc.robot.utils.Log;
@@ -50,6 +51,7 @@ public class BlasterDistanceBasedCommand extends CommandBase {
   @Override
   public void execute() {
     initialDistance = lidar.getInches();
+    // SmartDashboard.putNumber("Lidar Distance: ", initialDistance);
 
     double distanceInFeet =  initialDistance / 12;
     // double distanceInFeet = 182/12;
@@ -70,6 +72,11 @@ public class BlasterDistanceBasedCommand extends CommandBase {
 
     double targetVelocity = (inchesInFeet * secondsInMinute * feetsPerSec * numTicksPer100ms)
         / (flyWheelDiameterInInches * adjustFor100ms * Math.PI);
+
+    if (initialDistance > 80)
+      targetVelocity -= Constants.ADJUST_FOR_2D_TARGET; // for 2D target
+    else
+      targetVelocity += Constants.ADJUST_FOR_2D_TARGET * 2;
 
     blasterSubsystem.setVelocity(targetVelocity);
     SmartDashboard.putNumber("Blaster Velocity", blasterSubsystem.getVelocity());
