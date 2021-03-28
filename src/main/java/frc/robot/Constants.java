@@ -214,17 +214,16 @@ public final class Constants {
     // --------------------RAMSETE TRAJECTORY CONSTANTS---------------------- \\
 
     // Feed forward/back gains
-    public static final double ksVolts = 0.684;//pw char.: 0.745;//1.98;//0.22;
-    public static final double kvVoltSecondsPerMeter = 0.104;//pw: 0.0493;//1.98;//6.11;//1.98;
-    public static final double kaVoltSecondsSquaredPerMeter = 0.00499;//pw: 0.0006;//0.2;//-0.021;//0.2;
+    public static final double ksVolts = 0.658;//0.684;//pw char.: 0.745;//1.98;//0.22;
+    public static final double kvVoltSecondsPerMeter = 0.112;//0.104;//pw: 0.0493;//1.98;//6.11;//1.98;
+    public static final double kaVoltSecondsSquaredPerMeter = 0.00627;//0.00499;//pw: 0.0006;//0.2;//-0.021;//0.2;
     public static final double MAX_DRIVE_VOLTAGE = 10;
 
     // Drive velocity
-    public static final double kPDriveVel = 0.2;//pw: 0.0118;//0.998;//8.5;
+    public static final double kPDriveVel = 0.2;//NC:0.259;//pw: 0.0118;//0.998;//8.5;
 
     // Distance between wheels of robot
-    //TODO: NEEDS TO BE RE-CHARACTERIZED - Gyro not configured properly in originalcharacterization
-    public static final double kTrackwidthMeters = 0.635;//0.27;//0.69; // Distance between wheels
+    public static final double kTrackwidthMeters = 0.635;//NC:31.82494519;//0.635;//0.27;//0.69; // Distance between wheels
 
     // Drive kinematics
     public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(Constants.kTrackwidthMeters);

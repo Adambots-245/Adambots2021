@@ -382,6 +382,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
       driveTrain.resetOdometry(trajectory.getInitialPose());
   
       SmartDashboard.putNumber("totalRamseteSecs", trajectory.getTotalTimeSeconds());
+      SmartDashboard.putNumber("initialRamseteDistance", driveTrain.getLeftDriveEncoderMeters());
   
       MyRamsete ramsete = new MyRamsete(
   
@@ -425,6 +426,7 @@ public class DriveTrainSubsystem extends SubsystemBase {
       .andThen(new InstantCommand(() -> {
           driveTrain.setTankVoltage(0.0, 0.0);
           SmartDashboard.putBoolean("ranPath", true);
+          SmartDashboard.putNumber("finalRamseteDistance", driveTrain.getLeftDriveEncoderMeters());
       }, driveTrain));
   
     }

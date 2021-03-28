@@ -10,6 +10,9 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -286,7 +289,12 @@ public class RobotContainer {
     // return new PathweaverCommand(driveTrainSubsystem, "TestPath");
 
     // return DriveTrainSubsystem.WarpDrive.getRamseteCommand("CurvedPath");
-    return DriveTrainSubsystem.WarpDrive.getCachedPath("CurvedPath");
+    // return DriveTrainSubsystem.WarpDrive.getCachedPath("TestPath");
+    return DriveTrainSubsystem.WarpDrive.drawManualPath(
+      new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
+      new Pose2d(2, 0, Rotation2d.fromDegrees(0)), 
+      new Translation2d(1, 0)
+    );
 
     // try {
     //   //return new PathweaverTestCommand(driveTrainSubsystem);
