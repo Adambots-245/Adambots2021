@@ -5,13 +5,15 @@
 package frc.robot.commands.autonCommands;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveTrainSubsystem;
 
@@ -24,8 +26,8 @@ public class PathFollower extends CommandBase {
   /**
    * Follows path created by PathRecorder by sending the same joystick coordinates to the drive subsystem
    * 
-   * @param filePath
-   * @param drive
+   * @param filePath - Absolute filepath of recording
+   * @param drive - DriveTrainSubsystem instance
    */
   public PathFollower(String filePath, DriveTrainSubsystem drive) {
 
@@ -45,10 +47,54 @@ public class PathFollower extends CommandBase {
     try {
       this.fileScanner = new Scanner(file);
     } catch (FileNotFoundException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
       this.finishedFlag = true;
     }
+  }
+
+  public static Command fromSegmentedPath(String pathName, DriveTrainSubsystem drive) {
+    Command output = null;
+    ArrayList<String> paths = new ArrayList<>(List.of(getListofRecordings()));
+
+    //Sort lexicographically 
+    paths.sort(String::compareToIgnoreCase);
+
+    for (String absolutePath : paths) {
+      //Original format: "/<home_path>/<rec_name>.<id>.<ext>"
+
+      //Gets name in the format: "<rec_name>.<id>"
+      String name = absolutePath.substring(absolutePath.lastIndexOf("/") + 1);
+      name = name.substring(0, name.lastIndexOf("."));
+
+      //Gets name in the format: "<rec_name>"
+      //Gets identifier in the format: <id>
+      int identifier = Integer.parseInt(name.substring(name.lastIndexOf(".") + 1));
+      name = name.substring(0, name.lastIndexOf("."));
+
+      //The successor of this path, aka a re-recording of the current path.
+      //For example, if this path is: "barrelpath3.1.txt"
+      //The successor is: "barrelpath3.2.txt"
+      String successor = Constants.ROBOT_HOME_FOLDER + name + "." + (identifier + 1) + Constants.RECORDING_FILE_EXT;
+
+      //Checks to pass in order to add this path to the output:
+      boolean hasSuccessor = false;
+      boolean isSegmentOfPath = false;
+
+      if (name.contains(pathName)) isSegmentOfPath = true;
+      if (isSegmentOfPath && (new File(successor)).isFile()) hasSuccessor = true;
+
+      //If both checks pass, add this path to output
+      if (isSegmentOfPath && !hasSuccessor) {
+
+        if (output == null) output = new PathFollower(absolutePath, drive);
+        else output.andThen(new PathFollower(absolutePath, drive));
+
+      }
+
+    }
+
+    return output;
+
   }
 
   public static String getLastRecordedFile(){
@@ -64,8 +110,8 @@ public class PathFollower extends CommandBase {
     else{
       for (File file:files){
         String fileName = file.getName();
-        String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
-        if (ext.equals("txt") && file.lastModified() > lastModifiedTIme)
+        String ext = fileName.substring(fileName.lastIndexOf("."));
+        if (ext.equals(Constants.RECORDING_FILE_EXT) && file.lastModified() > lastModifiedTIme)
         {
           chosenFile = file.getAbsolutePath();
           lastModifiedTIme = file.lastModified();
@@ -87,9 +133,9 @@ public class PathFollower extends CommandBase {
     {
       for (File file:files){
         String fileName = file.getName();
-        String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
+        String ext = fileName.substring(fileName.lastIndexOf("."));
 
-        if (ext.equals("txt")){
+        if (ext.equals(Constants.RECORDING_FILE_EXT)){
           list.add(file.getAbsolutePath());
         }
       }
@@ -108,7 +154,7 @@ public class PathFollower extends CommandBase {
 
       String[] fields = line.split(",");
 
-      int delay = Integer.valueOf(fields[0]);
+      // int delay = Integer.valueOf(fields[0]);
       double speed = Double.valueOf(fields[1]);
       double turnSpeed = Double.valueOf(fields[2]);
 
