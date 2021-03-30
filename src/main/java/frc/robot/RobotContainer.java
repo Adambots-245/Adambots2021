@@ -114,7 +114,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-      Buttons.primaryStartButton.whenPressed(new InstantCommand(()-> PathRecorder.getInstance().createRecording("barrel-roll-04.txt")));
+      Buttons.primaryStartButton.whenPressed(new InstantCommand(()-> PathRecorder.getInstance().createRecording()));
       Buttons.primaryBackButton.whenPressed(new InstantCommand(()-> PathRecorder.getInstance().stopRecording()));
     
       // primary controls

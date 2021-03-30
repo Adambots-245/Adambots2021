@@ -23,6 +23,7 @@ import frc.robot.vision.GripPipeline;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -76,14 +77,18 @@ public class RobotRecorder extends TimedRobot {
     }
 
     SmartDashboard.putBoolean("Recording", false);
+    SmartDashboard.putNumber("Added Recordings", 0);
 
     Buttons.primaryStartButton.whenPressed(new InstantCommand(
         // ()-> PathRecorder.getInstance().createRecording("barrel-roll-test")));
-        () -> PathRecorder.getInstance().createRecording(PathRecorder.getFileNameFromSmartDashboard()))
+        () -> PathRecorder.getInstance().createRecording())
             .andThen(new InstantCommand(() -> SmartDashboard.putBoolean("Recording", true))));
 
     Buttons.primaryBackButton.whenPressed(new InstantCommand(() -> PathRecorder.getInstance().stopRecording())
         .andThen(new InstantCommand(() -> SmartDashboard.putBoolean("Recording", false))));
+
+    Buttons.primaryXButton.whenPressed(new InstantCommand(() -> PathRecorder.getInstance().addRecording())
+    .andThen(new InstantCommand(() -> SmartDashboard.putNumber("Added Recordings", SmartDashboard.getNumber("Added Recordings", 0) + 1))));
 
     setupAutonRoutines();
 
@@ -199,9 +204,10 @@ public class RobotRecorder extends TimedRobot {
     }
 
     // m_autonomousCommand = autoChooser.getSelected();
-    m_autonomousCommand = new PathFollower("/home/lvuser/barrel-roll-path1-1616860875.txt", driveTrainSubsystem).
-      andThen(new PathFollower("/home/lvuser/barrel-roll-path2-1616861903.txt", driveTrainSubsystem)).
-      andThen(new PathFollower("/home/lvuser/barrel-roll-path3-1616862754.txt", driveTrainSubsystem));
+    // m_autonomousCommand = new PathFollower("/home/lvuser/barrel-roll-path1-1616860875.txt", driveTrainSubsystem).
+    //   andThen(new PathFollower("/home/lvuser/barrel-roll-path2-1616861903.txt", driveTrainSubsystem)).
+    //   andThen(new PathFollower("/home/lvuser/barrel-roll-path3-1616862754.txt", driveTrainSubsystem));
+    m_autonomousCommand = PathFollower.fromSegmentedPath("barrel-roll-path", driveTrainSubsystem);
 
       // m_autonomousCommand = new PathFollower("/home/lvuser/slalom-path1-1616870027.txt", driveTrainSubsystem).
       // andThen(new PathFollower("/home/lvuser/slalom-path2-1616875674.txt", driveTrainSubsystem)).
