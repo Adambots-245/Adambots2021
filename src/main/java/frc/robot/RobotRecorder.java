@@ -92,7 +92,8 @@ public class RobotRecorder extends TimedRobot {
 
     setupAutonRoutines();
 
-    // intakeSubsystem.RaiseIntake();
+    intakeSubsystem.RaiseIntake();
+    // intakeSubsystem.intake(-1);
     // driveTrainSubsystem.shiftHighGear();
 
     // Buttons.primaryAButton.whenPressed(new
@@ -207,7 +208,7 @@ public class RobotRecorder extends TimedRobot {
     // m_autonomousCommand = new PathFollower("/home/lvuser/barrel-roll-path1-1616860875.txt", driveTrainSubsystem).
     //   andThen(new PathFollower("/home/lvuser/barrel-roll-path2-1616861903.txt", driveTrainSubsystem)).
     //   andThen(new PathFollower("/home/lvuser/barrel-roll-path3-1616862754.txt", driveTrainSubsystem));
-    m_autonomousCommand = PathFollower.fromSegmentedPath("barrel-roll-path", driveTrainSubsystem);
+    m_autonomousCommand = PathFollower.fromSegmentedPath("bounce-path", driveTrainSubsystem);
 
       // m_autonomousCommand = new PathFollower("/home/lvuser/slalom-path1-1616870027.txt", driveTrainSubsystem).
       // andThen(new PathFollower("/home/lvuser/slalom-path2-1616875674.txt", driveTrainSubsystem)).

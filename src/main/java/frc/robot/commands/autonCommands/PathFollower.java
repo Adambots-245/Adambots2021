@@ -133,7 +133,12 @@ public class PathFollower extends CommandBase {
     {
       for (File file:files){
         String fileName = file.getName();
-        String ext = fileName.substring(fileName.lastIndexOf("."));
+        int extPos = fileName.lastIndexOf(".");
+
+        if (extPos == -1)
+          continue;
+
+        String ext = fileName.substring(extPos);
 
         if (ext.equals(Constants.RECORDING_FILE_EXT)){
           list.add(file.getAbsolutePath());
