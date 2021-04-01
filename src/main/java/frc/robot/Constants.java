@@ -147,6 +147,7 @@ public final class Constants {
     public static final double GSEARCH_RED_B = 0;
     public static final double GSEARCH_BLUE_A = 0;
     public static final double GSEARCH_BLUE_B = 0;
+    public static final double ERROR_DISTANCE = 0;
 
     // Colors are (B, G, R) (Don't ask me)
     public static final Scalar RED = new Scalar(0, 0, 255);

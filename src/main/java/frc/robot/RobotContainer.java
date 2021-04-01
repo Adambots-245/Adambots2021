@@ -277,26 +277,7 @@ public class RobotContainer {
     // return new BarrelPathAuton(driveTrainSubsystem);
     // return new PIDTuner(90, driveTrainSubsystem);
     // return new SlalomPathAuton(driveTrainSubsystem);
-
-    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-    double distance = calculateDistanceToBall(table.getEntry("ty").getDouble(0));
-    
-    // Readability, I guess?
-    boolean nearRedA = ;
-    boolean nearRedB = ;
-    boolean nearBlueA = ;
-    boolean nearBlueB = ;
-
-    // Where the paths are actually decided
-    if(nearRedA) {
-
-    } else if(nearRedB) {
-
-    } else if(nearBlueA) {
-
-    } else if(nearBlueB) {
-
-    }
+    return new PathFollower(determinePath(), driveTrainSubsystem); // modify to start intake
     
   }
 
@@ -308,5 +289,30 @@ public class RobotContainer {
       double denominator = Math.tan(fullAngleInRadians);
       
       return (numerator / denominator) - Constants.LIMELIGHT_DISTANCE_TO_INTAKE_ARM; // formula from making a triangle. Then subtract to get distance from intake arm
+  }
+
+  private String determinePath() {
+    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    double distance = calculateDistanceToBall(table.getEntry("ty").getDouble(0));
+    
+    // Readability, I guess?
+    double lowerBound = distance - Constants.ERROR_DISTANCE;
+    double upperBound = distance + Constants.ERROR_DISTANCE;
+    boolean nearRedA = (lowerBound < Constants.GSEARCH_RED_A) && (upperBound > Constants.GSEARCH_RED_A);
+    boolean nearRedB = (lowerBound < Constants.GSEARCH_RED_B) && (upperBound > Constants.GSEARCH_RED_B);
+    boolean nearBlueA = (lowerBound < Constants.GSEARCH_BLUE_A) && (upperBound > Constants.GSEARCH_BLUE_A);
+    boolean nearBlueB = (lowerBound < Constants.GSEARCH_BLUE_B) && (upperBound > Constants.GSEARCH_BLUE_B);
+    // Where the paths are actually decided
+    if(nearRedA) {
+      return ""; // path to Red A recording
+    } else if(nearRedB) {
+      return ""; // path to Red B recording
+    } else if(nearBlueA) {
+      return ""; // path to Blue A recording
+    } else if(nearBlueB) {
+      return ""; // path to Blue B recording
+    } else {
+      return "oh no";
+    }
   }
 }
