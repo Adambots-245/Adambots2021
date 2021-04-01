@@ -137,6 +137,17 @@ public final class Constants {
     public static final int DRIVER_STATION_FPS = 6;
     public static final int PROCESSING_FPS = 30;
 
+    // Limelight Auton Constants
+    public static final double LIMELIGHT_ANGLE_TO_HORIZONTAL = 0.0; //radians. 0 looks alright while testing
+    public static final double LIMELIGHT_HEIGHT_FROM_GROUND = 27.25; //inches. When testing on the table. OR: 0.81 meters
+    public static final int LIMELIGHT_DISTANCE_TO_INTAKE_ARM = 28;
+    
+    // Distances for Galactic Search Paths
+    public static final double GSEARCH_RED_A = 0;
+    public static final double GSEARCH_RED_B = 0;
+    public static final double GSEARCH_BLUE_A = 0;
+    public static final double GSEARCH_BLUE_B = 0;
+
     // Colors are (B, G, R) (Don't ask me)
     public static final Scalar RED = new Scalar(0, 0, 255);
     public static final Scalar GREEN = new Scalar(0, 255, 0);

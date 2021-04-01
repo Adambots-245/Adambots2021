@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -271,9 +273,40 @@ public class RobotContainer {
     // return autoChooser.getSelected();
 
     // return new BarrelPathAuton(driveTrainSubsystem);
-    return new PathFollower("/home/lvuser/barrel-roll-04.txt-1616721643.txt", driveTrainSubsystem);
+    // return new PathFollower("/home/lvuser/barrel-roll-04.txt-1616721643.txt", driveTrainSubsystem);
     // return new BarrelPathAuton(driveTrainSubsystem);
     // return new PIDTuner(90, driveTrainSubsystem);
     // return new SlalomPathAuton(driveTrainSubsystem);
+
+    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    double distance = calculateDistanceToBall(table.getEntry("ty").getDouble(0));
+    
+    // Readability, I guess?
+    boolean nearRedA = ;
+    boolean nearRedB = ;
+    boolean nearBlueA = ;
+    boolean nearBlueB = ;
+
+    // Where the paths are actually decided
+    if(nearRedA) {
+
+    } else if(nearRedB) {
+
+    } else if(nearBlueA) {
+
+    } else if(nearBlueB) {
+
+    }
+    
+  }
+
+  private double calculateDistanceToBall(double cameraDegrees) {
+      double verticalRadiansToCenter = Math.abs(Math.toRadians(cameraDegrees));
+      double fullAngleInRadians = verticalRadiansToCenter + Constants.LIMELIGHT_ANGLE_TO_HORIZONTAL;
+      
+      double numerator = Constants.LIMELIGHT_HEIGHT_FROM_GROUND;
+      double denominator = Math.tan(fullAngleInRadians);
+      
+      return (numerator / denominator) - Constants.LIMELIGHT_DISTANCE_TO_INTAKE_ARM; // formula from making a triangle. Then subtract to get distance from intake arm
   }
 }
