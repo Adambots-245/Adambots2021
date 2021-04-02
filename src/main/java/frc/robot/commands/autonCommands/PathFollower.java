@@ -120,7 +120,10 @@ public class PathFollower extends CommandBase {
       SmartDashboard.putString("Playback: Auton Macro File", "Failed: specified path name was null");
     }
 
-    if (output == null) return new InstantCommand();
+    if (output == null) {
+      SmartDashboard.putString("Playback: Auton Macro File", "Failed: could not find specified path");
+      return new InstantCommand();
+    }
     return output;
 
   }
