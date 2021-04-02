@@ -22,10 +22,13 @@ import frc.robot.vision.GripPipeline;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -47,7 +50,10 @@ public class RobotRecorder extends TimedRobot {
       RobotMap.GearShifter, RobotMap.FrontRightMotor, RobotMap.FrontLeftMotor, RobotMap.BackLeftMotor,
       RobotMap.BackRightMotor);
 
-  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(RobotMap.ArmMover, RobotMap.IntakeMotor, RobotMap.FeedToBlasterMotor);
+  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(RobotMap.ArmMover, RobotMap.IntakeMotor,
+      RobotMap.FeedToBlasterMotor);
+  private final ConveyorSubsystem conveyorSubsystem = new ConveyorSubsystem(RobotMap.ConveyorMotor,
+      RobotMap.AlignmentBeltMotor, RobotMap.IntakePhotoEye, RobotMap.SpacingPhotoEye, RobotMap.ExitPhotoEye);
   private SendableChooser<Command> autoChooser = new SendableChooser<>();
 
   // private RobotContainer m_robotContainer;
@@ -87,13 +93,21 @@ public class RobotRecorder extends TimedRobot {
     Buttons.primaryBackButton.whenPressed(new InstantCommand(() -> PathRecorder.getInstance().stopRecording())
         .andThen(new InstantCommand(() -> SmartDashboard.putBoolean("Recording", false))));
 
-    Buttons.primaryXButton.whenPressed(new InstantCommand(() -> PathRecorder.getInstance().addRecording())
-    .andThen(new InstantCommand(() -> SmartDashboard.putNumber("Added Recordings", SmartDashboard.getNumber("Added Recordings", 0) + 1))));
+    Buttons.primaryXButton
+        .whenPressed(new InstantCommand(() -> PathRecorder.getInstance().addRecording()).andThen(new InstantCommand(
+            () -> SmartDashboard.putNumber("Added Recordings", SmartDashboard.getNumber("Added Recordings", 0) + 1))));
+
+    Buttons.primaryYButton.whenPressed(new InstantCommand(() -> intakeSubsystem.intake(0))
+        .andThen(new InstantCommand(() -> intakeSubsystem.RaiseIntake())
+            .andThen(new InstantCommand(() -> conveyorSubsystem.stopConveyorMotor()))));
+
+    Buttons.primaryBButton.whenPressed(new InstantCommand(() -> intakeSubsystem.LowerIntake())
+        .andThen(new WaitCommand(2)).andThen(new InstantCommand(() -> intakeSubsystem.intake(-1)))
+        .andThen(new InstantCommand(() -> conveyorSubsystem.runConveyor(-1, false))));
 
     setupAutonRoutines();
 
     intakeSubsystem.RaiseIntake();
-    // intakeSubsystem.intake(-1);
     // driveTrainSubsystem.shiftHighGear();
 
     // Buttons.primaryAButton.whenPressed(new
@@ -149,7 +163,8 @@ public class RobotRecorder extends TimedRobot {
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-
+    conveyorSubsystem.checkPhotoEye();
+    determinePath();
   }
 
   /**
@@ -162,13 +177,18 @@ public class RobotRecorder extends TimedRobot {
 
     // String file = PathFollower.getLastRecordedFile();
     // if (file != null) {
-    //   String name = file.substring(file.lastIndexOf("/") + 1);
-    //   autoChooser.addOption(name, new PathFollower(file, driveTrainSubsystem));
+    // String name = file.substring(file.lastIndexOf("/") + 1);
+    // autoChooser.addOption(name, new PathFollower(file, driveTrainSubsystem));
 
-    //   autoChooser.addOption("Last One", new PathFollower(file, driveTrainSubsystem));
+    // autoChooser.addOption("Last One", new PathFollower(file,
+    // driveTrainSubsystem));
     // }
-    
+
     // setupAutonRoutines();
+
+    conveyorSubsystem.stopConveyorMotor();
+    intakeSubsystem.intake(0);
+    intakeSubsystem.RaiseIntake();
 
     RobotMap.FrontLeftMotor.setNeutralMode(NeutralMode.Coast);
     RobotMap.BackLeftMotor.setNeutralMode(NeutralMode.Coast);
@@ -199,17 +219,30 @@ public class RobotRecorder extends TimedRobot {
     // m_autonomousCommand = new
     // PathFollower("/home/lvuser/barrel-roll-test-1616853151.txt",
     // driveTrainSubsystem);
-    
+
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
 
+    /**
+    intakeSubsystem.LowerIntake();
+    try {
+      Thread.sleep(2000);
+    } catch (InterruptedException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    intakeSubsystem.intake(-1);
+    conveyorSubsystem.runConveyor(-1, false);
+    **/
+    
     // m_autonomousCommand = autoChooser.getSelected();
     // m_autonomousCommand = new PathFollower("/home/lvuser/barrel-roll-path1-1616860875.txt", driveTrainSubsystem).
     //   andThen(new PathFollower("/home/lvuser/barrel-roll-path2-1616861903.txt", driveTrainSubsystem)).
     //   andThen(new PathFollower("/home/lvuser/barrel-roll-path3-1616862754.txt", driveTrainSubsystem));
     m_autonomousCommand = PathFollower.fromSegmentedPath("bounce-path", driveTrainSubsystem);
 
+      // m_autonomousCommand = PathFollower.fromSegmentedPath(determinePath(), driveTrainSubsystem);
       // m_autonomousCommand = new PathFollower("/home/lvuser/slalom-path1-1616870027.txt", driveTrainSubsystem).
       // andThen(new PathFollower("/home/lvuser/slalom-path2-1616875674.txt", driveTrainSubsystem)).
       // andThen(new PathFollower("/home/lvuser/slalom-path3-1616876271.txt", driveTrainSubsystem));
@@ -241,8 +274,12 @@ public class RobotRecorder extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
     if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
+      m_autonomousCommand.cancel(); 
     }
+
+    // intakeSubsystem.LowerIntake();
+    // intakeSubsystem.intake(-1);
+    // conveyorSubsystem.runConveyor(-1, true);
 
     RobotMap.FrontLeftMotor.setNeutralMode(NeutralMode.Coast);
     RobotMap.BackLeftMotor.setNeutralMode(NeutralMode.Coast);
@@ -275,5 +312,51 @@ public class RobotRecorder extends TimedRobot {
     // SmartDashboard.putNumber("yaw",gyroSubsystem.getYaw());
     // CommandScheduler.getInstance().run();
 
+  }
+
+  public String determinePath() {
+    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    double x = table.getEntry("tx").getDouble(0);
+    double y = table.getEntry("ty").getDouble(0);
+
+    // Readability, I guess?
+    // check x
+    double lowerBound = x - Constants.ERROR_DISTANCE;
+    double upperBound = x + Constants.ERROR_DISTANCE;
+    boolean xnearRedA = (lowerBound < Constants.GSEARCH_RED_AX) && (upperBound > Constants.GSEARCH_RED_AX);
+    boolean xnearRedB = (lowerBound < Constants.GSEARCH_RED_BX) && (upperBound > Constants.GSEARCH_RED_BX);
+    boolean xnearBlueA = (lowerBound < Constants.GSEARCH_BLUE_AX) && (upperBound > Constants.GSEARCH_BLUE_AX);
+    boolean xnearBlueB = (lowerBound < Constants.GSEARCH_BLUE_BX) && (upperBound > Constants.GSEARCH_BLUE_BX);
+
+    // check y
+    lowerBound = y - Constants.ERROR_DISTANCE;
+    upperBound = y + Constants.ERROR_DISTANCE;
+    boolean ynearRedA = (lowerBound < Constants.GSEARCH_RED_AY) && (upperBound > Constants.GSEARCH_RED_AY);
+    boolean ynearRedB = (lowerBound < Constants.GSEARCH_RED_BY) && (upperBound > Constants.GSEARCH_RED_BY);
+    boolean ynearBlueA = (lowerBound < Constants.GSEARCH_BLUE_AY) && (upperBound > Constants.GSEARCH_BLUE_AY);
+    boolean ynearBlueB = (lowerBound < Constants.GSEARCH_BLUE_BY) && (upperBound > Constants.GSEARCH_BLUE_BY);
+
+    // Where the paths are actually decided
+    if(xnearRedA && ynearRedA) {
+      //return ""; // path to Red A recording
+      System.out.println("RED A");
+      return Constants.RED_A_PATH;
+    } else if(xnearRedB & ynearRedB) {
+      //return ""; // path to Red B recording
+      System.out.println("RED B");
+      return Constants.RED_B_PATH;
+    } else if(xnearBlueA && ynearBlueA) {
+      //return ""; // path to Blue A recording
+      System.out.println("BLUE A");
+      return Constants.BLUE_A_PATH;
+    } else if(xnearBlueB && ynearBlueB) {
+      //return ""; // path to Blue B recording
+      System.out.println("BLUE B: " + Constants.BLUE_B_PATH);
+      return Constants.BLUE_B_PATH;
+    } else {
+      //return "oh no";
+      System.out.println("No valid path detected");
+      return null;
+    }
   }
 }

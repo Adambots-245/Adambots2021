@@ -142,12 +142,23 @@ public final class Constants {
     public static final double LIMELIGHT_HEIGHT_FROM_GROUND = 27.25; //inches. When testing on the table. OR: 0.81 meters
     public static final int LIMELIGHT_DISTANCE_TO_INTAKE_ARM = 28;
     
-    // Distances for Galactic Search Paths
-    public static final double GSEARCH_RED_A = 0;
-    public static final double GSEARCH_RED_B = 0;
-    public static final double GSEARCH_BLUE_A = 0;
-    public static final double GSEARCH_BLUE_B = 0;
-    public static final double ERROR_DISTANCE = 0;
+    // Angles for Galactic Search Paths
+    public static final double GSEARCH_RED_AX = 16.7; // x: 13.7 y: -19.5
+    public static final double GSEARCH_RED_AY = -19.5; // x: 13.7 y: -19.5
+    public static final double GSEARCH_RED_BX = -5.7; // x: -5.7 y: -18.9
+    public static final double GSEARCH_RED_BY = -18.9; // x: -5.7 y: -18.9
+    public static final double GSEARCH_BLUE_AX = -3.1; // x: -3.1 y: -10.5
+    public static final double GSEARCH_BLUE_AY = -10.5; // x: -3.1 y: -10.5
+    public static final double GSEARCH_BLUE_BX = -2.9; // x: -2.9 y: -9.7
+    public static final double GSEARCH_BLUE_BY = -9.7; // x: -2.9 y: -9.7
+    public static final double ERROR_DISTANCE = 2.5;
+
+    // File paths for Galactic Search paths
+    public static final String RED_A_PATH = "red-team-path-A";
+    public static final String RED_B_PATH = "red-team-path-B";
+    public static final String BLUE_A_PATH = "blue-team-path-A";
+    public static final String BLUE_B_PATH = "blue-team-path-B";
+
 
     // Colors are (B, G, R) (Don't ask me)
     public static final Scalar RED = new Scalar(0, 0, 255);

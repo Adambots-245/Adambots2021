@@ -47,6 +47,16 @@ public class ConveyorSubsystem extends SubsystemBase {
     return intakePhotoEye.isDetecting() && spacingPhotoEye.isDetecting() && finalPhotoEye.isDetecting();
   }
 
+  public void checkPhotoEye(){
+    if (finalPhotoEye.isDetecting()){
+      System.out.println("Final Photo Eye Detected");
+      stopConveyorMotor();
+    }
+    else {
+      System.out.println("Final Photo Eye NOT Detected");
+    }
+  }
+
   public void runConveyor(double speed, boolean override){
 
     //Log.infoF("Running coveyor. %% Output: %f", speed);
@@ -63,10 +73,14 @@ public class ConveyorSubsystem extends SubsystemBase {
       //   }
       // }
 
-        if (allSensorsDetected()) {
+        // if (allSensorsDetected()) {
+        if (finalPhotoEye.isDetecting()){
+          System.out.println("Final Photo Eye Detected");
           stopConveyorMotor();
         }
         else {
+          System.out.println("Final Photo Eye NOT Detected");
+
           conveyorMotor.set(ControlMode.PercentOutput, speed);
         }
 
