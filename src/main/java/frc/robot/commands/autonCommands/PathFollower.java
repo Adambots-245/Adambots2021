@@ -13,9 +13,12 @@ import java.util.Scanner;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveTrainSubsystem;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class PathFollower extends CommandBase {
   private String filePath;
@@ -35,7 +38,6 @@ public class PathFollower extends CommandBase {
     this.drive = drive;
 
     addRequirements(drive);
-    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
@@ -52,47 +54,73 @@ public class PathFollower extends CommandBase {
     }
   }
 
+  public static boolean matchesRecorderNameFormat(String string) {
+    final String regex = "\\D+\\d+\\.\\d+";
+        
+    final Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+    final Matcher matcher = pattern.matcher(string);
+
+    return matcher.find();
+  }
+
+  public static boolean isValidSegmentedPathName(String pathName) {
+    return pathName != null && !pathName.contains(".") && !pathName.contains(".txt");
+  }
+
   public static Command fromSegmentedPath(String pathName, DriveTrainSubsystem drive) {
     Command output = null;
     ArrayList<String> paths = new ArrayList<>(List.of(getListofRecordings()));
+    final boolean isValidPathName = isValidSegmentedPathName(pathName);
 
     //Sort lexicographically 
     paths.sort(String::compareToIgnoreCase);
 
-    for (String absolutePath : paths) {
-      //Original format: "/<home_path>/<rec_name>.<id>.<ext>"
+    if (isValidPathName) {
+      for (String absolutePath : paths) {
+        //Original format: "/<home_path>/<rec_name>.<id>.<ext>"
 
-      //Gets name in the format: "<rec_name>.<id>"
-      String name = absolutePath.substring(absolutePath.lastIndexOf("/") + 1);
-      name = name.substring(0, name.lastIndexOf("."));
+        //Gets name in the format: "<rec_name>.<id>"
+        String name = absolutePath.substring(absolutePath.lastIndexOf("/") + 1);
+        name = name.substring(0, name.lastIndexOf("."));
 
-      //Gets name in the format: "<rec_name>"
-      //Gets identifier in the format: <id>
-      int identifier = Integer.parseInt(name.substring(name.lastIndexOf(".") + 1));
-      name = name.substring(0, name.lastIndexOf("."));
+        //Check if this file matches the PathRecorder name format:
+        if (!matchesRecorderNameFormat(name)) continue;
 
-      //The successor of this path, aka a re-recording of the current path.
-      //For example, if this path is: "barrelpath3.1.txt"
-      //The successor is: "barrelpath3.2.txt"
-      String successor = Constants.ROBOT_HOME_FOLDER + name + "." + (identifier + 1) + Constants.RECORDING_FILE_EXT;
+        //Gets name in the format: "<rec_name>"
+        //Gets identifier in the format: <id>
+        int identifier = Integer.parseInt(name.substring(name.lastIndexOf(".") + 1));
+        name = name.substring(0, name.lastIndexOf("."));
 
-      //Checks to pass in order to add this path to the output:
-      boolean hasSuccessor = false;
-      boolean isSegmentOfPath = false;
+        //The successor of this path, aka a re-recording of the current path.
+        //For example, if this path is: "barrelpath3.1.txt"
+        //The successor is: "barrelpath3.2.txt"
+        String successor = Constants.ROBOT_HOME_FOLDER + name + "." + (identifier + 1) + Constants.RECORDING_FILE_EXT;
 
-      if (name.contains(pathName)) isSegmentOfPath = true;
-      if (isSegmentOfPath && (new File(successor)).isFile()) hasSuccessor = true;
+        //Checks to pass in order to add this path to the output:
+        boolean hasSuccessor = false;
+        boolean isSegmentOfPath = false;
 
-      //If both checks pass, add this path to output
-      if (isSegmentOfPath && !hasSuccessor) {
+        if (name.contains(pathName)) isSegmentOfPath = true;
+        if (isSegmentOfPath && (new File(successor)).isFile()) hasSuccessor = true;
 
-        if (output == null) output = new PathFollower(absolutePath, drive);
-        else output.andThen(new PathFollower(absolutePath, drive));
+        //If both checks pass, add this path to output
+        if (isSegmentOfPath && !hasSuccessor) {
+
+          if (output == null) output = new PathFollower(absolutePath, drive);
+          else output.andThen(new PathFollower(absolutePath, drive));
+
+        }
 
       }
-
+    }
+    else if (pathName != null) {
+      SmartDashboard.putString("Playback: Auton Macro File", "Failed: invalid path name specified");
+    }
+    else {
+      SmartDashboard.putString("Playback: Auton Macro File", "Failed: specified path name was null");
     }
 
+    if (output == null) return new InstantCommand();
     return output;
 
   }
@@ -164,8 +192,8 @@ public class PathFollower extends CommandBase {
       double turnSpeed = Double.valueOf(fields[2]);
 
       // System.out.printf("Auto drive %f:%f%n", speed, turnSpeed);
-      SmartDashboard.putNumber("Auton Speed", speed);
-      SmartDashboard.putNumber("Auton Turn Speed", turnSpeed);
+      // SmartDashboard.putNumber("Auton Speed", speed);
+      // SmartDashboard.putNumber("Auton Turn Speed", turnSpeed);
 
       drive.arcadeDrive(speed, turnSpeed);
     }

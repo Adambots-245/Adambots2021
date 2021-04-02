@@ -26,7 +26,6 @@ public class PathRecorder {
     private static PathRecorder _instance = new PathRecorder();
     private long startTime = 0L;
 
-    // private PrintWriter file = null;
     private HashMap<String, ArrayList<String>> paths = new HashMap<>();
     private HashMap<String, PrintWriter> files = new HashMap<>();
     private long line = 1;
@@ -35,7 +34,6 @@ public class PathRecorder {
 
     public PathRecorder(){
         SmartDashboard.putString("Recording to File", "");
-        // SmartDashboard.putString("Record Macro To", "autonPath");
     }
 
     /**
@@ -44,17 +42,6 @@ public class PathRecorder {
      * This method clears the file and path caches, so it can only record one path at a time without stopping.
      */
     public void createRecording(){
-
-        // int unique_id = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE); 
-
-        // filePath = Constants.ROBOT_HOME_FOLDER + filePath + "-" + unique_id + ".txt";
-        // // new File(filePath).delete();
-        // try {
-        //     new File(filePath).createNewFile();
-        //     file = new PrintWriter(new FileWriter(filePath));
-        // } catch (IOException e) {
-        //     e.printStackTrace();
-        // }
 
         files = new HashMap<>();
         paths = new HashMap<>();
@@ -195,7 +182,6 @@ public class PathRecorder {
     }
 
     public void record(double speed, double rotationSpeed){
-        // System.out.println("Writing to file: " + speed);
 
         if (getCurrentFile() == null)
             return;
@@ -206,9 +192,7 @@ public class PathRecorder {
             startTime = currentTime;
         
         long delay = currentTime - startTime;
-        
-        // file.printf("%d,%f,%f%n", delay, speed, rotationSpeed);
-        // file.flush();
+    
         getCurrentPath().add(String.format("%d,%f,%f", delay, speed, rotationSpeed));
 
         if (delay > 25){
@@ -218,5 +202,6 @@ public class PathRecorder {
 
         line++;
         startTime = currentTime;
+
     }
 }

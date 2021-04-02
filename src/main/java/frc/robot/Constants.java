@@ -147,10 +147,14 @@ public final class Constants {
     public static final double GSEARCH_RED_AY = -19.5; // x: 13.7 y: -19.5
     public static final double GSEARCH_RED_BX = -5.7; // x: -5.7 y: -18.9
     public static final double GSEARCH_RED_BY = -18.9; // x: -5.7 y: -18.9
+
+    //TODO: BLUE A AND BLUE B ANGLES ARE TOO SIMILAR; CODE WILL ALWAYS CHOOSE BLUE A
+
     public static final double GSEARCH_BLUE_AX = -3.1; // x: -3.1 y: -10.5
     public static final double GSEARCH_BLUE_AY = -10.5; // x: -3.1 y: -10.5
     public static final double GSEARCH_BLUE_BX = -2.9; // x: -2.9 y: -9.7
     public static final double GSEARCH_BLUE_BY = -9.7; // x: -2.9 y: -9.7
+
     public static final double ERROR_DISTANCE = 2.5;
 
     // File paths for Galactic Search paths

@@ -7,32 +7,26 @@
 
 package frc.robot;
 
-import frc.robot.Gamepad.Buttons;
-import frc.robot.Gamepad.GamepadConstants;
-import frc.robot.commands.DriveCommand;
-import frc.robot.commands.SetLowSpeedCommand;
-import frc.robot.commands.SetNormalSpeedCommand;
-import frc.robot.commands.ShiftHighGearCommand;
-import frc.robot.commands.ShiftLowGearCommand;
-import frc.robot.commands.autonCommands.PathFollower;
-import frc.robot.sensors.Gyro;
-import frc.robot.subsystems.*;
-import frc.robot.utils.PathRecorder;
-import frc.robot.vision.GripPipeline;
-
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.Gamepad.Buttons;
+import frc.robot.Gamepad.GamepadConstants;
+import frc.robot.commands.DriveCommand;
+import frc.robot.commands.autonCommands.PathFollower;
+import frc.robot.subsystems.ConveyorSubsystem;
+import frc.robot.subsystems.DriveTrainSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.utils.PathRecorder;
 
 /**
  * The VM is configured to automatically run this class, and to call the
