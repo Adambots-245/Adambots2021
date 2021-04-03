@@ -31,6 +31,7 @@ public class PathRecorder {
     private long line = 1;
     private static ShuffleboardTab tab = Shuffleboard.getTab("Auton");
     private static SimpleWidget fileName = tab.add("RecordMacroTo", "autonPath");
+    private ArrayList<String> currentPath = null;
 
     public PathRecorder(){
         SmartDashboard.putString("Recording to File", "");
@@ -175,6 +176,7 @@ public class PathRecorder {
 
         files.put(name, writer);
         paths.put(name, new ArrayList<>());
+        currentPath = paths.get(name);
 
         line = 1;
         startTime = 0L;
@@ -193,7 +195,8 @@ public class PathRecorder {
         
         long delay = currentTime - startTime;
     
-        getCurrentPath().add(String.format("%d,%f,%f", delay, speed, rotationSpeed));
+        // getCurrentPath().add(String.format("%d,%f,%f", delay, speed, rotationSpeed));
+        currentPath.add(String.format("%d,%f,%f", delay, speed, rotationSpeed));
 
         if (delay > 25){
             // these lines where the robot skipped 20 ms delay should be manually inspected and corrected

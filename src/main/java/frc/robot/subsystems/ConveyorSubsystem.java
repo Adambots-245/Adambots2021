@@ -49,11 +49,11 @@ public class ConveyorSubsystem extends SubsystemBase {
 
   public void checkPhotoEye(){
     if (finalPhotoEye.isDetecting()){
-      System.out.println("Final Photo Eye Detected");
+      // System.out.println("Final Photo Eye Detected");
       stopConveyorMotor();
     }
     else {
-      System.out.println("Final Photo Eye NOT Detected");
+      // System.out.println("Final Photo Eye NOT Detected");
     }
   }
 

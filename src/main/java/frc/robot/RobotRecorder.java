@@ -218,7 +218,7 @@ public class RobotRecorder extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    /**
+    
     intakeSubsystem.LowerIntake();
     try {
       Thread.sleep(2000);
@@ -228,15 +228,15 @@ public class RobotRecorder extends TimedRobot {
     }
     intakeSubsystem.intake(-1);
     conveyorSubsystem.runConveyor(-1, false);
-    **/
+    
     
     // m_autonomousCommand = autoChooser.getSelected();
     // m_autonomousCommand = new PathFollower("/home/lvuser/barrel-roll-path1-1616860875.txt", driveTrainSubsystem).
     //   andThen(new PathFollower("/home/lvuser/barrel-roll-path2-1616861903.txt", driveTrainSubsystem)).
     //   andThen(new PathFollower("/home/lvuser/barrel-roll-path3-1616862754.txt", driveTrainSubsystem));
-    m_autonomousCommand = PathFollower.fromSegmentedPath("bounce-path", driveTrainSubsystem);
+    // m_autonomousCommand = PathFollower.fromSegmentedPath("bounce-path", driveTrainSubsystem);
 
-      // m_autonomousCommand = PathFollower.fromSegmentedPath(determinePath(), driveTrainSubsystem);
+      m_autonomousCommand = PathFollower.fromSegmentedPath(determinePath(), driveTrainSubsystem);
       // m_autonomousCommand = new PathFollower("/home/lvuser/slalom-path1-1616870027.txt", driveTrainSubsystem).
       // andThen(new PathFollower("/home/lvuser/slalom-path2-1616875674.txt", driveTrainSubsystem)).
       // andThen(new PathFollower("/home/lvuser/slalom-path3-1616876271.txt", driveTrainSubsystem));
@@ -333,23 +333,23 @@ public class RobotRecorder extends TimedRobot {
     // Where the paths are actually decided
     if(xnearRedA && ynearRedA) {
       //return ""; // path to Red A recording
-      System.out.println("RED A");
+      SmartDashboard.putString("determinedPath", "RED A");
       return Constants.RED_A_PATH;
     } else if(xnearRedB & ynearRedB) {
       //return ""; // path to Red B recording
-      System.out.println("RED B");
+      SmartDashboard.putString("determinedPath", "RED B");
       return Constants.RED_B_PATH;
     } else if(xnearBlueA && ynearBlueA) {
       //return ""; // path to Blue A recording
-      System.out.println("BLUE A");
+      SmartDashboard.putString("determinedPath", "BLUE A");
       return Constants.BLUE_A_PATH;
     } else if(xnearBlueB && ynearBlueB) {
       //return ""; // path to Blue B recording
-      System.out.println("BLUE B: " + Constants.BLUE_B_PATH);
+      SmartDashboard.putString("determinedPath", "BLUE B");
       return Constants.BLUE_B_PATH;
     } else {
       //return "oh no";
-      System.out.println("No valid path detected");
+      SmartDashboard.putString("determinedPath", "No valid path detected");
       return null;
     }
   }
