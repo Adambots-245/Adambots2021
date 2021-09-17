@@ -242,7 +242,8 @@ public class RobotContainer {
   }
 
   /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
+   * Use this to pass the autonomo
+   * us command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
@@ -251,11 +252,13 @@ public class RobotContainer {
     // return autonDriveForwardGyroDistanceCommand;
     // return new  DriveForwardGyroDistanceCommand(driveTrainSubsystem, 0, 0, 0, true).andThen(new DriveForwardGyroDistanceCommand(driveTrainSubsystem, 3500*48, -.75, 0, true)).andThen(new DriveForwardGyroDistanceCommand(driveTrainSubsystem, 3500*84, -.5, 90, false));
     // return autonTurn90DegreeCommand.andThen(new WaitCommand(3)).andThen(new TurnToAngleCommand(driveTrainSubsystem, 0.5, -45, false));
-    // System.out.println(autoChooser.getSelected());
-    // return autoChooser.getSelected();
-
-    return new BarrelPathAuton(driveTrainSubsystem);
-    // return new PIDTuner(90, driveTrainSubsystem);
-    // return new SlalomPathAuton(driveTrainSubsystem);
+    System.out.println(autoChooser.getSelected());
+    return autoChooser.getSelected();
+    // return new LowerIntakeArmCommand(intakeSubsystem)
+    // .andThen(new WaitCommand(4))
+    // .andThen(new TurnToAngleFromCameraCommand(driveTrainSubsystem))
+    // .andThen(new DriveToBallCommand(driveTrainSubsystem, intakeSubsystem, conveyorSubsystem, RobotMap.IntakePhotoEye));
+    // .andThen(new StartIntakeCommand(intakeSubsystem, () -> -1.0))
+    // .andThen(new DriveForwardDistanceCommand(driveTrainSubsystem, 20000, -Constants.AUTON_DRIVE_FORWARD_SPEED))
   }
 }

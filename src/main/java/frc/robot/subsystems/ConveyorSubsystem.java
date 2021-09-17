@@ -36,10 +36,17 @@ public class ConveyorSubsystem extends SubsystemBase {
     this.conveyorMotor = conveyorMotor; //new WPI_VictorSPX(Constants.INFEED_CONVEYOR_MOTOR_PORT);
     this.alignmentBeltMotor = alignmentBeltMotor; //new WPI_VictorSPX(Constants.INFEED_CONVEYOR_INDEXER_MOTOR_PORT);
 
+    this.intakePhotoEye = intakePhotoEye;
+    this.spacingPhotoEye = spacingPhotoEye;
+    this.finalPhotoEye = finalPhotoEye;
+
     Log.info("Initializing Conveyor");
   }
 
   public boolean allSensorsDetected() {
+    System.out.println("Intake: " + intakePhotoEye.isDetecting());
+    System.out.println("Spacing: " + spacingPhotoEye.isDetecting());
+    System.out.println("Final: " + finalPhotoEye.isDetecting());
     return intakePhotoEye.isDetecting() && spacingPhotoEye.isDetecting() && finalPhotoEye.isDetecting();
   }
 

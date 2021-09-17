@@ -35,7 +35,7 @@ public class ConveyorCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    conveyorSubsystem.runConveyor(speedInput.getAsDouble(), true);
+    conveyorSubsystem.runConveyor(speedInput.getAsDouble(), false);
     conveyorSubsystem.runAlignmentBelt(speedInput.getAsDouble());
   }
 
